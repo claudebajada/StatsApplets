@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t Distribution Explorer</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.4/dist/jstat.min.js"></script>
+</head>
+<body>
+
+<div class="page-title">t Distribution Explorer</div>
+
+<div class="slider-container">
+  <label for="df-slider">Degrees of Freedom (df): <span id="df-value">1</span></label>
+  <input type="range" id="df-slider" min="1" max="100" step="1" value="1">
+</div>
+
+<div class="chart-container">
+  <canvas id="distributionChart"></canvas>
+</div>
+
+<script src="../javascript/t-distribution-explorer.js"></script>
+</body>
+</html>
+

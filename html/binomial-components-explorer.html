@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Binomial Components Explorer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<div class="page-title">Binomial Components Explorer</div>
+
+<div class="slider-container">
+  <label for="p">Probability of Success (p): <span id="p-value">0.5</span></label>
+  <input type="range" id="p" min="0" max="1" step="0.01" value="0.5">
+
+  <label for="n">Number of Trials (n): <span id="n-value">10</span></label>
+  <input type="range" id="n" min="1" max="30" step="1" value="10">
+</div>
+
+<div class="container">
+  <div class="chart-container">
+    <h3 class="chart-title">1) Binomial Coefficient Only</h3>
+    <canvas id="coeffChart" class="chart-canvas"></canvas>
+  </div>
+  <div class="chart-container">
+    <h3 class="chart-title">2) Probability Term Only</h3>
+    <canvas id="probTermChart" class="chart-canvas"></canvas>
+  </div>
+  <div class="chart-container">
+    <h3 class="chart-title">3) Full Binomial Distribution</h3>
+    <canvas id="fullDistChart" class="chart-canvas"></canvas>
+  </div>
+</div>
+
+<script src="../javascript/common.js"></script>
+<script src="../javascript/binomial-components-explorer.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematical Concepts Visualizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .visualization-panel {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(300px, auto));
+            grid-gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .visualization {
+            border: 1px solid black;
+            background-color: #f0f0f0;
+            width: 300px;
+            height: 300px;
+        }
+        .control-panel {
+            text-align: center;
+            margin: 20px;
+        }
+        .slider-container {
+            margin: 10px;
+        }
+        .output {
+            text-align: center;
+            margin: 20px;
+        }
+        .diagram {
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mathematical Concepts Visualizer</h1>
+    
+    <div class="control-panel">
+        <!-- Controls for manipulating vectors -->
+        <div class="slider-container">
+            <label for="vectorAX1">Vector A (x1, y1):</label><br>
+            <input type="range" id="vectorAX1" min="-10" max="10" value="0">
+            <input type="range" id="vectorAY1" min="-10" max="10" value="0">
+            <span id="vectorAOutput">(0, 0)</span>
+        </div>
+        <div class="slider-container">
+            <label for="vectorBX1">Vector B (x2, y2):</label><br>
+            <input type="range" id="vectorBX1" min="-10" max="10" value="0">
+            <input type="range" id="vectorBY1" min="-10" max="10" value="0">
+            <span id="vectorBOutput">(0, 0)</span>
+        </div>
+        <button id="drawButton">Update Vectors</button>
+    </div>
+
+    <div class="visualization-panel">
+        <div id="dotProductDiagram" class="diagram">
+            <h2>Dot Product</h2>
+            <canvas id="dotProductCanvas" class="visualization"></canvas>
+        </div>
+
+        <div id="cosineDiagram" class="diagram">
+            <h2>Cosine Similarity</h2>
+            <canvas id="cosineCanvas" class="visualization"></canvas>
+        </div>
+
+        <div id="pearsonDiagram" class="diagram">
+            <h2>Pearson Correlation</h2>
+            <canvas id="pearsonCanvas" class="visualization"></canvas>
+        </div>
+
+        <div id="olsCoefficientDiagram" class="diagram">
+            <h2>OLS Coefficient</h2>
+            <canvas id="olsCanvas" class="visualization"></canvas>
+        </div>
+    </div>
+
+    <div class="output">
+        <p><strong>Dot Product:</strong> <span id="dotProductValue">-</span></p>
+        <p><strong>Cosine Similarity:</strong> <span id="cosineSimilarityValue">-</span></p>
+        <p><strong>Pearson Correlation:</strong> <span id="pearsonCorrelationValue">-</span></p>
+        <p><strong>OLS Coefficient:</strong> <span id="olsCoefficientValue">-</span></p>
+    </div>
+
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/correlation.js"></script>
+</body>
+</html>

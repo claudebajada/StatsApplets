@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomial and Normal Distribution Explorer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<link rel="stylesheet" href="../css/styles.css">
+
+</head>
+<body>
+
+<div class="page-title">Binomial and Normal Distribution Explorer</div>
+
+
+<div class="slider-container">
+  <label for="theta">Theta (Probability of Success): <span id="theta-value">0.5</span></label>
+  <input type="range" id="theta" class="slider" min="0" max="1" step="0.01" value="0.5">
+
+  <label for="N">N (Number of Trials): <span id="N-value">15</span></label>
+  <input type="range" id="N" class="slider" min="0" max="30" step="1" value="15">
+</div>
+
+<div class="container">
+  <div class="chart-container">
+    <h3 class="chart-title">The Binomial Distribution</h3>
+    <canvas id="binomialChart" class="chart-canvas"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <h3 class="chart-title">Normal Approximation to Binomial</h3>
+    <p>Mu: <span id="mu-value"></span></p>
+    <p>Sigma: <span id="sigma-value"></span></p>
+    <canvas id="normalChart" class="chart-canvas"></canvas>
+  </div>
+</div>
+
+<script src="../javascript/common.js"> </script>
+<script src="../javascript/binomial-normal-explorer.js"></script> <!-- Link to the specific applet JavaScript file -->
+
+</body>
+</html>
+

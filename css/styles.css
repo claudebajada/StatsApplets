@@ -1,0 +1,76 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0; /* Reduced padding to save space */
+}
+.slider {
+  width: 80%;
+  max-width: 400px;
+}
+.container {
+  flex: 1;
+  overflow: auto;
+  padding: 10px 20px ; /* Reduced padding to save space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.critical-value-container {
+  text-align: center;
+}
+.chart-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 10px auto; /* Reduced margin to save space */
+  height: calc((100vh - 140px) / 2); /* Adjusted height calculation */
+  max-height: 300px; /* Optional: adjust based on your needs */
+}
+.chart-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+.chart-title {
+  font-size: 1.2em; /* Reduced font size to save space */
+  margin: 20px 0 0px; /* Reduced margin to save space */
+  text-align: center;
+}
+.page-title {
+  font-size: 2em; /* Large font size for the main title */
+  text-align: center;
+  margin: 20px 0; /* Space above and below the title */
+ }
+ 
+.cohen-d-container {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 1.2em;
+ }   
+
+@media (max-width: 768px) {
+  .slider {
+    width: 90%;
+  }
+  .chart-container {
+    width: 95%;
+    height: calc((100vh - 120px) / 2); /* Adjusted for smaller screens */
+  }
+}
+
+.stats-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.stat-item {
+  margin-bottom: 10px;
+}
+
+

@@ -38,6 +38,18 @@ function olsCoefficient(a, b) {
   return denom === 0 ? NaN : dotProduct(a, b) / denom;
 }
 
+// Helper to populate ordered lists of intermediate steps
+function fillSteps(id, lines) {
+  const ol = document.getElementById(id);
+  if (!ol) return;
+  ol.innerHTML = '';
+  lines.forEach(txt => {
+    const li = document.createElement('li');
+    li.textContent = txt;
+    ol.appendChild(li);
+  });
+}
+
 // Chart instances
 let dotChart, cosineChart, pearsonBeforeChart, pearsonChart, olsChart;
 
@@ -155,6 +167,51 @@ function updateDisplay(vectorA, vectorB) {
 
   document.getElementById('vectorAOutput').textContent = `(${vectorA.join(', ')})`;
   document.getElementById('vectorBOutput').textContent = `(${vectorB.join(', ')})`;
+
+  // Intermediate steps for dot product
+  const [a1, a2] = vectorA;
+  const [b1, b2] = vectorB;
+  fillSteps('dotProductSteps', [
+    `x₁y₁ = ${a1} × ${b1} = ${(a1 * b1).toFixed(2)}`,
+    `x₂y₂ = ${a2} × ${b2} = ${(a2 * b2).toFixed(2)}`,
+    `Sum = ${(dotProd).toFixed(2)}`
+  ]);
+
+  // Steps for cosine similarity
+  const magA = magnitude(vectorA);
+  const magB = magnitude(vectorB);
+  fillSteps('cosineSteps', [
+    `Dot = ${dotProd.toFixed(2)}`,
+    `‖x‖ = √(${a1}² + ${a2}²) = ${magA.toFixed(2)}`,
+    `‖y‖ = √(${b1}² + ${b2}²) = ${magB.toFixed(2)}`,
+    `Dot/(‖x‖‖y‖) = ${dotProd.toFixed(2)} / (${magA.toFixed(2)} × ${magB.toFixed(2)})`
+  ]);
+
+  // Steps for Pearson correlation
+  const meanA = (a1 + a2) / 2;
+  const meanB = (b1 + b2) / 2;
+  const centeredA = [a1 - meanA, a2 - meanA];
+  const centeredB = [b1 - meanB, b2 - meanB];
+  const dotCentered = dotProduct(centeredA, centeredB);
+  const magCenteredA = magnitude(centeredA);
+  const magCenteredB = magnitude(centeredB);
+  fillSteps('pearsonSteps', [
+    `x̄ = (${a1} + ${a2}) / 2 = ${meanA.toFixed(2)}`,
+    `ȳ = (${b1} + ${b2}) / 2 = ${meanB.toFixed(2)}`,
+    `Centered x = [${centeredA[0].toFixed(2)}, ${centeredA[1].toFixed(2)}]`,
+    `Centered y = [${centeredB[0].toFixed(2)}, ${centeredB[1].toFixed(2)}]`,
+    `Dot = ${dotCentered.toFixed(2)}`,
+    `‖x_c‖ = ${magCenteredA.toFixed(2)}, ‖y_c‖ = ${magCenteredB.toFixed(2)}`,
+    `Dot/(‖x_c‖‖y_c‖) = ${dotCentered.toFixed(2)} / (${magCenteredA.toFixed(2)} × ${magCenteredB.toFixed(2)})`
+  ]);
+
+  // Steps for OLS coefficient
+  const denom = magA ** 2;
+  fillSteps('olsSteps', [
+    `Σxᵢyᵢ = ${dotProd.toFixed(2)}`,
+    `Σxᵢ² = ${denom.toFixed(2)}`,
+    `a = Σxᵢyᵢ / Σxᵢ² = ${dotProd.toFixed(2)} / ${denom.toFixed(2)}`
+  ]);
 }
 
 function updateAll() {

@@ -12,16 +12,40 @@ body {
   padding:20px;
 }
 .control-panel {
-  text-align:center;
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  flex-wrap:wrap;
   margin-bottom:20px;
 }
+.slider-container { text-align:center; }
+/*.Layout helpers for each concept block*/
 .concept-section {
   margin-top:30px;
   text-align:center;
 }
+.section-content {
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:30px;
+  flex-wrap:wrap;
+}
 .concept-section canvas {
   max-width:400px;
   max-height:400px;
+}
+.text-panel {
+  max-width:320px;
+  text-align:left;
+}
+.equation {
+  font-family:'Times New Roman',serif;
+  font-size:1.1em;
+}
+.steps {
+  margin-top:10px;
+  padding-left:20px;
 }
 .result {
   font-weight:bold;
@@ -59,43 +83,63 @@ variation—normalization or centering—transforms the same underlying calculat
 
 <section id="dotProductSection" class="concept-section">
   <h2>Dot Product</h2>
-  <p>The raw inner product ⟨x,y⟩ = ∑ xᵢ yᵢ. It equals the length of the projection
-  of one vector onto the other times that vector's length.</p>
-  <canvas id="dotProductChart"></canvas>
-  <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
+  <div class="section-content">
+    <canvas id="dotProductChart"></canvas>
+    <div class="text-panel">
+      <p>The raw inner product.</p>
+      <p class="equation">⟨x,y⟩ = x<sub>1</sub>y<sub>1</sub> + x<sub>2</sub>y<sub>2</sub></p>
+      <ol id="dotProductSteps" class="steps"></ol>
+      <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
+    </div>
+  </div>
 </section>
 
 <section id="cosineSection" class="concept-section">
   <h2>Cosine Similarity</h2>
-  <p>A normalized dot product ⟨x,y⟩/(‖x‖‖y‖) that measures how aligned the
-  vectors are by the cosine of the angle between them.</p>
-  <canvas id="cosineChart"></canvas>
-  <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
+  <div class="section-content">
+    <canvas id="cosineChart"></canvas>
+    <div class="text-panel">
+      <p>A normalized dot product that measures vector alignment.</p>
+      <p class="equation">cos θ = ⟨x,y⟩ /(‖x‖‖y‖)</p>
+      <ol id="cosineSteps" class="steps"></ol>
+      <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
+    </div>
+  </div>
 </section>
 
 <section id="pearsonSection" class="concept-section">
   <h2>Pearson Correlation</h2>
-  <p>The cosine similarity of centered vectors:
-  ⟨x - x̄, y - ȳ⟩/(‖x - x̄‖‖y - ȳ‖).</p>
-  <div class="pair-canvases">
-    <div>
-      <p><em>Before Centering</em></p>
-      <canvas id="pearsonBeforeChart"></canvas>
+  <div class="section-content">
+    <div class="pair-canvases">
+      <div>
+        <p><em>Before Centering</em></p>
+        <canvas id="pearsonBeforeChart"></canvas>
+      </div>
+      <div>
+        <p><em>After Centering</em></p>
+        <canvas id="pearsonChart"></canvas>
+      </div>
     </div>
-    <div>
-      <p><em>After Centering</em></p>
-      <canvas id="pearsonChart"></canvas>
+    <div class="text-panel">
+      <p>The cosine similarity of centered vectors.</p>
+      <p class="equation">r = ⟨x - x̄, y - ȳ⟩ /(‖x - x̄‖‖y - ȳ‖)</p>
+      <ol id="pearsonSteps" class="steps"></ol>
+      <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
     </div>
   </div>
-  <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
 </section>
 
 <section id="olsSection" class="concept-section">
   <h2>OLS Regression Coefficient</h2>
-  <p>The one-sided normalized inner product: ⟨x,y⟩/‖x‖², giving the slope of the
-  best-fit line predicting components of Vector B from Vector A.</p>
-  <canvas id="olsChart"></canvas>
-  <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>
+  <div class="section-content">
+    <canvas id="olsChart"></canvas>
+    <div class="text-panel">
+      <p>The slope from regressing B on A.</p>
+      <p class="equation">a = ⟨x,y⟩ / ‖x‖<sup>2</sup> = Σx<sub>i</sub>y<sub>i</sub> / Σx<sub>i</sub><sup>2</sup></p>
+      <ol id="olsSteps" class="steps"></ol>
+      <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>
+    </div>
+  </div>
 </section>
 
 <section class="concept-section">

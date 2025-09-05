@@ -142,9 +142,13 @@ function updateCharts(vectorA, vectorB) {
   // Cosine similarity as dot product of normalized vectors
   const normA = normalize(vectorA);
   const normB = normalize(vectorB);
+  const cosProjLen = dotProduct(normA, normB);
+  const cosProjVec = normB.map(val => val * cosProjLen);
   cosineChart.data.datasets = [
     { data: [{ x: 0, y: 0 }, { x: normA[0], y: normA[1] }], borderColor: 'red', showLine: true, fill: false },
-    { data: [{ x: 0, y: 0 }, { x: normB[0], y: normB[1] }], borderColor: 'blue', showLine: true, fill: false }
+    { data: [{ x: 0, y: 0 }, { x: normB[0], y: normB[1] }], borderColor: 'blue', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: cosProjVec[0], y: cosProjVec[1] }], borderColor: 'green', showLine: true, fill: false },
+    { data: [{ x: normA[0], y: normA[1] }, { x: cosProjVec[0], y: cosProjVec[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
   ];
   cosineChart.options.plugins.anglePlugin = { vectors: { vectorA: normA, vectorB: normB } };
   cosineChart.update();
@@ -165,14 +169,18 @@ function updateCharts(vectorA, vectorB) {
   ];
   pearsonCenteredChart.update();
 
-  // Pearson Correlation - centered and normalized with angle
+  // Pearson Correlation - centered and normalized with projection
   const normCenteredA = normalize(centeredA);
   const normCenteredB = normalize(centeredB);
+  const corrProjLen = dotProduct(normCenteredA, normCenteredB);
+  const corrProjVec = normCenteredB.map(val => val * corrProjLen);
   pearsonNormChart.data.datasets = [
     { data: [{ x: 0, y: 0 }, { x: normCenteredA[0], y: normCenteredA[1] }], borderColor: 'red', showLine: true, fill: false },
-    { data: [{ x: 0, y: 0 }, { x: normCenteredB[0], y: normCenteredB[1] }], borderColor: 'blue', showLine: true, fill: false }
+    { data: [{ x: 0, y: 0 }, { x: normCenteredB[0], y: normCenteredB[1] }], borderColor: 'blue', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: corrProjVec[0], y: corrProjVec[1] }], borderColor: 'green', showLine: true, fill: false },
+    { data: [{ x: normCenteredA[0], y: normCenteredA[1] }, { x: corrProjVec[0], y: corrProjVec[1] }], borderColor: 'gray', borderDash: [5,5], showLine: true, fill: false, pointRadius: 0 }
   ];
-  pearsonNormChart.options.plugins.anglePlugin = { vectors: { vectorA: normCenteredA, vectorB: normCenteredB } };
+  pearsonNormChart.options.plugins.anglePlugin = undefined;
   pearsonNormChart.update();
 
   // OLS Coefficient - scatter with regression line through origin
@@ -232,7 +240,8 @@ function updateDisplay(vectorA, vectorB) {
     `‖B‖ = √(${b1}² + ${b2}²) = ${magB.toFixed(2)}`,
     `Â = [${normA[0].toFixed(2)}, ${normA[1].toFixed(2)}]`,
     `B̂ = [${normB[0].toFixed(2)}, ${normB[1].toFixed(2)}]`,
-    `Dot(Â,B̂) = ${cosDot.toFixed(2)}`
+    `Projection length = Dot(Â,B̂) = ${cosDot.toFixed(2)}`,
+    `cos θ = Projection length = ${cosDot.toFixed(2)}`
   ]);
 
   // Steps for Pearson correlation
@@ -253,7 +262,8 @@ function updateDisplay(vectorA, vectorB) {
     `‖A_c‖ = ${magCenteredA.toFixed(2)}, ‖B_c‖ = ${magCenteredB.toFixed(2)}`,
     `Normalized A_c = [${normCenteredA[0].toFixed(2)}, ${normCenteredA[1].toFixed(2)}]`,
     `Normalized B_c = [${normCenteredB[0].toFixed(2)}, ${normCenteredB[1].toFixed(2)}]`,
-    `r = Dot(Â_c,B̂_c) = ${dotNormCentered.toFixed(2)}`
+    `Projection length = Dot(Â_c,B̂_c) = ${dotNormCentered.toFixed(2)}`,
+    `r = Projection length = ${dotNormCentered.toFixed(2)}`
   ]);
 
   // Steps for OLS coefficient

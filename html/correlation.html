@@ -89,6 +89,7 @@ variation—normalization or centering—transforms the same underlying calculat
       <p>The raw inner product.</p>
       <p class="equation">⟨A,B⟩ = A<sub>1</sub>B<sub>1</sub> + A<sub>2</sub>B<sub>2</sub></p>
       <ol id="dotProductSteps" class="steps"></ol>
+      <p>The projection length is the scalar projection of A onto B—the length of A's shadow on B.</p>
       <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
     </div>
   </div>
@@ -99,7 +100,7 @@ variation—normalization or centering—transforms the same underlying calculat
   <div class="section-content">
     <canvas id="cosineChart"></canvas>
     <div class="text-panel">
-      <p>A dot product of normalized vectors.</p>
+      <p>A dot product of normalized vectors; cos θ is the projection of Â onto B̂.</p>
       <p class="equation">cos θ = ⟨Â, B̂⟩ = ⟨A,B⟩ /(‖A‖‖B‖)</p>
       <ol id="cosineSteps" class="steps"></ol>
       <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
@@ -126,6 +127,7 @@ variation—normalization or centering—transforms the same underlying calculat
     </div>
     <div class="text-panel">
       <p>The cosine similarity of centered and normalized vectors.</p>
+      <p>In two dimensions, centering forces each vector onto a line, so the angle is either 0° or 180°. We show r as the projection of Â<sub>c</sub> onto B̂<sub>c</sub>.</p>
       <p class="equation">r = ⟨A - Ā, B - B̄⟩ /(‖A - Ā‖‖B - B̄‖)</p>
       <ol id="pearsonSteps" class="steps"></ol>
       <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>

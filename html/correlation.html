@@ -117,11 +117,15 @@ variation—normalization or centering—transforms the same underlying calculat
       </div>
       <div>
         <p><em>After Centering</em></p>
-        <canvas id="pearsonChart"></canvas>
+        <canvas id="pearsonCenteredChart"></canvas>
+      </div>
+      <div>
+        <p><em>Centered &amp; Normalized</em></p>
+        <canvas id="pearsonNormChart"></canvas>
       </div>
     </div>
     <div class="text-panel">
-      <p>The cosine similarity of centered vectors.</p>
+      <p>The cosine similarity of centered and normalized vectors.</p>
       <p class="equation">r = ⟨A - Ā, B - B̄⟩ /(‖A - Ā‖‖B - B̄‖)</p>
       <ol id="pearsonSteps" class="steps"></ol>
       <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
@@ -134,7 +138,7 @@ variation—normalization or centering—transforms the same underlying calculat
   <div class="section-content">
     <canvas id="olsChart"></canvas>
     <div class="text-panel">
-      <p>The slope from regressing B on A.</p>
+      <p>Scatter the points (A<sub>i</sub>,B<sub>i</sub>) and fit the best line through the origin.</p>
       <p class="equation">a = ⟨A,B⟩ / ‖A‖<sup>2</sup> = ΣA<sub>i</sub>B<sub>i</sub> / ΣA<sub>i</sub><sup>2</sup></p>
       <ol id="olsSteps" class="steps"></ol>
       <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>

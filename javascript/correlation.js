@@ -58,7 +58,7 @@ function fillSteps(id, lines) {
 }
 
 // Chart instances
-let dotChart, cosineChart, pearsonBeforeChart, pearsonChart, olsChart;
+let dotChart, cosineChart, pearsonBeforeChart, pearsonCenteredChart, pearsonNormChart, olsChart;
 
 // Plugin to draw an arc showing the angle between vectors
 const anglePlugin = {
@@ -101,36 +101,52 @@ const baseOptions = {
 };
 
 function initCharts() {
-  dotChart = new Chart(document.getElementById('dotProductChart'), JSON.parse(JSON.stringify(baseOptions)));
-  cosineChart = new Chart(document.getElementById('cosineChart'), JSON.parse(JSON.stringify(baseOptions)));
+  const dotOpts = JSON.parse(JSON.stringify(baseOptions));
+  dotChart = new Chart(document.getElementById('dotProductChart'), dotOpts);
+
+  const cosineOpts = JSON.parse(JSON.stringify(baseOptions));
+  cosineOpts.options.scales.x.min = -1.2;
+  cosineOpts.options.scales.x.max = 1.2;
+  cosineOpts.options.scales.y.min = -1.2;
+  cosineOpts.options.scales.y.max = 1.2;
+  cosineChart = new Chart(document.getElementById('cosineChart'), cosineOpts);
+
   pearsonBeforeChart = new Chart(document.getElementById('pearsonBeforeChart'), JSON.parse(JSON.stringify(baseOptions)));
-  pearsonChart = new Chart(document.getElementById('pearsonChart'), JSON.parse(JSON.stringify(baseOptions)));
+  pearsonCenteredChart = new Chart(document.getElementById('pearsonCenteredChart'), JSON.parse(JSON.stringify(baseOptions)));
+
+  const pearsonNormOpts = JSON.parse(JSON.stringify(baseOptions));
+  pearsonNormOpts.options.scales.x.min = -1.2;
+  pearsonNormOpts.options.scales.x.max = 1.2;
+  pearsonNormOpts.options.scales.y.min = -1.2;
+  pearsonNormOpts.options.scales.y.max = 1.2;
+  pearsonNormChart = new Chart(document.getElementById('pearsonNormChart'), pearsonNormOpts);
+
   olsChart = new Chart(document.getElementById('olsChart'), JSON.parse(JSON.stringify(baseOptions)));
 }
 
 function updateCharts(vectorA, vectorB) {
-  // Dot Product chart with projection of A onto B
-  const denomDot = dotProduct(vectorB, vectorB);
-  const projScalarDot = denomDot === 0 ? 0 : dotProduct(vectorA, vectorB) / denomDot;
-  const projectionDot = [projScalarDot * vectorB[0], projScalarDot * vectorB[1]];
+  // Dot Product chart showing projection of A onto B
+  const dotProd = dotProduct(vectorA, vectorB);
+  const magB = magnitude(vectorB);
+  const projLen = magB === 0 ? 0 : dotProd / magB;
+  const unitB = magB === 0 ? [0, 0] : vectorB.map(val => val / magB);
+  const projVec = unitB.map(val => val * projLen);
   dotChart.data.datasets = [
     { data: [{ x: 0, y: 0 }, { x: vectorA[0], y: vectorA[1] }], borderColor: 'red', showLine: true, fill: false },
     { data: [{ x: 0, y: 0 }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'blue', showLine: true, fill: false },
-    { data: [{ x: vectorA[0], y: vectorA[1] }, { x: projectionDot[0], y: projectionDot[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
+    { data: [{ x: 0, y: 0 }, { x: projVec[0], y: projVec[1] }], borderColor: 'green', showLine: true, fill: false },
+    { data: [{ x: vectorA[0], y: vectorA[1] }, { x: projVec[0], y: projVec[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
   ];
   dotChart.update();
 
-  // Cosine similarity as dot product of normalized vectors with projection
+  // Cosine similarity as dot product of normalized vectors
   const normA = normalize(vectorA);
   const normB = normalize(vectorB);
-  const denomCos = dotProduct(normB, normB);
-  const projScalarCos = denomCos === 0 ? 0 : dotProduct(normA, normB) / denomCos;
-  const projectionCos = [projScalarCos * normB[0], projScalarCos * normB[1]];
   cosineChart.data.datasets = [
     { data: [{ x: 0, y: 0 }, { x: normA[0], y: normA[1] }], borderColor: 'red', showLine: true, fill: false },
-    { data: [{ x: 0, y: 0 }, { x: normB[0], y: normB[1] }], borderColor: 'blue', showLine: true, fill: false },
-    { data: [{ x: normA[0], y: normA[1] }, { x: projectionCos[0], y: projectionCos[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
+    { data: [{ x: 0, y: 0 }, { x: normB[0], y: normB[1] }], borderColor: 'blue', showLine: true, fill: false }
   ];
+  cosineChart.options.plugins.anglePlugin = { vectors: { vectorA: normA, vectorB: normB } };
   cosineChart.update();
 
   // Pearson Correlation - before centering
@@ -143,21 +159,37 @@ function updateCharts(vectorA, vectorB) {
   // Pearson Correlation - after centering
   const centeredA = centerVector(vectorA);
   const centeredB = centerVector(vectorB);
-  pearsonChart.data.datasets = [
+  pearsonCenteredChart.data.datasets = [
     { data: [{ x: 0, y: 0 }, { x: centeredA[0], y: centeredA[1] }], borderColor: 'red', showLine: true, fill: false },
     { data: [{ x: 0, y: 0 }, { x: centeredB[0], y: centeredB[1] }], borderColor: 'blue', showLine: true, fill: false }
   ];
-  pearsonChart.options.plugins.anglePlugin = { vectors: { vectorA: centeredA, vectorB: centeredB } };
-  pearsonChart.update();
+  pearsonCenteredChart.update();
 
-  // OLS Coefficient as projection of B onto A
+  // Pearson Correlation - centered and normalized with angle
+  const normCenteredA = normalize(centeredA);
+  const normCenteredB = normalize(centeredB);
+  pearsonNormChart.data.datasets = [
+    { data: [{ x: 0, y: 0 }, { x: normCenteredA[0], y: normCenteredA[1] }], borderColor: 'red', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: normCenteredB[0], y: normCenteredB[1] }], borderColor: 'blue', showLine: true, fill: false }
+  ];
+  pearsonNormChart.options.plugins.anglePlugin = { vectors: { vectorA: normCenteredA, vectorB: normCenteredB } };
+  pearsonNormChart.update();
+
+  // OLS Coefficient - scatter with regression line through origin
   const slope = olsCoefficient(vectorA, vectorB);
-  const projectedB = [slope * vectorA[0], slope * vectorA[1]];
+  const scatterPoints = [
+    { x: vectorA[0], y: vectorB[0] },
+    { x: vectorA[1], y: vectorB[1] }
+  ];
+  const minX = Math.min(vectorA[0], vectorA[1]);
+  const maxX = Math.max(vectorA[0], vectorA[1]);
+  const linePoints = [
+    { x: minX, y: slope * minX },
+    { x: maxX, y: slope * maxX }
+  ];
   olsChart.data.datasets = [
-    { data: [{ x: 0, y: 0 }, { x: vectorA[0], y: vectorA[1] }], borderColor: 'red', showLine: true, fill: false },
-    { data: [{ x: 0, y: 0 }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'blue', showLine: true, fill: false },
-    { data: [{ x: 0, y: 0 }, { x: projectedB[0], y: projectedB[1] }], borderColor: 'green', showLine: true, fill: false },
-    { data: [{ x: projectedB[0], y: projectedB[1] }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
+    { type: 'scatter', data: scatterPoints, borderColor: 'blue', backgroundColor: 'blue' },
+    { type: 'line', data: linePoints, borderColor: 'red', fill: false, showLine: true, pointRadius: 0 }
   ];
   olsChart.update();
 }
@@ -179,15 +211,19 @@ function updateDisplay(vectorA, vectorB) {
   // Intermediate steps for dot product
   const [a1, a2] = vectorA;
   const [b1, b2] = vectorB;
+  const magB = magnitude(vectorB);
+  const projLen = magB === 0 ? 0 : dotProd / magB;
   fillSteps('dotProductSteps', [
     `A₁B₁ = ${a1} × ${b1} = ${(a1 * b1).toFixed(2)}`,
     `A₂B₂ = ${a2} × ${b2} = ${(a2 * b2).toFixed(2)}`,
-    `ΣAᵢBᵢ = ${(dotProd).toFixed(2)}`
+    `ΣAᵢBᵢ = ${dotProd.toFixed(2)}`,
+    `‖B‖ = ${magB.toFixed(2)}`,
+    `Projection length = ΣAᵢBᵢ / ‖B‖ = ${(projLen).toFixed(2)}`,
+    `Dot product = Projection × ‖B‖ = ${(projLen * magB).toFixed(2)}`
   ]);
 
   // Steps for cosine similarity (normalize then dot)
   const magA = magnitude(vectorA);
-  const magB = magnitude(vectorB);
   const normA = normalize(vectorA);
   const normB = normalize(vectorB);
   const cosDot = dotProduct(normA, normB);
@@ -204,17 +240,20 @@ function updateDisplay(vectorA, vectorB) {
   const meanB = (b1 + b2) / 2;
   const centeredA = [a1 - meanA, a2 - meanA];
   const centeredB = [b1 - meanB, b2 - meanB];
-  const dotCentered = dotProduct(centeredA, centeredB);
   const magCenteredA = magnitude(centeredA);
   const magCenteredB = magnitude(centeredB);
+  const normCenteredA = normalize(centeredA);
+  const normCenteredB = normalize(centeredB);
+  const dotNormCentered = dotProduct(normCenteredA, normCenteredB);
   fillSteps('pearsonSteps', [
     `Ā = (${a1} + ${a2}) / 2 = ${meanA.toFixed(2)}`,
     `B̄ = (${b1} + ${b2}) / 2 = ${meanB.toFixed(2)}`,
     `Centered A = [${centeredA[0].toFixed(2)}, ${centeredA[1].toFixed(2)}]`,
     `Centered B = [${centeredB[0].toFixed(2)}, ${centeredB[1].toFixed(2)}]`,
-    `Dot = ${dotCentered.toFixed(2)}`,
     `‖A_c‖ = ${magCenteredA.toFixed(2)}, ‖B_c‖ = ${magCenteredB.toFixed(2)}`,
-    `Dot/(‖A_c‖‖B_c‖) = ${dotCentered.toFixed(2)} / (${magCenteredA.toFixed(2)} × ${magCenteredB.toFixed(2)})`
+    `Normalized A_c = [${normCenteredA[0].toFixed(2)}, ${normCenteredA[1].toFixed(2)}]`,
+    `Normalized B_c = [${normCenteredB[0].toFixed(2)}, ${normCenteredB[1].toFixed(2)}]`,
+    `r = Dot(Â_c,B̂_c) = ${dotNormCentered.toFixed(2)}`
   ]);
 
   // Steps for OLS coefficient

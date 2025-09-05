@@ -38,6 +38,10 @@ body {
 <body>
 <h1>Correlation Explorer</h1>
 
+<p>This page shows how several familiar similarity measures are all built from
+the inner product (⟨x,y⟩). By adjusting the vectors below, you can see how each
+variation—normalization or centering—transforms the same underlying calculation.</p>
+
 <div class="control-panel">
   <div class="slider-container">
      <label for="vectorAX1">Vector A (x1, y1):</label><br>
@@ -55,21 +59,24 @@ body {
 
 <section id="dotProductSection" class="concept-section">
   <h2>Dot Product</h2>
-  <p>Multiplies matching components and sums them. It equals the length of the projection of one vector onto the other times the length of that vector.</p>
+  <p>The raw inner product ⟨x,y⟩ = ∑ xᵢ yᵢ. It equals the length of the projection
+  of one vector onto the other times that vector's length.</p>
   <canvas id="dotProductChart"></canvas>
   <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
 </section>
 
 <section id="cosineSection" class="concept-section">
   <h2>Cosine Similarity</h2>
-  <p>Measures how aligned the vectors are by taking the cosine of the angle between them.</p>
+  <p>A normalized dot product ⟨x,y⟩/(‖x‖‖y‖) that measures how aligned the
+  vectors are by the cosine of the angle between them.</p>
   <canvas id="cosineChart"></canvas>
   <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
 </section>
 
 <section id="pearsonSection" class="concept-section">
   <h2>Pearson Correlation</h2>
-  <p>Centers each vector by subtracting its mean, then computes the cosine of the angle between the centered vectors.</p>
+  <p>The cosine similarity of centered vectors:
+  ⟨x - x̄, y - ȳ⟩/(‖x - x̄‖‖y - ȳ‖).</p>
   <div class="pair-canvases">
     <div>
       <p><em>Before Centering</em></p>
@@ -85,9 +92,21 @@ body {
 
 <section id="olsSection" class="concept-section">
   <h2>OLS Regression Coefficient</h2>
-  <p>The slope of the best-fit line predicting components of Vector B from Vector A.</p>
+  <p>The one-sided normalized inner product: ⟨x,y⟩/‖x‖², giving the slope of the
+  best-fit line predicting components of Vector B from Vector A.</p>
   <canvas id="olsChart"></canvas>
   <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>
+</section>
+
+<section class="concept-section">
+  <h2>Summary</h2>
+  <table style="margin:0 auto;">
+    <tr><th>Measure</th><th>Centering</th><th>Normalization</th></tr>
+    <tr><td>Dot Product</td><td>No</td><td>None</td></tr>
+    <tr><td>Cosine Similarity</td><td>No</td><td>Both vectors</td></tr>
+    <tr><td>Pearson Correlation</td><td>Both vectors</td><td>Both vectors</td></tr>
+    <tr><td>OLS Coefficient</td><td>No</td><td>Vector A only</td></tr>
+  </table>
 </section>
 
 <script src="../javascript/common.js"></script>

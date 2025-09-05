@@ -1,8 +1,9 @@
 // correlation.js
-// Interactive visualizations for dot product, cosine similarity,
-// Pearson correlation, and OLS regression coefficient.
+// Interactive visualizations showing how dot product, cosine similarity,
+// Pearson correlation, and OLS regression coefficient are variations on the
+// inner product, differing only by normalization and centering.
 
-// Basic vector operations
+// Basic vector operations (inner product and norms)
 function dotProduct(a, b) {
   return a.reduce((sum, val, i) => sum + val * b[i], 0);
 }
@@ -12,7 +13,10 @@ function magnitude(v) {
 }
 
 function cosineSimilarity(a, b) {
-  return dotProduct(a, b) / (magnitude(a) * magnitude(b));
+  const magA = magnitude(a);
+  const magB = magnitude(b);
+  if (magA === 0 || magB === 0) return NaN;
+  return dotProduct(a, b) / (magA * magB);
 }
 
 // Centers a vector by subtracting its own mean from each component
@@ -21,17 +25,17 @@ function centerVector(v) {
   return v.map(val => val - mean);
 }
 
+// Pearson correlation is cosine similarity of centered vectors
 function pearsonCorrelation(a, b) {
   const centeredA = centerVector(a);
   const centeredB = centerVector(b);
-  const magA = magnitude(centeredA);
-  const magB = magnitude(centeredB);
-  if (magA === 0 || magB === 0) return NaN;
-  return dotProduct(centeredA, centeredB) / (magA * magB);
+  return cosineSimilarity(centeredA, centeredB);
 }
 
+// OLS coefficient normalizes the dot product by A's magnitude squared
 function olsCoefficient(a, b) {
-  return dotProduct(a, b) / dotProduct(a, a);
+  const denom = magnitude(a) ** 2;
+  return denom === 0 ? NaN : dotProduct(a, b) / denom;
 }
 
 // Chart instances

@@ -63,18 +63,18 @@ body {
 <h1>Correlation Explorer</h1>
 
 <p>This page shows how several familiar similarity measures are all built from
-the inner product (⟨x,y⟩). By adjusting the vectors below, you can see how each
+the inner product (⟨A,B⟩). By adjusting the vectors below, you can see how each
 variation—normalization or centering—transforms the same underlying calculation.</p>
 
 <div class="control-panel">
   <div class="slider-container">
-     <label for="vectorAX1">Vector A (x1, y1):</label><br>
+     <label for="vectorAX1">Vector A (A₁, A₂):</label><br>
      <input type="range" id="vectorAX1" min="-10" max="10" value="0">
      <input type="range" id="vectorAY1" min="-10" max="10" value="0">
      <span id="vectorAOutput">(0, 0)</span>
   </div>
   <div class="slider-container">
-     <label for="vectorBX1">Vector B (x2, y2):</label><br>
+     <label for="vectorBX1">Vector B (B₁, B₂):</label><br>
      <input type="range" id="vectorBX1" min="-10" max="10" value="0">
      <input type="range" id="vectorBY1" min="-10" max="10" value="0">
      <span id="vectorBOutput">(0, 0)</span>
@@ -87,7 +87,7 @@ variation—normalization or centering—transforms the same underlying calculat
     <canvas id="dotProductChart"></canvas>
     <div class="text-panel">
       <p>The raw inner product.</p>
-      <p class="equation">⟨x,y⟩ = x<sub>1</sub>y<sub>1</sub> + x<sub>2</sub>y<sub>2</sub></p>
+      <p class="equation">⟨A,B⟩ = A<sub>1</sub>B<sub>1</sub> + A<sub>2</sub>B<sub>2</sub></p>
       <ol id="dotProductSteps" class="steps"></ol>
       <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
     </div>
@@ -99,8 +99,8 @@ variation—normalization or centering—transforms the same underlying calculat
   <div class="section-content">
     <canvas id="cosineChart"></canvas>
     <div class="text-panel">
-      <p>A normalized dot product that measures vector alignment.</p>
-      <p class="equation">cos θ = ⟨x,y⟩ /(‖x‖‖y‖)</p>
+      <p>A dot product of normalized vectors.</p>
+      <p class="equation">cos θ = ⟨Â, B̂⟩ = ⟨A,B⟩ /(‖A‖‖B‖)</p>
       <ol id="cosineSteps" class="steps"></ol>
       <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
     </div>
@@ -122,7 +122,7 @@ variation—normalization or centering—transforms the same underlying calculat
     </div>
     <div class="text-panel">
       <p>The cosine similarity of centered vectors.</p>
-      <p class="equation">r = ⟨x - x̄, y - ȳ⟩ /(‖x - x̄‖‖y - ȳ‖)</p>
+      <p class="equation">r = ⟨A - Ā, B - B̄⟩ /(‖A - Ā‖‖B - B̄‖)</p>
       <ol id="pearsonSteps" class="steps"></ol>
       <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
     </div>
@@ -135,7 +135,7 @@ variation—normalization or centering—transforms the same underlying calculat
     <canvas id="olsChart"></canvas>
     <div class="text-panel">
       <p>The slope from regressing B on A.</p>
-      <p class="equation">a = ⟨x,y⟩ / ‖x‖<sup>2</sup> = Σx<sub>i</sub>y<sub>i</sub> / Σx<sub>i</sub><sup>2</sup></p>
+      <p class="equation">a = ⟨A,B⟩ / ‖A‖<sup>2</sup> = ΣA<sub>i</sub>B<sub>i</sub> / ΣA<sub>i</sub><sup>2</sup></p>
       <ol id="olsSteps" class="steps"></ol>
       <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>
     </div>

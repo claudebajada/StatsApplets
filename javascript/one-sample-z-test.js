@@ -14,8 +14,32 @@ document.addEventListener('DOMContentLoaded', function() {
   let xAxisOptions = { type: 'linear', min: -10, max: 10 };
   let yAxisOptions = { beginAtZero: true, max: 0.5 };
 
-  let populationChart = initializeChart(populationCtx, 'Population with Estimated Mean', 'rgba(0, 0, 255, 0.5)', 'blue', xAxisOptions, yAxisOptions);
-  let stderrChart = initializeChart(stderrCtx, 'Standard Error (around mean difference)', 'rgba(255, 0, 0, 0.5)', 'red', xAxisOptions, yAxisOptions);  
+  let populationChart = initializeChart(populationCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Population with Estimated Mean',
+        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+        borderColor: 'blue',
+        data: []
+      }]
+    },
+    options: chartOptions(xAxisOptions, yAxisOptions)
+  });
+  let stderrChart = initializeChart(stderrCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Standard Error (around mean difference)',
+        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+        borderColor: 'red',
+        data: []
+      }]
+    },
+    options: chartOptions(xAxisOptions, yAxisOptions)
+  });
  
   let zChart = new Chart(zCtx, {
     type: 'line',
@@ -126,40 +150,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chart.data.datasets[0].label = `Test Statistic z = ${zValue.toFixed(2)}`;
 
     chart.data.datasets[1].data = nullHypothesisData;
-    
+
     chart.update();
-  }
-
-  function normalDensity(x, mean, stdDev) {
-    const exponent = -((x - mean) ** 2) / (2 * stdDev ** 2);
-    return (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
-  }
-
-  function initializeChart(ctx, label, backgroundColor, borderColor, xAxisOptions, yAxisOptions) {
-    return new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          label: label,
-          backgroundColor: backgroundColor,
-          borderColor: borderColor,
-          data: []
-        }]
-      },
-      options: {
-        scales: {
-          x: xAxisOptions,
-          y: yAxisOptions
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
-
-  function addSliderListener(id, updateFunction) {
-    document.getElementById(id).addEventListener('input', updateFunction);
   }
 
   // Attach event listeners to sliders

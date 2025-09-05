@@ -5,10 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>t Distribution Explorer</title>
   <link rel="stylesheet" href="../css/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.4/dist/jstat.min.js"></script>
+  <script src="../lib/chart.min.js"></script>
+  <script src="../lib/jstat.min.js"></script>
 </head>
 <body>
+
+<details class="info">
+  <summary>What does this show?</summary>
+  <p>This applet plots the t distribution against the standard normal. Increase the degrees of freedom to watch the t curve approach normal.</p>
+</details>
 
 <div class="page-title">t Distribution Explorer</div>
 
@@ -21,6 +26,7 @@
   <canvas id="distributionChart"></canvas>
 </div>
 
+<script src="../javascript/common.js"></script>
 <script src="../javascript/t-distribution-explorer.js"></script>
 </body>
 </html>

@@ -7,46 +7,24 @@
     criticalValueDisplay.textContent = criticalValue.toFixed(3);
   }
 
-  function initializeChart(ctx) {
-    // Adjust the range of x-axis labels to fit the F-distribution
+  function createChart(ctx) {
     const labels = Array.from({length: 200}, (_, i) => i * 5 / 199);
-
-    return new Chart(ctx, {
+    return initializeChart(ctx, {
       type: 'line',
       data: {
         labels: labels,
         datasets: [{
           label: 'F Distribution',
           backgroundColor: 'rgba(0, 123, 255, 0.1)',
-          borderColor: 'rgba(0, 123, 255, 1)',  
+          borderColor: 'rgba(0, 123, 255, 1)',
           data: []
         }]
       },
-      options: chartOptions()
+      options: chartOptions(
+        { type: 'linear', title: { display: true, text: 'F Value' } },
+        { beginAtZero: true, title: { display: true, text: 'Probability Density' } }
+      )
     });
-  }
-
-  function chartOptions() {
-    return {
-      scales: {
-        x: {
-          type: 'linear',
-          title: {
-            display: true,
-            text: 'F Value'
-          }
-        },
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Probability Density'
-          }
-        }
-      },
-      responsive: true,
-      maintainAspectRatio: false
-    };
   }
 
   function updateDistributionChart(chart, df1, df2) {
@@ -74,7 +52,7 @@
     const df2Value = document.getElementById('df2-value');
     const chartCtx = document.getElementById('distributionChart').getContext('2d');
 
-    let distributionChart = initializeChart(chartCtx);
+    let distributionChart = createChart(chartCtx);
 
     function updateChart() {
       const df1 = parseInt(df1Slider.value);

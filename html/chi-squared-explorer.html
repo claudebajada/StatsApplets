@@ -3,12 +3,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chi-Squared Test Explorer</title>
   <link rel="stylesheet" href="../css/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.4/dist/jstat.min.js"></script>
+  <script src="../lib/chart.min.js"></script>
+  <script src="../lib/jstat.min.js"></script>
 
 </head>
 
 <body>
+
+<details class="info">
+  <summary>What does this show?</summary>
+  <p>This applet visualizes the chi-squared test for goodness of fit. Adjust category counts to see how the statistic and distribution respond.</p>
+</details>
 
 <div class="slider-container">
   <label for="categories">Number of Categories: <span id="categories-value">0</span></label>
@@ -47,6 +52,7 @@
   </div>
 </div>
 
+<script src="../javascript/common.js"></script>
 <script src="../javascript/chi-squared-explorer.js"></script>
 </body>
 </html>

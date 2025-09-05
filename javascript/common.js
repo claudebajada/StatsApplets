@@ -57,6 +57,18 @@ function initializeChart(ctx, chartConfig) {
   return new Chart(ctx, chartConfig);
 }
 
+// Standard chart options used across applets
+function chartOptions(xAxisOptions = {}, yAxisOptions = {}) {
+  return {
+    scales: {
+      x: xAxisOptions,
+      y: yAxisOptions
+    },
+    responsive: true,
+    maintainAspectRatio: false
+  };
+}
+
 // Add slider listener
 function addSliderListener(id, updateFunction) {
   const slider = document.getElementById(id);

@@ -15,7 +15,7 @@ function cosineSimilarity(vectorA, vectorB) {
   return dotProduct(vectorA, vectorB) / (magnitude(vectorA) * magnitude(vectorB));
 }
 
-// Function to center a single two-dimensional vector by subtracting the mean of each dimension
+// Function to center a vector by subtracting its own mean from each component
 function centerVector(vector) {
   const mean = vector.reduce((sum, value) => sum + value, 0) / vector.length;
   return vector.map(component => component - mean);

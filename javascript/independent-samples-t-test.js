@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const tCtx = document.getElementById('tChart').getContext('2d');
 
   // Initialize charts
-  let populationChart = initializeChart(populationCtx, ['Population 1', 'Population 2'], [{r: 0, g: 0, b: 255}, {r: 255, g: 0, b: 0}]);
-  let stderrChart = initializeChart(stderrCtx, ['SEM Over Mean Difference'], [{r: 255, g: 0, b: 0}]);
-  let tChart = initializeChart(tCtx, ['Null Hypothesis', 'Alternative Hypothesis'], [{r: 0, g: 0, b: 255}, {r: 255, g: 0, b: 0}]);
+  let populationChart = createChart(populationCtx, ['Population 1', 'Population 2'], [{r: 0, g: 0, b: 255}, {r: 255, g: 0, b: 0}]);
+  let stderrChart = createChart(stderrCtx, ['SEM Over Mean Difference'], [{r: 255, g: 0, b: 0}]);
+  let tChart = createChart(tCtx, ['Null Hypothesis', 'Alternative Hypothesis'], [{r: 0, g: 0, b: 255}, {r: 255, g: 0, b: 0}]);
 
 
   function updateCharts() {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
   updateCharts();
 });
 
-function initializeChart(ctx, labels, colorObjects) {
+function createChart(ctx, labels, colorObjects) {
   const datasets = labels.map((label, index) => {
     const color = colorObjects[index];
     return {
@@ -78,25 +78,17 @@ function initializeChart(ctx, labels, colorObjects) {
     };
   });
 
-  return new Chart(ctx, {
+  return initializeChart(ctx, {
     type: 'line',
     data: {
       labels: Array.from({length: 80}, (_, i) => (i - 40) * 0.5),
       datasets: datasets
     },
-    options: chartOptions()
+    options: chartOptions(
+      { type: 'linear', min: -20, max: 20 },
+      { beginAtZero: true }
+    )
   });
-}
-
-function chartOptions() {
-  return {
-    scales: {
-      x: { type: 'linear', min: -20, max: 20 },
-      y: { beginAtZero: true }
-    },
-    responsive: true,
-    maintainAspectRatio: false
-  };
 }
 
 function calculatePooledSD(sigma, N1, N2) {
@@ -177,10 +169,6 @@ function updateDisplayedValues(mu1, mu2, sigma, N1, N2, pooledSD, df, oneTailedP
   document.getElementById('t-value').textContent = `t-value: ${tValue.toFixed(4)}`;
 }
 
-function normalDensity(x, mean, stdDev) {
-  const exponent = -((x - mean) ** 2) / (2 * stdDev ** 2);
-  return (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
-}
 
 function tDistributionDensity(t, df) {
   const numerator = jStat.gammafn((df + 1) / 2);

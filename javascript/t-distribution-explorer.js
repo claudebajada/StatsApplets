@@ -2,24 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const dfSlider = document.getElementById('df-slider');
   const dfValue = document.getElementById('df-value');
   const chartCtx = document.getElementById('distributionChart').getContext('2d');
-
-  let distributionChart = initializeChart(chartCtx);
-
-  function updateChart() {
-    const df = parseInt(dfSlider.value);
-    dfValue.textContent = df;
-    updateDistributionChart(distributionChart, df);
-  }
-
-  dfSlider.addEventListener('input', updateChart);
-  updateChart();
-});
-
-function initializeChart(ctx) {
-  // Increased number of points for smoother graph
   const labels = Array.from({length: 280}, (_, i) => -7 + (i * 14 / 279));
-
-  return new Chart(ctx, {
+  let distributionChart = initializeChart(chartCtx, {
     type: 'line',
     data: {
       labels: labels,
@@ -36,35 +20,26 @@ function initializeChart(ctx) {
         data: []
       }]
     },
-    options: chartOptions()
+    options: chartOptions(
+      { type: 'linear', min: -7, max: 7 },
+      { beginAtZero: true }
+    )
   });
-}
 
-function chartOptions() {
-  return {
-    scales: {
-      x: {
-        type: 'linear',
-        min: -7,
-        max: 7
-      },
-      y: {
-        beginAtZero: true
-      }
-    },
-    responsive: true,
-    maintainAspectRatio: false
-  };
-}
+  function updateChart() {
+    const df = parseInt(dfSlider.value);
+    dfValue.textContent = df;
+    updateDistributionChart(distributionChart, df);
+  }
+
+  dfSlider.addEventListener('input', updateChart);
+  updateChart();
+});
 
 function updateDistributionChart(chart, df) {
-  chart.data.datasets[0].data = chart.data.labels.map(x => normalDensity(x));
+  chart.data.datasets[0].data = chart.data.labels.map(x => normalDensity(x, 0, 1));
   chart.data.datasets[1].data = chart.data.labels.map(x => tDistributionDensity(x, df));
   chart.update();
-}
-
-function normalDensity(x) {
-  return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
 }
 
 function tDistributionDensity(t, df) {

@@ -1,7 +1,7 @@
 // correlation.js
 // Interactive visualizations showing how dot product, cosine similarity,
-// Pearson correlation, and OLS regression coefficient are variations on the
-// inner product, differing only by normalization and centering.
+// and Pearson correlation are variations on the inner product, differing only
+// by normalization and centering.
 
 // Basic vector operations (inner product and norms)
 function dotProduct(a, b) {
@@ -39,12 +39,6 @@ function pearsonCorrelation(a, b) {
   return cosineSimilarity(centeredA, centeredB);
 }
 
-// OLS coefficient normalizes the dot product by A's magnitude squared
-function olsCoefficient(a, b) {
-  const denom = magnitude(a) ** 2;
-  return denom === 0 ? NaN : dotProduct(a, b) / denom;
-}
-
 // Helper to populate ordered lists of intermediate steps
 function fillSteps(id, lines) {
   const ol = document.getElementById(id);
@@ -58,7 +52,7 @@ function fillSteps(id, lines) {
 }
 
 // Chart instances
-let dotChart, cosineChart, pearsonBeforeChart, pearsonCenteredChart, pearsonNormChart, olsChart;
+let dotChart, cosineChart, pearsonBeforeChart, pearsonCenteredChart, pearsonNormChart;
 
 // Plugin to draw an arc showing the angle between vectors
 const anglePlugin = {
@@ -120,8 +114,6 @@ function initCharts() {
   pearsonNormOpts.options.scales.y.min = -1.2;
   pearsonNormOpts.options.scales.y.max = 1.2;
   pearsonNormChart = new Chart(document.getElementById('pearsonNormChart'), pearsonNormOpts);
-
-  olsChart = new Chart(document.getElementById('olsChart'), JSON.parse(JSON.stringify(baseOptions)));
 }
 
 function updateCharts(vectorA, vectorB) {
@@ -182,36 +174,16 @@ function updateCharts(vectorA, vectorB) {
   ];
   pearsonNormChart.options.plugins.anglePlugin = undefined;
   pearsonNormChart.update();
-
-  // OLS Coefficient - scatter with regression line through origin
-  const slope = olsCoefficient(vectorA, vectorB);
-  const scatterPoints = [
-    { x: vectorA[0], y: vectorB[0] },
-    { x: vectorA[1], y: vectorB[1] }
-  ];
-  const minX = Math.min(vectorA[0], vectorA[1]);
-  const maxX = Math.max(vectorA[0], vectorA[1]);
-  const linePoints = [
-    { x: minX, y: slope * minX },
-    { x: maxX, y: slope * maxX }
-  ];
-  olsChart.data.datasets = [
-    { type: 'scatter', data: scatterPoints, borderColor: 'blue', backgroundColor: 'blue' },
-    { type: 'line', data: linePoints, borderColor: 'red', fill: false, showLine: true, pointRadius: 0 }
-  ];
-  olsChart.update();
 }
 
 function updateDisplay(vectorA, vectorB) {
   const dotProd = dotProduct(vectorA, vectorB);
   const cosSim = cosineSimilarity(vectorA, vectorB);
   const pearsonCorr = pearsonCorrelation(vectorA, vectorB);
-  const olsCoeff = olsCoefficient(vectorA, vectorB);
 
   document.getElementById('dotProductValue').textContent = dotProd.toFixed(2);
   document.getElementById('cosineSimilarityValue').textContent = cosSim.toFixed(2);
   document.getElementById('pearsonCorrelationValue').textContent = isNaN(pearsonCorr) ? 'NaN' : pearsonCorr.toFixed(2);
-  document.getElementById('olsCoefficientValue').textContent = olsCoeff.toFixed(2);
 
   document.getElementById('vectorAOutput').textContent = `(${vectorA.join(', ')})`;
   document.getElementById('vectorBOutput').textContent = `(${vectorB.join(', ')})`;
@@ -264,14 +236,6 @@ function updateDisplay(vectorA, vectorB) {
     `Normalized B_c = [${normCenteredB[0].toFixed(2)}, ${normCenteredB[1].toFixed(2)}]`,
     `Projection length = Dot(Â_c,B̂_c) = ${dotNormCentered.toFixed(2)}`,
     `r = Projection length = ${dotNormCentered.toFixed(2)}`
-  ]);
-
-  // Steps for OLS coefficient
-  const denom = magA ** 2;
-  fillSteps('olsSteps', [
-    `ΣAᵢBᵢ = ${dotProd.toFixed(2)}`,
-    `ΣAᵢ² = ${denom.toFixed(2)}`,
-    `a = ΣAᵢBᵢ / ΣAᵢ² = ${dotProd.toFixed(2)} / ${denom.toFixed(2)}`
   ]);
 }
 

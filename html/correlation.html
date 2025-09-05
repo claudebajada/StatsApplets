@@ -1,114 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathematical Concepts Visualizer</title>
-    <script src="../lib/chart.min.js"></script>
-    <link rel="stylesheet" href="../css/styles.css">
-    <script src="../lib/mathjax/tex-mml-chtml.min.js"></script>
-    <script src="../lib/jstat.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        .visualization-panel {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(300px, auto));
-            grid-gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .visualization {
-            border: 1px solid black;
-            background-color: #f0f0f0;
-            width: 300px;
-            height: 300px;
-        }
-        .control-panel {
-            text-align: center;
-            margin: 20px;
-        }
-        .slider-container {
-            margin: 10px;
-        }
-        .output {
-            text-align: center;
-            margin: 20px;
-        }
-        .diagram {
-            text-align: center;
-            padding: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Correlation Explorer</title>
+<script src="../lib/chart.min.js"></script>
+<link rel="stylesheet" href="../css/styles.css">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:20px;
+}
+.control-panel {
+  text-align:center;
+  margin-bottom:20px;
+}
+.concept-section {
+  margin-top:30px;
+  text-align:center;
+}
+.concept-section canvas {
+  max-width:400px;
+  max-height:400px;
+}
+.result {
+  font-weight:bold;
+  margin-top:10px;
+}
+.pair-canvases {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+</style>
 </head>
 <body>
+<h1>Correlation Explorer</h1>
 
-    <details class="info">
-      <summary>What does this show?</summary>
-      <p>This applet demonstrates the relationships among the dot product, cosine similarity, Pearson correlation, and the OLS regression coefficient for two vectors.</p>
-    </details>
+<div class="control-panel">
+  <div class="slider-container">
+     <label for="vectorAX1">Vector A (x1, y1):</label><br>
+     <input type="range" id="vectorAX1" min="-10" max="10" value="0">
+     <input type="range" id="vectorAY1" min="-10" max="10" value="0">
+     <span id="vectorAOutput">(0, 0)</span>
+  </div>
+  <div class="slider-container">
+     <label for="vectorBX1">Vector B (x2, y2):</label><br>
+     <input type="range" id="vectorBX1" min="-10" max="10" value="0">
+     <input type="range" id="vectorBY1" min="-10" max="10" value="0">
+     <span id="vectorBOutput">(0, 0)</span>
+  </div>
+</div>
 
-    <h1>Mathematical Concepts Visualizer</h1>
-    
-    <div class="control-panel">
-        <!-- Controls for manipulating vectors -->
-        <div class="slider-container">
-            <label for="vectorAX1">Vector A (x1, y1):</label><br>
-            <input type="range" id="vectorAX1" min="-10" max="10" value="0">
-            <input type="range" id="vectorAY1" min="-10" max="10" value="0">
-            <span id="vectorAOutput">(0, 0)</span>
-        </div>
-        <div class="slider-container">
-            <label for="vectorBX1">Vector B (x2, y2):</label><br>
-            <input type="range" id="vectorBX1" min="-10" max="10" value="0">
-            <input type="range" id="vectorBY1" min="-10" max="10" value="0">
-            <span id="vectorBOutput">(0, 0)</span>
-        </div>
-        <button id="drawButton">Update Vectors</button>
+<section id="dotProductSection" class="concept-section">
+  <h2>Dot Product</h2>
+  <p>Multiplies matching components and sums them. It equals the length of the projection of one vector onto the other times the length of that vector.</p>
+  <canvas id="dotProductChart"></canvas>
+  <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
+</section>
+
+<section id="cosineSection" class="concept-section">
+  <h2>Cosine Similarity</h2>
+  <p>Measures how aligned the vectors are by taking the cosine of the angle between them.</p>
+  <canvas id="cosineChart"></canvas>
+  <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
+</section>
+
+<section id="pearsonSection" class="concept-section">
+  <h2>Pearson Correlation</h2>
+  <p>Centers each vector by subtracting its mean, then computes the cosine of the angle between the centered vectors.</p>
+  <div class="pair-canvases">
+    <div>
+      <p><em>Before Centering</em></p>
+      <canvas id="pearsonBeforeChart"></canvas>
     </div>
-
-    <div class="visualization-panel">
-        <div id="dotProductDiagram" class="diagram">
-            <h2>Dot Product</h2>
-            <p>Multiplies matching components and sums them, representing the projection of one vector onto another.</p>
-            <canvas id="dotProductCanvas" class="visualization"></canvas>
-        </div>
-
-        <div id="cosineDiagram" class="diagram">
-            <h2>Cosine Similarity</h2>
-            <p>The cosine of the angle between vectors, showing how aligned they are.</p>
-            <canvas id="cosineCanvas" class="visualization"></canvas>
-        </div>
-
-        <div id="pearsonDiagram" class="diagram">
-            <h2>Pearson Correlation</h2>
-            <p>Centers each vector and computes the cosine of the angle between them.</p>
-            <canvas id="pearsonCanvas" class="visualization"></canvas>
-        </div>
-
-        <div id="olsCoefficientDiagram" class="diagram">
-            <h2>OLS Coefficient</h2>
-            <p>The slope of the best-fit line predicting one vector from the other.</p>
-            <canvas id="olsCanvas" class="visualization"></canvas>
-        </div>
+    <div>
+      <p><em>After Centering</em></p>
+      <canvas id="pearsonChart"></canvas>
     </div>
+  </div>
+  <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
+</section>
 
-    <div class="output">
-        <p><strong>Dot Product:</strong> <span id="dotProductValue">-</span></p>
-        <p><strong>Cosine Similarity:</strong> <span id="cosineSimilarityValue">-</span></p>
-        <p><strong>Pearson Correlation:</strong> <span id="pearsonCorrelationValue">-</span></p>
-        <p><strong>OLS Coefficient:</strong> <span id="olsCoefficientValue">-</span></p>
-    </div>
+<section id="olsSection" class="concept-section">
+  <h2>OLS Regression Coefficient</h2>
+  <p>The slope of the best-fit line predicting components of Vector B from Vector A.</p>
+  <canvas id="olsChart"></canvas>
+  <p class="result">OLS Coefficient: <span id="olsCoefficientValue">-</span></p>
+</section>
 
-    <script src="../javascript/common.js"></script>
-    <script src="../javascript/correlation.js"></script>
+<script src="../javascript/common.js"></script>
+<script src="../javascript/correlation.js"></script>
 </body>
 </html>

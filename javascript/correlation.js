@@ -1,47 +1,143 @@
 // correlation.js
+// Interactive visualizations for dot product, cosine similarity,
+// Pearson correlation, and OLS regression coefficient.
 
-// Function to calculate the dot product of two vectors
-function dotProduct(vectorA, vectorB) {
-  return vectorA.reduce((sum, value, index) => sum + value * vectorB[index], 0);
+// Basic vector operations
+function dotProduct(a, b) {
+  return a.reduce((sum, val, i) => sum + val * b[i], 0);
 }
 
-// Function to calculate the magnitude of a vector
-function magnitude(vector) {
-  return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
+function magnitude(v) {
+  return Math.sqrt(v.reduce((s, val) => s + val * val, 0));
 }
 
-// Function to calculate cosine similarity between two vectors
-function cosineSimilarity(vectorA, vectorB) {
-  return dotProduct(vectorA, vectorB) / (magnitude(vectorA) * magnitude(vectorB));
+function cosineSimilarity(a, b) {
+  return dotProduct(a, b) / (magnitude(a) * magnitude(b));
 }
 
-// Function to center a vector by subtracting its own mean from each component
-function centerVector(vector) {
-  const mean = vector.reduce((sum, value) => sum + value, 0) / vector.length;
-  return vector.map(component => component - mean);
+// Centers a vector by subtracting its own mean from each component
+function centerVector(v) {
+  const mean = v.reduce((s, val) => s + val, 0) / v.length;
+  return v.map(val => val - mean);
 }
 
-// Function to calculate Pearson correlation between two vectors
-function pearsonCorrelation(vectorA, vectorB) {
-  const centeredVectorA = centerVector(vectorA);
-  const centeredVectorB = centerVector(vectorB);
-  const dot = dotProduct(centeredVectorA, centeredVectorB);
-  const magA = magnitude(centeredVectorA);
-  const magB = magnitude(centeredVectorB);
+function pearsonCorrelation(a, b) {
+  const centeredA = centerVector(a);
+  const centeredB = centerVector(b);
+  const magA = magnitude(centeredA);
+  const magB = magnitude(centeredB);
+  if (magA === 0 || magB === 0) return NaN;
+  return dotProduct(centeredA, centeredB) / (magA * magB);
+}
 
-  if (magA === 0 || magB === 0) {
-    return NaN; // Return NaN if one of the vectors is a zero vector after centering
+function olsCoefficient(a, b) {
+  return dotProduct(a, b) / dotProduct(a, a);
+}
+
+// Chart instances
+let dotChart, cosineChart, pearsonBeforeChart, pearsonChart, olsChart;
+
+// Plugin to draw an arc showing the angle between vectors
+const anglePlugin = {
+  id: 'anglePlugin',
+  afterDraw(chart, args, opts) {
+    if (!opts || !opts.vectors) return;
+    const { vectorA, vectorB } = opts.vectors;
+    const { ctx, scales: { x, y } } = chart;
+    const origin = { x: x.getPixelForValue(0), y: y.getPixelForValue(0) };
+    const aPix = { x: x.getPixelForValue(vectorA[0]), y: y.getPixelForValue(vectorA[1]) };
+    const bPix = { x: x.getPixelForValue(vectorB[0]), y: y.getPixelForValue(vectorB[1]) };
+    const angleA = Math.atan2(aPix.y - origin.y, aPix.x - origin.x);
+    const angleB = Math.atan2(bPix.y - origin.y, bPix.x - origin.x);
+    let start = Math.min(angleA, angleB);
+    let end = Math.max(angleA, angleB);
+    ctx.save();
+    ctx.strokeStyle = 'gray';
+    ctx.beginPath();
+    const radius = 40;
+    ctx.arc(origin.x, origin.y, radius, start, end);
+    ctx.stroke();
+    ctx.restore();
   }
+};
+Chart.register(anglePlugin);
 
-  return dot / (magA * magB);
+// Base chart configuration
+const baseOptions = {
+  type: 'scatter',
+  data: { datasets: [] },
+  options: {
+    responsive: false,
+    animation: false,
+    scales: {
+      x: { type: 'linear', min: -10, max: 10, grid: { color: '#ccc' } },
+      y: { type: 'linear', min: -10, max: 10, grid: { color: '#ccc' } }
+    },
+    plugins: { legend: { display: false } }
+  }
+};
+
+function initCharts() {
+  dotChart = new Chart(document.getElementById('dotProductChart'), JSON.parse(JSON.stringify(baseOptions)));
+  cosineChart = new Chart(document.getElementById('cosineChart'), JSON.parse(JSON.stringify(baseOptions)));
+  pearsonBeforeChart = new Chart(document.getElementById('pearsonBeforeChart'), JSON.parse(JSON.stringify(baseOptions)));
+  pearsonChart = new Chart(document.getElementById('pearsonChart'), JSON.parse(JSON.stringify(baseOptions)));
+  olsChart = new Chart(document.getElementById('olsChart'), JSON.parse(JSON.stringify(baseOptions)));
 }
 
-// Function to calculate OLS coefficient
-function olsCoefficient(vectorA, vectorB) {
-  return dotProduct(vectorA, vectorB) / dotProduct(vectorA, vectorA);
+function updateCharts(vectorA, vectorB) {
+  // Dot Product chart with projection
+  const denom = dotProduct(vectorB, vectorB);
+  const projScalar = denom === 0 ? 0 : dotProduct(vectorA, vectorB) / denom;
+  const projection = [projScalar * vectorB[0], projScalar * vectorB[1]];
+  dotChart.data.datasets = [
+    { data: [{ x: 0, y: 0 }, { x: vectorA[0], y: vectorA[1] }], borderColor: 'red', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'blue', showLine: true, fill: false },
+    { data: [{ x: vectorA[0], y: vectorA[1] }, { x: projection[0], y: projection[1] }], borderColor: 'gray', borderDash: [5, 5], showLine: true, fill: false, pointRadius: 0 }
+  ];
+  dotChart.update();
+
+  // Cosine Similarity chart with angle arc
+  cosineChart.data.datasets = [
+    { data: [{ x: 0, y: 0 }, { x: vectorA[0], y: vectorA[1] }], borderColor: 'red', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'blue', showLine: true, fill: false }
+  ];
+  cosineChart.options.plugins.anglePlugin = { vectors: { vectorA, vectorB } };
+  cosineChart.update();
+
+  // Pearson Correlation - before centering
+  pearsonBeforeChart.data.datasets = [
+    { data: [{ x: 0, y: 0 }, { x: vectorA[0], y: vectorA[1] }], borderColor: 'red', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: vectorB[0], y: vectorB[1] }], borderColor: 'blue', showLine: true, fill: false }
+  ];
+  pearsonBeforeChart.update();
+
+  // Pearson Correlation - after centering
+  const centeredA = centerVector(vectorA);
+  const centeredB = centerVector(vectorB);
+  pearsonChart.data.datasets = [
+    { data: [{ x: 0, y: 0 }, { x: centeredA[0], y: centeredA[1] }], borderColor: 'red', showLine: true, fill: false },
+    { data: [{ x: 0, y: 0 }, { x: centeredB[0], y: centeredB[1] }], borderColor: 'blue', showLine: true, fill: false }
+  ];
+  pearsonChart.options.plugins.anglePlugin = { vectors: { vectorA: centeredA, vectorB: centeredB } };
+  pearsonChart.update();
+
+  // OLS Coefficient visualization
+  const points = vectorA.map((x, i) => ({ x, y: vectorB[i] }));
+  const slope = olsCoefficient(vectorA, vectorB);
+  const minX = Math.min(...vectorA) - 1;
+  const maxX = Math.max(...vectorA) + 1;
+  const line = [
+    { x: minX, y: slope * minX },
+    { x: maxX, y: slope * maxX }
+  ];
+  olsChart.data.datasets = [
+    { type: 'scatter', data: points, backgroundColor: 'red' },
+    { type: 'line', data: line, borderColor: 'green', fill: false }
+  ];
+  olsChart.update();
 }
 
-// Update display values
 function updateDisplay(vectorA, vectorB) {
   const dotProd = dotProduct(vectorA, vectorB);
   const cosSim = cosineSimilarity(vectorA, vectorB);
@@ -52,102 +148,12 @@ function updateDisplay(vectorA, vectorB) {
   document.getElementById('cosineSimilarityValue').textContent = cosSim.toFixed(2);
   document.getElementById('pearsonCorrelationValue').textContent = isNaN(pearsonCorr) ? 'NaN' : pearsonCorr.toFixed(2);
   document.getElementById('olsCoefficientValue').textContent = olsCoeff.toFixed(2);
-  
+
   document.getElementById('vectorAOutput').textContent = `(${vectorA.join(', ')})`;
   document.getElementById('vectorBOutput').textContent = `(${vectorB.join(', ')})`;
 }
 
-// Function to draw axes on a canvas
-function drawAxes(ctx, canvas) {
-  ctx.beginPath();
-  ctx.moveTo(0, canvas.height / 2);
-  ctx.lineTo(canvas.width, canvas.height / 2);
-  ctx.moveTo(canvas.width / 2, 0);
-  ctx.lineTo(canvas.width / 2, canvas.height);
-  ctx.strokeStyle = 'black';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-}
-
-// Function to clear a canvas
-function clearCanvas(canvas) {
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-// Function to draw vectors on a canvas
-function drawVector(canvas, vector, color) {
-  const ctx = canvas.getContext('2d');
-  const originX = canvas.width / 2;
-  const originY = canvas.height / 2;
-  const scaleFactor = 20; // Adjust this scale factor as needed
-
-  ctx.beginPath();
-  ctx.moveTo(originX, originY);
-  ctx.lineTo(originX + vector[0] * scaleFactor, originY - vector[1] * scaleFactor);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-}
-
-// Function to draw the dot product visualization
-function drawDotProduct(vectorA, vectorB) {
-  const canvas = document.getElementById('dotProductCanvas');
-  clearCanvas(canvas);
-  drawAxes(canvas.getContext('2d'), canvas);
-  drawVector(canvas, vectorA, 'red');
-  drawVector(canvas, vectorB, 'blue');
-}
-
-// Function to draw the cosine similarity visualization
-function drawCosineSimilarity(vectorA, vectorB) {
-  const canvas = document.getElementById('cosineCanvas');
-  clearCanvas(canvas);
-  drawAxes(canvas.getContext('2d'), canvas);
-  drawVector(canvas, vectorA, 'red');
-  drawVector(canvas, vectorB, 'blue');
-}
-
-// Function to draw the Pearson correlation visualization
-function drawPearsonCorrelation(vectorA, vectorB) {
-  const canvas = document.getElementById('pearsonCanvas');
-  const ctx = canvas.getContext('2d');
-  clearCanvas(canvas);
-  drawAxes(ctx, canvas);
-  
-  // Draw the centered vectors for Pearson correlation
-  const centeredA = centerVector(vectorA); // Center vector A
-  const centeredB = centerVector(vectorB); // Center vector B
-  
-  // Draw the centered vectors from the origin
-  drawVector(canvas, centeredA, 'red');
-  drawVector(canvas, centeredB, 'blue');
-}
-
-// Function to draw the OLS coefficient visualization
-function drawOLSCoefficient(vectorA, vectorB) {
-  const canvas = document.getElementById('olsCanvas');
-  const ctx = canvas.getContext('2d');
-  clearCanvas(canvas);
-  drawAxes(ctx, canvas);
-  
-  // Calculate the OLS regression line
-  const a = olsCoefficient(vectorA, vectorB);
-
-  // Draw the regression line through the origin
-  ctx.beginPath();
-  ctx.moveTo(0, canvas.height / 2); // Start from the middle of the canvas on the y-axis
-  ctx.lineTo(canvas.width, canvas.height / 2 - (a * canvas.width / 2)); // Passes through the origin
-  ctx.strokeStyle = 'green';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  
-  // Draw vector A as a point on the canvas
-  drawVector(canvas, vectorA, 'red');
-}
-
-// Main function to update vectors and redraw all visualizations
-function updateVectorsAndVisualizations() {
+function updateAll() {
   const vectorAX1 = parseFloat(document.getElementById('vectorAX1').value);
   const vectorAY1 = parseFloat(document.getElementById('vectorAY1').value);
   const vectorBX1 = parseFloat(document.getElementById('vectorBX1').value);
@@ -157,18 +163,13 @@ function updateVectorsAndVisualizations() {
   const vectorB = [vectorBX1, vectorBY1];
 
   updateDisplay(vectorA, vectorB);
-
-  drawDotProduct(vectorA, vectorB);
-  drawCosineSimilarity(vectorA, vectorB);
-  drawPearsonCorrelation(vectorA, vectorB);
-  drawOLSCoefficient(vectorA, vectorB);
+  updateCharts(vectorA, vectorB);
 }
 
-// Attach event listeners to the sliders for live-updating
-document.getElementById('vectorAX1').addEventListener('input', updateVectorsAndVisualizations);
-document.getElementById('vectorAY1').addEventListener('input', updateVectorsAndVisualizations);
-document.getElementById('vectorBX1').addEventListener('input', updateVectorsAndVisualizations);
-document.getElementById('vectorBY1').addEventListener('input', updateVectorsAndVisualizations);
+document.getElementById('vectorAX1').addEventListener('input', updateAll);
+document.getElementById('vectorAY1').addEventListener('input', updateAll);
+document.getElementById('vectorBX1').addEventListener('input', updateAll);
+document.getElementById('vectorBY1').addEventListener('input', updateAll);
 
-// Initial draw
-updateVectorsAndVisualizations();
+initCharts();
+updateAll();

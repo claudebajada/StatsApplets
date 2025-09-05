@@ -18,8 +18,32 @@ document.addEventListener('DOMContentLoaded', function() {
   let yAxisOptions = { beginAtZero: true, max: 0.42 };
 
   // Initialize charts
-  let populationChart = initializeChart(populationCtx, 'Estimated Population', 'rgba(0, 0, 255, 0.5)', 'blue', xAxisOptions, yAxisOptions);
-  let stderrChart = initializeChart(stderrCtx, 'Standard Error', 'rgba(255, 0, 0, 0.5)', 'red', xAxisOptions, yAxisOptions);
+  let populationChart = initializeChart(populationCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Estimated Population',
+        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+        borderColor: 'blue',
+        data: []
+      }]
+    },
+    options: chartOptions(xAxisOptions, yAxisOptions)
+  });
+  let stderrChart = initializeChart(stderrCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Standard Error',
+        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+        borderColor: 'red',
+        data: []
+      }]
+    },
+    options: chartOptions(xAxisOptions, yAxisOptions)
+  });
   
   // Initialize tChart with Null Hypothesis and Test Statistic
   let tChart = new Chart(tCtx, {
@@ -142,38 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const denominator = Math.sqrt(df * Math.PI) * jStat.gammafn(df / 2);
     const term = Math.pow(1 + (t * t) / df, -(df + 1) / 2);
     return numerator / denominator * term;
-  }
-
-  function initializeChart(ctx, label, backgroundColor, borderColor, xAxisOptions, yAxisOptions) {
-    return new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          label: label,
-          backgroundColor: backgroundColor,
-          borderColor: borderColor,
-          data: []
-        }]
-      },
-      options: {
-        scales: {
-          x: xAxisOptions,
-          y: yAxisOptions
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
-
-  function addSliderListener(id, updateFunction) {
-    document.getElementById(id).addEventListener('input', updateFunction);
-  }
-
-  function normalDensity(x, mean, stdDev) {
-    const exponent = -((x - mean) ** 2) / (2 * stdDev ** 2);
-    return (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
   }
 
   // Attach event listeners to sliders

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mathematical Concepts Visualizer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="../lib/chart.min.js"></script>
     <link rel="stylesheet" href="../css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+    <script src="../lib/mathjax/tex-mml-chtml.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,6 +50,12 @@
     </style>
 </head>
 <body>
+
+    <details class="info">
+      <summary>What does this show?</summary>
+      <p>This applet demonstrates the relationships among the dot product, cosine similarity, Pearson correlation, and the OLS regression coefficient for two vectors.</p>
+    </details>
+
     <h1>Mathematical Concepts Visualizer</h1>
     
     <div class="control-panel">
@@ -72,21 +78,25 @@
     <div class="visualization-panel">
         <div id="dotProductDiagram" class="diagram">
             <h2>Dot Product</h2>
+            <p>Multiplies matching components and sums them, representing the projection of one vector onto another.</p>
             <canvas id="dotProductCanvas" class="visualization"></canvas>
         </div>
 
         <div id="cosineDiagram" class="diagram">
             <h2>Cosine Similarity</h2>
+            <p>The cosine of the angle between vectors, showing how aligned they are.</p>
             <canvas id="cosineCanvas" class="visualization"></canvas>
         </div>
 
         <div id="pearsonDiagram" class="diagram">
             <h2>Pearson Correlation</h2>
+            <p>Centers each vector and computes the cosine of the angle between them.</p>
             <canvas id="pearsonCanvas" class="visualization"></canvas>
         </div>
 
         <div id="olsCoefficientDiagram" class="diagram">
             <h2>OLS Coefficient</h2>
+            <p>The slope of the best-fit line predicting one vector from the other.</p>
             <canvas id="olsCanvas" class="visualization"></canvas>
         </div>
     </div>

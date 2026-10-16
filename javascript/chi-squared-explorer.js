@@ -1,157 +1,44 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const categoriesSlider = document.getElementById('categories');
-  const totalObservationsSlider = document.getElementById('total-observations');
-  const skewSlider = document.getElementById('skew');
-  const frequencyChartCtx = document.getElementById('frequencyChart').getContext('2d');
-  const chiSquaredChartCtx = document.getElementById('chiSquaredChart').getContext('2d');
-
-  let frequencyChart = initializeFrequencyChart(frequencyChartCtx);
-  let chiSquaredChart = initializeChiSquaredChart(chiSquaredChartCtx);
-
-  function updateCharts() {
-    const numCategories = parseInt(categoriesSlider.value);
-    const totalObservations = parseInt(totalObservationsSlider.value);
-    const skew = parseFloat(skewSlider.value);
-  
-    const { expected, observed } = generateFrequencies(numCategories, totalObservations, skew);
-    const chiSquared = calculateChiSquared(expected, observed);
-    const df = numCategories - 1;
-
-    updateFrequencyChart(frequencyChart, expected, observed);
-    updateChiSquaredChart(chiSquaredChart, chiSquared, df);
-
-    // Calculate effect size and p-value
-    const effectSize = Math.sqrt(chiSquared / (totalObservations * (Math.min(numCategories, 2) - 1)));
-    const pValue = 1 - jStat.chisquare.cdf(chiSquared, df);
-
-    // Update displayed values
-    updateDisplayedValues(effectSize, chiSquared, pValue, numCategories, totalObservations);
+document.addEventListener('DOMContentLoaded', () => {
+  const get = id => document.getElementById(id);
+  const frequencyChart = initializeChart(get('frequencyChart').getContext('2d'), {
+    type: 'bar', data: { labels: [], datasets: [
+      { label: 'Expected under uniform H₀', backgroundColor: '#2456a6', data: [] },
+      { label: 'Observed integer counts', backgroundColor: '#b24632', data: [] }
+    ] }, options: chartOptions({}, { beginAtZero: true, title: { display: true, text: 'Frequency' } })
+  });
+  const distribution = initializeChart(get('chiSquaredChart').getContext('2d'), {
+    type: 'line', data: { datasets: [lineDataset('Null χ² distribution'),
+      { ...lineDataset('Upper-tail p-value', [], '#b24632'), fill: 'origin' },
+      { ...lineDataset('Observed χ²', [], '#522d80'), borderDash: [6, 4] }] },
+    options: chartOptions({ type: 'linear', min: 0, title: { display: true, text: 'χ² statistic' } },
+      { beginAtZero: true, title: { display: true, text: 'Probability density' } })
+  });
+  function update() {
+    const categories = Number(get('categories').value), n = Number(get('total-observations').value), skew = Number(get('skew').value);
+    const { expected, observed } = StatsMath.generateFrequencies(categories, n, skew);
+    const { statistic, df, w, p } = StatsMath.chiSquared(expected, observed);
+    for (const [id, value] of Object.entries({ 'categories-value': categories, 'total-observations-value': n,
+      'skew-value': skew, 'effect-size-value': w.toFixed(4), 'chi-squared-value': statistic.toFixed(4), 'p-value': formatProbability(p) })) get(id).textContent = value;
+    get('validity-warning').textContent = expected.some(e => e < 5)
+      ? 'Expected counts are below 5: the asymptotic χ² p-value may be unreliable. Consider an exact multinomial or Monte Carlo goodness-of-fit test.'
+      : 'Expected counts are all at least 5. The χ² approximation also assumes independent observations and categories fixed in advance.';
+    frequencyChart.data.labels = expected.map((_, i) => `Category ${i + 1}`);
+    frequencyChart.data.datasets[0].data = expected;
+    frequencyChart.data.datasets[1].data = observed;
+    frequencyChart.update();
+    const max = Math.max(jStat.chisquare.inv(0.995, df), statistic * 1.15);
+    // χ² with df=1 has infinite density at zero. Start just above zero.
+    const points = curvePoints(max / 10000, max, x => jStat.chisquare.pdf(x, df));
+    if (statistic > 0) points.push({ x: statistic, y: jStat.chisquare.pdf(statistic, df) });
+    points.sort((a, b) => a.x - b.x);
+    const height = Math.max(...points.map(p => p.y));
+    distribution.data.datasets[0].data = points;
+    distribution.data.datasets[0].label = `H₀: χ² with df = ${df}`;
+    distribution.data.datasets[1].data = points.map(p => ({ x: p.x, y: p.x >= statistic ? p.y : null }));
+    distribution.data.datasets[2].data = [{ x: statistic, y: 0 }, { x: statistic, y: height }];
+    distribution.options.scales.x.max = max;
+    distribution.update();
   }
-
-  [categoriesSlider, totalObservationsSlider, skewSlider].forEach(slider => slider.addEventListener('input', updateCharts));
-
-  // Initial call to update charts and displayed values
-  updateCharts();
-
-  function updateDisplayedValues(effectSize, chiSquared, pValue, numCategories, totalObservations) {
-    document.getElementById('effect-size-value').textContent = effectSize.toFixed(4);
-    document.getElementById('chi-squared-value').textContent = chiSquared.toFixed(4);
-    document.getElementById('p-value').textContent = pValue.toFixed(4);
-    document.getElementById('categories-value').textContent = numCategories.toString();
-    document.getElementById('total-observations-value').textContent = totalObservations.toString();
-  }
-
-  updateCharts();
+  ['categories', 'total-observations', 'skew'].forEach(id => addSliderListener(id, update));
+  update();
 });
-
-  function initializeFrequencyChart(ctx) {
-    return new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Expected',
-          backgroundColor: 'rgba(0, 123, 255, 0.5)',
-          data: []
-        }, {
-          label: 'Observed',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          data: []
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-
-  function initializeChiSquaredChart(ctx) {
-      return new Chart(ctx, {
-          type: 'line',
-          data: {
-              labels: [],  
-              datasets: [
-                  {
-                      label: 'Chi-Squared Statistic',
-                      backgroundColor: 'rgba(255, 99, 132, 1)',
-                      borderColor: 'rgba(255, 99, 132, 1)',
-                      data: [],
-                      // pointRadius: 10,  // Increased radius
-                      // borderWidth: 3,   // Increased border width
-                      // fill: false
-                  },
-                  {
-                      label: 'Chi-Squared Distribution',
-                      backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                      borderColor: 'rgba(0, 123, 255, 1)',
-                      data: []
-                  }
-              ]
-          },
-          options: {
-              plugins: {
-                  afterDraw: chart => {
-                      // Custom drawing logic here
-                  }
-              },
-              // ... other options ...
-          }
-      });
-  }
-
-  function generateFrequencies(numCategories, totalObservations, skew) {
-    const expected = new Array(numCategories).fill(totalObservations / numCategories);
-    let observed = expected.map((e, i) => e + skew * (i - (numCategories - 1) / 2));
-    
-    // Ensure that observed frequencies are non-negative and sum to totalObservations
-    let sumObserved = observed.reduce((a, b) => a + b, 0);
-    observed = observed.map(o => Math.max(0, o * totalObservations / sumObserved));
-  
-    return { expected, observed };
-  }  
-
-  function calculateChiSquared(expected, observed) {
-    return observed.reduce((sum, o, i) => sum + ((o - expected[i]) ** 2) / expected[i], 0);
-  }
-
-  function updateFrequencyChart(chart, expected, observed) {
-    chart.data.labels = expected.map((_, i) => `Category ${i + 1}`);
-    chart.data.datasets[0].data = expected;
-    chart.data.datasets[1].data = observed;
-    chart.update();
-  }
-
-  function updateChiSquaredChart(chart, chiSquared, df) {
-    const xMin = 0;
-    const xMax = 200; // Math.max(20, chiSquared + 10);
-    const step = 0.1;  
-    const labels = [];
-    const chiSquaredData = [];
-    const tolerance = 0.05; // Define a tolerance for comparison
-
-    for (let x = xMin; x <= xMax; x += step) {
-      labels.push(x.toFixed(2));  
-      chiSquaredData.push(jStat.chisquare.pdf(x, df));
-    }
-
-    // Update data for Chi-Squared Statistic (point)
-    // chart.data.datasets[0].data = labels.map(x => parseFloat(x) === chiSquared ? jStat.chisquare.pdf(chiSquared, df) : null);
-    chart.data.datasets[0].data = labels.map(x => {
-        const xFloat = parseFloat(x);
-        return Math.abs(xFloat - chiSquared) <= tolerance ? jStat.chisquare.pdf(chiSquared, df) : null;
-    });
-    
-    // Update data for Chi-Squared Distribution
-    chart.data.labels = labels;
-    chart.data.datasets[1].data = chiSquaredData;
-
-    // Update the label for the chi-squared distribution dataset
-    chart.data.datasets[1].label = `Null Hypothesis Chi-Squared Distribution (χ²(${df}))`;
-
-    chart.update();
-}
-

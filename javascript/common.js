@@ -1,77 +1,27 @@
-// Common mathematical utilities
-function factorial(n) {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
+// DOM/chart helpers. Mathematical functions live in statistics.js.
+function combinations(n, k) { return StatsMath.combinations(n, k); }
+function normalDensity(x, mean, sd) { return StatsMath.normalDensity(x, mean, sd); }
+function initializeChart(ctx, config) { return new Chart(ctx, config); }
+function chartOptions(x = {}, y = {}) {
+  return { animation: false, responsive: true, maintainAspectRatio: false,
+    scales: { x: { ...x }, y: { ...y } } };
 }
-
-// Efficient combinations function
-function combinations(n, k) {
-  if (k < 0 || k > n) return 0;
-  if (k === 0 || k === n) return 1;
-  k = Math.min(k, n - k); // Symmetry
-  let c = 1;
-  for (let i = 0; i < k; i++) {
-    c = c * (n - i) / (i + 1);
-  }
-  return c;
+function addSliderListener(id, update) { document.getElementById(id).addEventListener('input', update); }
+function formatProbability(p) { return p > 0 && p < 0.0001 ? p.toExponential(3) : p.toFixed(4); }
+function curvePoints(min, max, density, count = 401) {
+  return Array.from({ length: count }, (_, i) => {
+    const x = min + (max - min) * i / (count - 1);
+    return { x, y: density(x) };
+  });
 }
-
-// Normal density function with σ = 0 handling
-function normalDensity(x, mu, sigma) {
-  if (sigma === 0) return x === mu ? Infinity : 0;
-  const coefficient = 1 / (sigma * Math.sqrt(2 * Math.PI));
-  const exponent = -0.5 * Math.pow((x - mu) / sigma, 2);
-  return coefficient * Math.exp(exponent);
+function lineDataset(label, data = [], color = '#2456a6') {
+  return { label, data, borderColor: color, backgroundColor: color + '33',
+    pointRadius: 0, borderWidth: 2, fill: false };
 }
-
-// // Common chart initialization
-// function initializeChart(ctx, type, label, backgroundColor, borderColor, xAxisOptions, yAxisOptions) {
-//   return new Chart(ctx, {
-//     type: type,
-//     data: {
-//       labels: [],
-//       datasets: [{
-//         label: label,
-//         data: [],
-//         backgroundColor: backgroundColor,
-//         borderColor: borderColor,
-//         fill: type === 'line'
-//       }]
-//     },
-//     options: {
-//       scales: {
-//         x: xAxisOptions,
-//         y: yAxisOptions
-//       },
-//       responsive: true,
-//       maintainAspectRatio: false
-//     }
-//   });
-// }
-
-// Initialize Chart.js chart with configuration
-function initializeChart(ctx, chartConfig) {
-  return new Chart(ctx, chartConfig);
-}
-
-// Standard chart options used across applets
-function chartOptions(xAxisOptions = {}, yAxisOptions = {}) {
-  return {
-    scales: {
-      x: xAxisOptions,
-      y: yAxisOptions
-    },
-    responsive: true,
-    maintainAspectRatio: false
-  };
-}
-
-// Add slider listener
-function addSliderListener(id, updateFunction) {
-  const slider = document.getElementById(id);
-  slider.addEventListener('input', updateFunction);
-}
-
+// Canvas alternatives identify the chart; numeric results and explanations remain HTML.
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('canvas').forEach(canvas => {
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', canvas.closest('.chart-container')?.querySelector('h3')?.textContent || canvas.id.replace(/Chart$/, '') + ' chart');
+  });
+});

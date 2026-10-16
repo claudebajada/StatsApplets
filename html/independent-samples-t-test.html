@@ -11,33 +11,46 @@
 
 
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 
 <details class="info">
   <summary>What does this show?</summary>
   <p>This applet explores the independent samples t test. Adjust group parameters to see how the t statistic and p-values respond.</p>
+<p>This is the pooled, equal-variance t test. The single SD slider specifies equal sample SDs s₁ = s₂ = s, so pooled sₚ = s. t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)), df = n₁ + n₂ − 2. Signed Cohen’s d = (x̄₁ − x̄₂)/sₚ. Groups and observations must be independent; the exact test assumes normal populations with equal variances. The first plot shows illustrative models and the middle plot estimated uncertainty, not a second alternative sampling distribution. Choose the alternative before examining the data.</p>
 </details>
 
-<div class="page-title">Independent Sample t-Test Explorer</div>
+<h1 class="page-title">Independent Sample t-Test Explorer</h1>
 
 <!-- Sliders for Population Distribution -->
 <div class="slider-container">
-  <label for="mu1">Estimated Population 1 Mean (\( \hat{\mu_1} \)): <span id="mu1-value">0</span></label>
+  <label for="mu1">Sample 1 Mean (\( \bar{x}_1 \)): <span id="mu1-value">0</span></label>
   <input type="range" id="mu1" class="slider" min="-10" max="10" step="0.1" value="0">
 
-  <label for="mu2">Estimated Population 2 Mean (\( \hat{\mu_2} \)): <span id="mu2-value">0</span></label>
+  <label for="mu2">Sample 2 Mean (\( \bar{x}_2 \)): <span id="mu2-value">0</span></label>
   <input type="range" id="mu2" class="slider" min="-10" max="10" step="0.1" value="0">
 
-  <label for="sigma">Estimated (Common) Standard Deviation (\( \hat{\sigma} \)): <span id="sigma-value">1</span></label>
+  <label for="sigma">Common Sample Standard Deviation (\( s \)): <span id="sigma-value">1</span></label>
   <input type="range" id="sigma" class="slider" min="0.1" max="5" step="0.1" value="1">
 
-  <label for="N">Sample Size 1 (\( N_1 \)): <span id="N1-value">30</span></label>
+  <label for="N1">Sample Size 1 (\( N_1 \)): <span id="N1-value">30</span></label>
   <input type="range" id="N1" class="slider" min="5" max="100" step="1" value="30">
-  <label for="N">Sample Size 2 (\( N_2 \)): <span id="N2-value">30</span></label>
+  <label for="N2">Sample Size 2 (\( N_2 \)): <span id="N2-value">30</span></label>
   <input type="range" id="N2" class="slider" min="5" max="100" step="1" value="30">
   
+<label for="alternative">Alternative hypothesis: μ₁ − μ₂ is</label>
+<select id="alternative">
+  <option value="upper">greater than</option>
+  <option value="lower">less than</option>
+  <option value="twoSided">different from</option>
+</select>
+<span>0</span>
+<p>Selected p-value: <strong id="p-value-selected" aria-live="polite"></strong></p>
+<p>Lower-tail p-value: <span id="p-value-lower"></span></p>
+<p id="calculation"></p>
+
 <div class="cohen-d-container">
-  Effect Size (Cohen's d): <span id="cohen-d-value">0</span>
+  Signed standardised difference (Cohen's d): <span id="cohen-d-value">0</span>
 </div>
 <div class="degrees-of-freedom-container">
   Degrees of freedom (df): <span id="df-value">0</span>
@@ -47,7 +60,7 @@
   t statistic: <span id="t-value">0</span>
 </div>   
 <div class="p-value-container">
-  One (Right) Tailed p Value: <span id="one-tailed-p-value">0</span>
+  Upper-tail p-value: <span id="one-tailed-p-value">0</span>
 </div> 
 <div class="p-value-container">
   Two Tailed p Value: <span id="two-tailed-p-value">0</span>
@@ -58,22 +71,24 @@
 <!-- Containers for Charts -->
 <div class="container">
   <div class="chart-container">
-    <h3 class="chart-title">Estimated Population Distributions</h3>
-    <canvas id="populationChart" class="chart-canvas"></canvas>
+    <h3 class="chart-title">Illustrative Normal Models</h3>
+    <div class="plot-frame"><canvas id="populationChart" class="chart-canvas"></canvas></div>
   </div>
 
   <div class="chart-container">
-    <h3 class="chart-title">Estimated Standard Error of the Mean</h3>
-    <canvas id="stderrChart" class="chart-canvas"></canvas>
+    <h3 class="chart-title">Estimated Uncertainty of Mean Difference</h3>
+    <div class="plot-frame"><canvas id="stderrChart" class="chart-canvas"></canvas></div>
   </div>
 
   <div class="chart-container">
     <h3 class="chart-title">t Statistic Sampling Distribution</h3>
-    <canvas id="tChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="tChart" class="chart-canvas"></canvas></div>
   </div>
 </div>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"></script>
+<script src="../javascript/mean-test-explorer.js"></script>
 <script src="../javascript/independent-samples-t-test.js"></script>
 </body>
 </html>

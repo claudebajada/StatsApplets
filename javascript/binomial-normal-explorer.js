@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     data: {
       labels: [],
       datasets: [{
-        label: 'Probability',
+        label: 'Exact binomial probability P(X = k)',
         data: [],
         backgroundColor: 'blue'
       }]
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     data: {
       labels: [],
       datasets: [{
-        label: 'Normal Approximation',
+        label: 'Normal probability density (not point probability)',
         data: [],
         backgroundColor: 'rgba(0, 0, 255, 0.4)',
         borderColor: 'blue',
@@ -72,13 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
             callback: function(val, index) {
               return Number.isInteger(val) ? val : null;
             }
-          }          
-        },
-        yAxes: [{
-          ticks: {
-            suggestedMax: 1
           }
-        }]
+        }
       },
       responsive: true,
       maintainAspectRatio: false,
@@ -99,25 +94,25 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDisplayedValues();
     const N = parseInt(NSlider.value);
     const theta = parseFloat(thetaSlider.value);
-    const mu = N * theta;
-    const sigma = Math.sqrt(N * theta * (1 - theta));
-    const xMin = mu - 5 * sigma;  
-    const xMax = mu + 5 * sigma;
+    const { mean: mu, sd: sigma, warning } = StatsMath.binomialApproximation(N, theta);
+    document.getElementById('approximation-warning').textContent = warning;
+    const xMin = sigma > 0 ? Math.min(0, mu - 5 * sigma) : mu - 1;
+    const xMax = sigma > 0 ? Math.max(N, mu + 5 * sigma) : mu + 1;
     const normalStep = 0.1;
     const normalLabels = [];
     const normalData = [];
     const binomialLabels = Array.from({ length: N + 1 }, (_, i) => i);
-    const binomialData = [];  
+    const binomialData = [];
 
     // Generate data for normal distribution
-    for (let x = xMin; x <= xMax; x += normalStep) {  
+    for (let x = xMin; sigma > 0 && x <= xMax; x += normalStep) {
       normalLabels.push(x.toFixed(2));
-      normalData.push(normalDensity(x, mu, sigma));  
+      normalData.push(normalDensity(x, mu, sigma));
     }
 
     // Generate data for binomial distribution
     for (let x = 0; x <= N; x++) {
-      binomialData.push(combinations(N, x) * Math.pow(theta, x) * Math.pow(1 - theta, N - x));  
+      binomialData.push(StatsMath.binomialPMF(N, theta, x));
     }
 
     // Set the same x-axis min and max for both charts
@@ -129,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         stepSize: 1,
         callback: function(val, index) {
           return Number.isInteger(val) ? val : null;
-        }  
+        }
       }
     };
 
@@ -139,15 +134,15 @@ document.addEventListener('DOMContentLoaded', function() {
     binomialChart.options.scales.x = commonXAxis;
     binomialChart.update();
 
-    // Update normal chart  
-    normalChart.data.labels = normalLabels;  
+    // Update normal chart
+    normalChart.data.labels = normalLabels;
     normalChart.data.datasets[0].data = normalData;
     normalChart.options.scales.x = commonXAxis;
     normalChart.update();
 
     // Update displayed mu and sigma
     muText.textContent = mu.toFixed(2);
-    sigmaText.textContent = sigma.toFixed(2);  
+    sigmaText.textContent = sigma.toFixed(2);
   }
 
   // Attach event listeners to sliders

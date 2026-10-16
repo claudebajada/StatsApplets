@@ -3,41 +3,13 @@
 // and Pearson correlation are variations on the inner product, differing only
 // by normalization and centering.
 
-// Basic vector operations (inner product and norms)
-function dotProduct(a, b) {
-  return a.reduce((sum, val, i) => sum + val * b[i], 0);
-}
-
-function magnitude(v) {
-  return Math.sqrt(v.reduce((s, val) => s + val * val, 0));
-}
-
-function normalize(v) {
-  const mag = magnitude(v);
-  return mag === 0 ? [0, 0] : v.map(val => val / mag);
-}
-
-function cosineSimilarity(a, b) {
-  const magA = magnitude(a);
-  const magB = magnitude(b);
-  if (magA === 0 || magB === 0) return NaN;
-  const normA = a.map(val => val / magA);
-  const normB = b.map(val => val / magB);
-  return dotProduct(normA, normB);
-}
-
-// Centers a vector by subtracting its own mean from each component
-function centerVector(v) {
-  const mean = v.reduce((s, val) => s + val, 0) / v.length;
-  return v.map(val => val - mean);
-}
-
-// Pearson correlation is cosine similarity of centered vectors
-function pearsonCorrelation(a, b) {
-  const centeredA = centerVector(a);
-  const centeredB = centerVector(b);
-  return cosineSimilarity(centeredA, centeredB);
-}
+// Geometry remains two-dimensional in this initial correctness stage.
+const dotProduct = StatsMath.dot;
+const magnitude = StatsMath.norm;
+const centerVector = StatsMath.center;
+const cosineSimilarity = StatsMath.cosine;
+const pearsonCorrelation = StatsMath.pearson;
+function normalize(v) { const mag = magnitude(v); return mag === 0 ? v.map(() => 0) : v.map(x => x / mag); }
 
 // Helper to populate ordered lists of intermediate steps
 function fillSteps(id, lines) {
@@ -59,6 +31,7 @@ const anglePlugin = {
   id: 'anglePlugin',
   afterDraw(chart, args, opts) {
     if (!opts || !opts.vectors) return;
+    if (magnitude(opts.vectors.vectorA) === 0 || magnitude(opts.vectors.vectorB) === 0) return;
     const { vectorA, vectorB } = opts.vectors;
     const { ctx, scales: { x, y } } = chart;
     const origin = { x: x.getPixelForValue(0), y: y.getPixelForValue(0) };
@@ -182,8 +155,8 @@ function updateDisplay(vectorA, vectorB) {
   const pearsonCorr = pearsonCorrelation(vectorA, vectorB);
 
   document.getElementById('dotProductValue').textContent = dotProd.toFixed(2);
-  document.getElementById('cosineSimilarityValue').textContent = cosSim.toFixed(2);
-  document.getElementById('pearsonCorrelationValue').textContent = isNaN(pearsonCorr) ? 'NaN' : pearsonCorr.toFixed(2);
+  document.getElementById('cosineSimilarityValue').textContent = cosSim === null ? 'Undefined: cosine similarity divides by vector lengths; a zero vector has no direction.' : cosSim.toFixed(2);
+  document.getElementById('pearsonCorrelationValue').textContent = pearsonCorr === null ? 'Undefined: Pearson r divides by centred vector lengths; at least one vector is constant (zero variance).' : pearsonCorr.toFixed(2);
 
   document.getElementById('vectorAOutput').textContent = `(${vectorA.join(', ')})`;
   document.getElementById('vectorBOutput').textContent = `(${vectorB.join(', ')})`;
@@ -236,6 +209,18 @@ function updateDisplay(vectorA, vectorB) {
     `Normalized B_c = [${normCenteredB[0].toFixed(2)}, ${normCenteredB[1].toFixed(2)}]`,
     `Projection length = Dot(Â_c,B̂_c) = ${dotNormCentered.toFixed(2)}`,
     `r = Projection length = ${dotNormCentered.toFixed(2)}`
+  ]);
+  if (magB === 0) fillSteps('dotProductSteps', [
+    'Dot product = 0. The projection onto B is undefined because B is the zero vector.'
+  ]);
+  if (cosSim === null) fillSteps('cosineSteps', [
+    'A zero vector cannot be normalised: dividing by its length would divide by zero.',
+    'No angle or cosine similarity is defined. The plot uses the origin as a placeholder.'
+  ]);
+  if (pearsonCorr === null) fillSteps('pearsonSteps', [
+    `Centred A = [${centeredA.join(', ')}]; centred B = [${centeredB.join(', ')}].`,
+    'At least one centred vector has length zero. Pearson correlation is undefined because a constant vector has no variation.',
+    'Move a component slider so that each vector has two different values.'
   ]);
 }
 

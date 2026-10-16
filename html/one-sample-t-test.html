@@ -11,31 +11,44 @@
 
 
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 
 <details class="info">
   <summary>What does this show?</summary>
   <p>This applet explores the one-sample t test. Modify the sample mean, size, and standard deviation to see the resulting t statistic.</p>
+<p>The sliders specify sample statistics x̄, s and n, not known population parameters. t = (x̄ − μ₀)/(s/√n), df = n − 1; signed Cohen’s d = (x̄ − μ₀)/s. The first curve is an illustrative normal model; the middle curve shows estimated uncertainty centred on the observed difference. The null sampling distribution appears in the final plot. The exact t test assumes independent normal observations; small samples are sensitive to non-normality and outliers. Choose the alternative before examining the data.</p>
 </details>
 
-<div class="page-title">One Sample t-Test Explorer</div>
+<h1 class="page-title">One Sample t-Test Explorer</h1>
 
 <!-- Sliders for Population Distribution -->
 <div class="slider-container">
-  <label for="mu">Estimated Population Mean (\( \hat{\mu} \)): <span id="mu-value">0</span></label>
+  <label for="mu">Sample Mean (\( \bar{x} \)): <span id="mu-value">0</span></label>
   <input type="range" id="mu" class="slider" min="-10" max="10" step="0.1" value="0">
 
   <label for="mu0">Hypothesized Mean (\( \mu_0 \)): <span id="mu0-value">0</span></label>
   <input type="range" id="mu0" class="slider" min="-10" max="10" step="0.1" value="0">
 
-  <label for="sigma">Estimated Population Standard Deviation (\( \hat{\sigma} \)): <span id="sigma-value">1</span></label>
+  <label for="sigma">Sample Standard Deviation (\( s \)): <span id="sigma-value">1</span></label>
   <input type="range" id="sigma" class="slider" min="0.1" max="5" step="0.1" value="1">
 
   <label for="N">Sample Size (\( N \)): <span id="N-value">30</span></label>
   <input type="range" id="N" class="slider" min="5" max="100" step="1" value="30">
   
+<label for="alternative">Alternative hypothesis: μ is</label>
+<select id="alternative">
+  <option value="upper">greater than</option>
+  <option value="lower">less than</option>
+  <option value="twoSided">different from</option>
+</select>
+<span>μ₀</span>
+<p>Selected p-value: <strong id="p-value-selected" aria-live="polite"></strong></p>
+<p>Lower-tail p-value: <span id="p-value-lower"></span></p>
+<p id="calculation"></p>
+
 <div class="cohen-d-container">
-  Effect Size (Cohen's d): <span id="cohen-d-value">0</span>
+  Signed standardised difference (Cohen's d): <span id="cohen-d-value">0</span>
 </div>
 <div class="degrees-of-freedom-container">
   Degrees of freedom (df): <span id="df-value">0</span>
@@ -44,7 +57,7 @@
   t statistic: <span id="t-value">0</span>
 </div>
 <div class="p-value-container">
-  One (Right) Tailed p-value: <span id="p-value-one-sided">0</span>
+  Upper-tail p-value: <span id="p-value-one-sided">0</span>
 </div>
 <div class="p-value-container">
   Two Tailed p-value: <span id="p-value-two-sided">0</span>
@@ -56,22 +69,24 @@
 <!-- Containers for Charts -->
 <div class="container">
   <div class="chart-container">
-    <h3 class="chart-title">Estimated Population Distribution</h3>
-    <canvas id="populationChart" class="chart-canvas"></canvas>
+    <h3 class="chart-title">Illustrative Normal Model</h3>
+    <div class="plot-frame"><canvas id="populationChart" class="chart-canvas"></canvas></div>
   </div>
 
   <div class="chart-container">
-    <h3 class="chart-title">Estimated Standard Error of the Mean</h3>
-    <canvas id="stderrChart" class="chart-canvas"></canvas>
+    <h3 class="chart-title">Estimated Uncertainty of Mean Difference</h3>
+    <div class="plot-frame"><canvas id="stderrChart" class="chart-canvas"></canvas></div>
   </div>
 
   <div class="chart-container">
     <h3 class="chart-title">t Statistic Sampling Distribution</h3>
-    <canvas id="tChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="tChart" class="chart-canvas"></canvas></div>
   </div>
 </div>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"></script>
+<script src="../javascript/mean-test-explorer.js"></script>
 <script src="../javascript/one-sample-t-test.js"></script>
 </body>
 </html>

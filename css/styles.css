@@ -98,3 +98,22 @@ body {
   height: 100%;
   border: none;
 }
+
+/* Keep chart height separate from titles, values and explanatory text. */
+.chart-container { height: auto; max-height: none; flex: none; }
+.plot-frame { position: relative; height: 280px; width: 100%; }
+.chart-title { margin: 1rem 0 .5rem; }
+.info, .notice, #plot-note, #calculation { max-width: 70ch; margin: 1rem auto; padding: 0 1rem; line-height: 1.5; }
+.notice { background: #edf3fa; border-left: 4px solid #2456a6; padding: .75rem 1rem; }
+.slider-container { gap: .35rem; }
+.slider-container select { max-width: 95%; padding: .5rem; font: inherit; }
+.slider-container p { margin: .4rem auto; text-align: center; }
+.slider-container label { text-align: center; }
+.back-link { display: inline-block; margin: .75rem 1rem; color: #164b85; }
+a:focus-visible, input:focus-visible, select:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #743f8b; outline-offset: 3px; }
+.concept-section canvas { max-width: 100%; }
+
+/* Individual pages scroll naturally; the landing page retains its iframe layout. */
+body.applet { height: auto; min-height: 100vh; }
+.applet .container { flex: none; overflow: visible; }
+.applet > p:has(#log-axis) { text-align: center; }

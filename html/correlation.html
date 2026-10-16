@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Correlation Explorer</title>
 <script src="../lib/chart.min.js"></script>
 <link rel="stylesheet" href="../css/styles.css">
@@ -59,7 +60,8 @@ body {
 }
 </style>
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 <h1>Correlation Explorer</h1>
 
 <p>This page shows how several familiar similarity measures are all built from
@@ -70,13 +72,13 @@ variation—normalization or centering—transforms the same underlying calculat
   <div class="slider-container">
      <label for="vectorAX1">Vector A (A₁, A₂):</label><br>
      <input type="range" id="vectorAX1" min="-10" max="10" value="0">
-     <input type="range" id="vectorAY1" min="-10" max="10" value="0">
+     <label for="vectorAY1">A₂</label><input type="range" id="vectorAY1" min="-10" max="10" value="0">
      <span id="vectorAOutput">(0, 0)</span>
   </div>
   <div class="slider-container">
      <label for="vectorBX1">Vector B (B₁, B₂):</label><br>
      <input type="range" id="vectorBX1" min="-10" max="10" value="0">
-     <input type="range" id="vectorBY1" min="-10" max="10" value="0">
+     <label for="vectorBY1">B₂</label><input type="range" id="vectorBY1" min="-10" max="10" value="0">
      <span id="vectorBOutput">(0, 0)</span>
   </div>
 </div>
@@ -144,6 +146,7 @@ variation—normalization or centering—transforms the same underlying calculat
   </table>
 </section>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"></script>
 <script src="../javascript/correlation.js"></script>
 </body>

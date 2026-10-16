@@ -8,14 +8,15 @@
 <link rel="stylesheet" href="../css/styles.css">
 
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 
 <details class="info">
   <summary>What does this show?</summary>
   <p>This applet compares the binomial distribution to a normal approximation. Adjust the parameters to see when the curves align.</p>
-</details>
+<p>For X ∼ Binomial(n,p), μ = np and σ² = np(1 − p). Binomial bars are point probabilities; the normal curve is a density. To approximate P(X = k), use the normal area from k − 0.5 to k + 0.5 (continuity correction), rather than the curve height.</p></details>
 
-<div class="page-title">Binomial and Normal Distribution Explorer</div>
+<h1 class="page-title">Binomial and Normal Distribution Explorer</h1>
 
 
 <div class="slider-container">
@@ -26,20 +27,22 @@
   <input type="range" id="N" class="slider" min="0" max="30" step="1" value="15">
 </div>
 
+<p id="approximation-warning" class="notice" role="status"></p>
 <div class="container">
   <div class="chart-container">
     <h3 class="chart-title">The Binomial Distribution</h3>
-    <canvas id="binomialChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="binomialChart" class="chart-canvas"></canvas></div>
   </div>
 
   <div class="chart-container">
     <h3 class="chart-title">Normal Approximation to Binomial</h3>
     <p>Mu: <span id="mu-value"></span></p>
     <p>Sigma: <span id="sigma-value"></span></p>
-    <canvas id="normalChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="normalChart" class="chart-canvas"></canvas></div>
   </div>
 </div>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"> </script>
 <script src="../javascript/binomial-normal-explorer.js"></script> <!-- Link to the specific applet JavaScript file -->
 

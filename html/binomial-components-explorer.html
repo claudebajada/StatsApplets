@@ -6,14 +6,15 @@
   <script src="../lib/chart.min.js"></script>
   <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 
 <details class="info">
   <summary>What does this show?</summary>
   <p>This applet illustrates how individual binomial coefficients and probability terms combine to form the binomial distribution.</p>
 </details>
 
-<div class="page-title">Binomial Components Explorer</div>
+<h1 class="page-title">Binomial Components Explorer</h1>
 
 <div class="slider-container">
   <label for="p">Probability of Success (p): <span id="p-value">0.5</span></label>
@@ -26,18 +27,19 @@
 <div class="container">
   <div class="chart-container">
     <h3 class="chart-title">1) Binomial Coefficient Only</h3>
-    <canvas id="coeffChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="coeffChart" class="chart-canvas"></canvas></div>
   </div>
   <div class="chart-container">
     <h3 class="chart-title">2) Probability Term Only</h3>
-    <canvas id="probTermChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="probTermChart" class="chart-canvas"></canvas></div>
   </div>
   <div class="chart-container">
     <h3 class="chart-title">3) Full Binomial Distribution</h3>
-    <canvas id="fullDistChart" class="chart-canvas"></canvas>
+    <div class="plot-frame"><canvas id="fullDistChart" class="chart-canvas"></canvas></div>
   </div>
 </div>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"></script>
 <script src="../javascript/binomial-components-explorer.js"></script>
 

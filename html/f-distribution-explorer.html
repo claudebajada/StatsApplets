@@ -8,14 +8,15 @@
   <script src="../lib/chart.min.js"></script>
   <script src="../lib/jstat.min.js"></script>
 </head>
-<body>
+<body class="applet">
+<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
 
 <details class="info">
   <summary>What does this show?</summary>
   <p>This applet visualizes the F distribution. Observe how the curve changes as you adjust the numerator and denominator degrees of freedom.</p>
 </details>
 
-<div class="page-title">F Distribution Explorer</div>
+<h1 class="page-title">F Distribution Explorer</h1>
 
 <div class="slider-container">
   <label for="df1-slider">Degrees of Freedom 1 (df1): <span id="df1-value">1</span></label>
@@ -24,13 +25,16 @@
   <input type="range" id="df2-slider" min="1" max="100" step="1" value="1">
 </div>
 <div class="critical-value-container">
-  <label for="critical-value">Critical F-value for α=0.05: <span id="critical-value">N/A</span></label>
+  <p>Critical F-value for α=0.05: <span id="critical-value">N/A</span></p>
 </div>
 
+<p><label><input type="checkbox" id="log-axis"> Use logarithmic F axis</label></p>
+<p id="plot-note" class="notice"></p>
 <div class="chart-container">
-  <canvas id="distributionChart"></canvas>
+  <div class="plot-frame"><canvas id="distributionChart"></canvas></div>
 </div>
 
+<script src="../javascript/statistics.js"></script>
 <script src="../javascript/common.js"></script>
 <script src="../javascript/f-distribution-explorer.js"></script>
 </body>

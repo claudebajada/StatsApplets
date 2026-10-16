@@ -1,153 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Correlation Explorer</title>
-<script src="../lib/chart.min.js"></script>
-<link rel="stylesheet" href="../css/styles.css">
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin:0;
-  padding:20px;
-}
-.control-panel {
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
-}
-.slider-container { text-align:center; }
-/*.Layout helpers for each concept block*/
-.concept-section {
-  margin-top:30px;
-  text-align:center;
-}
-.section-content {
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:30px;
-  flex-wrap:wrap;
-}
-.concept-section canvas {
-  max-width:400px;
-  max-height:400px;
-}
-.text-panel {
-  max-width:320px;
-  text-align:left;
-}
-.equation {
-  font-family:'Times New Roman',serif;
-  font-size:1.1em;
-}
-.steps {
-  margin-top:10px;
-  padding-left:20px;
-}
-.result {
-  font-weight:bold;
-  margin-top:10px;
-}
-.pair-canvases {
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  flex-wrap:wrap;
-}
-</style>
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-<h1>Correlation Explorer</h1>
-
-<p>This page shows how several familiar similarity measures are all built from
-the inner product (⟨A,B⟩). By adjusting the vectors below, you can see how each
-variation—normalization or centering—transforms the same underlying calculation.</p>
-
-<div class="control-panel">
-  <div class="slider-container">
-     <label for="vectorAX1">Vector A (A₁, A₂):</label><br>
-     <input type="range" id="vectorAX1" min="-10" max="10" value="0">
-     <label for="vectorAY1">A₂</label><input type="range" id="vectorAY1" min="-10" max="10" value="0">
-     <span id="vectorAOutput">(0, 0)</span>
-  </div>
-  <div class="slider-container">
-     <label for="vectorBX1">Vector B (B₁, B₂):</label><br>
-     <input type="range" id="vectorBX1" min="-10" max="10" value="0">
-     <label for="vectorBY1">B₂</label><input type="range" id="vectorBY1" min="-10" max="10" value="0">
-     <span id="vectorBOutput">(0, 0)</span>
-  </div>
-</div>
-
-<section id="dotProductSection" class="concept-section">
-  <h2>Dot Product</h2>
-  <div class="section-content">
-    <canvas id="dotProductChart"></canvas>
-    <div class="text-panel">
-      <p>The raw inner product.</p>
-      <p class="equation">⟨A,B⟩ = A<sub>1</sub>B<sub>1</sub> + A<sub>2</sub>B<sub>2</sub></p>
-      <ol id="dotProductSteps" class="steps"></ol>
-      <p>The projection length is the scalar projection of A onto B—the length of A's shadow on B.</p>
-      <p class="result">Dot Product: <span id="dotProductValue">-</span></p>
-    </div>
-  </div>
-</section>
-
-<section id="cosineSection" class="concept-section">
-  <h2>Cosine Similarity</h2>
-  <div class="section-content">
-    <canvas id="cosineChart"></canvas>
-    <div class="text-panel">
-      <p>A dot product of normalized vectors; cos θ is the projection of Â onto B̂.</p>
-      <p class="equation">cos θ = ⟨Â, B̂⟩ = ⟨A,B⟩ /(‖A‖‖B‖)</p>
-      <ol id="cosineSteps" class="steps"></ol>
-      <p class="result">Cosine Similarity: <span id="cosineSimilarityValue">-</span></p>
-    </div>
-  </div>
-</section>
-
-<section id="pearsonSection" class="concept-section">
-  <h2>Pearson Correlation</h2>
-  <div class="section-content">
-    <div class="pair-canvases">
-      <div>
-        <p><em>Before Centering</em></p>
-        <canvas id="pearsonBeforeChart"></canvas>
-      </div>
-      <div>
-        <p><em>After Centering</em></p>
-        <canvas id="pearsonCenteredChart"></canvas>
-      </div>
-      <div>
-        <p><em>Centered &amp; Normalized</em></p>
-        <canvas id="pearsonNormChart"></canvas>
-      </div>
-    </div>
-    <div class="text-panel">
-      <p>The cosine similarity of centered and normalized vectors.</p>
-      <p>In two dimensions, centering forces each vector onto a line, so the angle is either 0° or 180°. We show r as the projection of Â<sub>c</sub> onto B̂<sub>c</sub>.</p>
-      <p class="equation">r = ⟨A - Ā, B - B̄⟩ /(‖A - Ā‖‖B - B̄‖)</p>
-      <ol id="pearsonSteps" class="steps"></ol>
-      <p class="result">Pearson Correlation: <span id="pearsonCorrelationValue">-</span></p>
-    </div>
-  </div>
-</section>
-<section class="concept-section">
-  <h2>Summary</h2>
-  <table style="margin:0 auto;">
-    <tr><th>Measure</th><th>Centering</th><th>Normalization</th></tr>
-    <tr><td>Dot Product</td><td>No</td><td>None</td></tr>
-    <tr><td>Cosine Similarity</td><td>No</td><td>Both vectors</td></tr>
-    <tr><td>Pearson Correlation</td><td>Both vectors</td><td>Both vectors</td></tr>
-  </table>
-</section>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/correlation.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Build correlations between −1 and +1 by centring and normalising paired observations."
+    />
+    <title>Correlation &amp; inner products · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="correlation">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Relationships</p>
+        <h1>Correlation & inner products</h1>
+        <p class="lede">
+          Build correlations between −1 and +1 by centring and normalising
+          paired observations.
+        </p>
+        <p class="equation">
+          cos θ = A·B/(‖A‖‖B‖); r = (A − Ā)·(B − B̄)/(‖A − Ā‖‖B − B̄‖)
+        </p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field wide">
+          <label for="pairs">Paired observations: one A, B pair per line</label
+          ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
+1,1
+2,3
+3,2
+4,5
+5,4
+6,3</textarea>
+        </div>
+        <div class="control-field">
+          <label for="observations"
+            >Generate this many paired observations:
+            <output id="observations-value" for="observations">6</output></label
+          ><input
+            type="range"
+            id="observations"
+            min="3"
+            max="20"
+            step="1"
+            value="6"
+          />
+        </div>
+        <fieldset class="wide">
+          <legend>Two-dimensional geometry controls</legend>
+          <div class="control-field">
+            <label for="vectorAX1"
+              >A₁:
+              <output id="vectorAX1-value" for="vectorAX1">0</output></label
+            ><input
+              type="range"
+              id="vectorAX1"
+              min="-10"
+              max="10"
+              step="1"
+              value="0"
+            />
+          </div>
+          <div class="control-field">
+            <label for="vectorAY1"
+              >A₂:
+              <output id="vectorAY1-value" for="vectorAY1">0</output></label
+            ><input
+              type="range"
+              id="vectorAY1"
+              min="-10"
+              max="10"
+              step="1"
+              value="0"
+            />
+          </div>
+          <div class="control-field">
+            <label for="vectorBX1"
+              >B₁:
+              <output id="vectorBX1-value" for="vectorBX1">0</output></label
+            ><input
+              type="range"
+              id="vectorBX1"
+              min="-10"
+              max="10"
+              step="1"
+              value="0"
+            />
+          </div>
+          <div class="control-field">
+            <label for="vectorBY1"
+              >B₂:
+              <output id="vectorBY1-value" for="vectorBY1">0</output></label
+            ><input
+              type="range"
+              id="vectorBY1"
+              min="-10"
+              max="10"
+              step="1"
+              value="0"
+            />
+          </div>
+        </fieldset>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics">
+          <div class="metric">
+            <span>Paired-data dot product</span
+            ><strong id="data-dot-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Paired-data cosine</span
+            ><strong id="data-cosine-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Paired-data Pearson r</span
+            ><strong id="data-pearson-value">—</strong>
+          </div>
+        </div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Paired observations: A against B</h2>
+          <div class="plot-frame">
+            <canvas
+              id="pairsChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Paired observations: A against B"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Centre each vector: indexed components</h2>
+          <div class="plot-frame">
+            <canvas
+              id="centeredComponentsChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Centre each vector: indexed components"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Normalise centred vectors: indexed components
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="normalisedComponentsChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Normalise centred vectors: indexed components"
+            ></canvas>
+          </div>
+        </figure>
+        <section class="wide geometry">
+          <h2>Keep the two-dimensional geometric picture</h2>
+          <p>
+            These five views use only the four component sliders. With two
+            observations Pearson r can only be ±1, or undefined. A is the solid
+            circle-marked line; B is dashed with triangles. Projection is dotted
+            with squares.
+          </p>
+          <div class="metrics">
+            <div class="metric">
+              <span>A</span><strong id="vectorAOutput">—</strong>
+            </div>
+            <div class="metric">
+              <span>B</span><strong id="vectorBOutput">—</strong>
+            </div>
+            <div class="metric">
+              <span>Dot product</span><strong id="dotProductValue">—</strong>
+            </div>
+            <div class="metric">
+              <span>Cosine similarity</span
+              ><strong id="cosineSimilarityValue">—</strong>
+            </div>
+            <div class="metric">
+              <span>Pearson r</span
+              ><strong id="pearsonCorrelationValue">—</strong>
+            </div>
+          </div>
+        </section>
+        <figure class="chart-container geometry-chart">
+          <h2 class="chart-title">2D dot product & projection</h2>
+          <div class="plot-frame">
+            <canvas
+              id="dotProductChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2D dot product & projection"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container geometry-chart">
+          <h2 class="chart-title">2D normalised vectors & angle</h2>
+          <div class="plot-frame">
+            <canvas
+              id="cosineChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2D normalised vectors & angle"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container geometry-chart">
+          <h2 class="chart-title">2D before centring</h2>
+          <div class="plot-frame">
+            <canvas
+              id="pearsonBeforeChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2D before centring"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container geometry-chart">
+          <h2 class="chart-title">2D after centring</h2>
+          <div class="plot-frame">
+            <canvas
+              id="pearsonCenteredChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2D after centring"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container geometry-chart">
+          <h2 class="chart-title">2D centred & normalised</h2>
+          <div class="plot-frame">
+            <canvas
+              id="pearsonNormChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2D centred & normalised"
+            ></canvas>
+          </div>
+        </figure>
+        <div class="wide steps-grid">
+          <section>
+            <h2>Dot product steps</h2>
+            <ol id="dotProductSteps"></ol>
+          </section>
+          <section>
+            <h2>Cosine steps</h2>
+            <ol id="cosineSteps"></ol>
+          </section>
+          <section>
+            <h2>Pearson steps</h2>
+            <ol id="pearsonSteps"></ol>
+          </section>
+        </div>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          For any number of paired observations, cosine is the dot product
+          divided by the vector lengths. Pearson r first subtracts each vector’s
+          own mean and then applies the same normalisation. The
+          indexed-component panels show the full vectors, not projections into a
+          two-dimensional plane. The separate geometric panels preserve the
+          two-component explanation. Zero-length vectors have no direction;
+          constant vectors have undefined Pearson correlation. Correlation alone
+          does not imply causation.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/correlation.js"></script>
+  </body>
 </html>

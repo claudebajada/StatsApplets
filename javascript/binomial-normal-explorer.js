@@ -1,88 +1,92 @@
 // binomial-normal-explorer.js
-document.addEventListener('DOMContentLoaded', function() {
-  const thetaSlider = document.getElementById('theta');
-  const NSlider = document.getElementById('N');
-  const thetaValue = document.getElementById('theta-value');
-  const NValue = document.getElementById('N-value');
-  const muText = document.getElementById('mu-value');
-  const sigmaText = document.getElementById('sigma-value');
-  const ctx = document.getElementById('binomialChart').getContext('2d');
-  const normalCtx = document.getElementById('normalChart').getContext('2d');
+document.addEventListener("DOMContentLoaded", function () {
+  const thetaSlider = document.getElementById("theta");
+  const NSlider = document.getElementById("N");
+  const thetaValue = document.getElementById("theta-value");
+  const NValue = document.getElementById("N-value");
+  const muText = document.getElementById("mu-value");
+  const sigmaText = document.getElementById("sigma-value");
+  const ctx = document.getElementById("binomialChart").getContext("2d");
+  const normalCtx = document.getElementById("normalChart").getContext("2d");
 
   // Initialize the binomial chart
   let binomialChart = initializeChart(ctx, {
-    type: 'bar',
+    type: "bar",
     data: {
       labels: [],
-      datasets: [{
-        label: 'Exact binomial probability P(X = k)',
-        data: [],
-        backgroundColor: 'blue'
-      }]
+      datasets: [
+        {
+          label: "Exact binomial probability P(X = k)",
+          data: [],
+          backgroundColor: "blue",
+        },
+      ],
     },
     options: {
       scales: {
         y: {
           beginAtZero: true,
-          suggestedMax: 1
+          suggestedMax: 1,
         },
         x: {
-          type: 'linear',
+          type: "linear",
           ticks: {
             stepSize: 1,
-            callback: function(val, index) {
+            callback: function (val, index) {
               return Number.isInteger(val) ? val : null;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: false
-        }
-      }
-    }
+          display: false,
+        },
+      },
+    },
   });
 
   // Initialize the normal chart
   let normalChart = initializeChart(normalCtx, {
-    type: 'line',
+    type: "line",
     data: {
       labels: [],
-      datasets: [{
-        label: 'Normal probability density (not point probability)',
-        data: [],
-        backgroundColor: 'rgba(0, 0, 255, 0.4)',
-        borderColor: 'blue',
-        fill: true
-      }]
+      datasets: [
+        {
+          label: "Normal probability density (not point probability)",
+          data: [],
+          backgroundColor: "rgba(0, 0, 255, 0.4)",
+          borderColor: "blue",
+          fill: true,
+        },
+      ],
     },
     options: {
       scales: {
         y: {
           beginAtZero: true,
-          suggestedMax: 1
+          suggestedMax: 1,
         },
         x: {
-          type: 'linear',
+          type: "linear",
           ticks: {
             stepSize: 1,
-            callback: function(val, index) {
+            callback: function (val, index) {
               return Number.isInteger(val) ? val : null;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: false
-        }
-      }
-    }
+          display: false,
+        },
+      },
+    },
   });
 
   function updateDisplayedValues() {
@@ -94,8 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDisplayedValues();
     const N = parseInt(NSlider.value);
     const theta = parseFloat(thetaSlider.value);
-    const { mean: mu, sd: sigma, warning } = StatsMath.binomialApproximation(N, theta);
-    document.getElementById('approximation-warning').textContent = warning;
+    const {
+      mean: mu,
+      sd: sigma,
+      warning,
+    } = StatsMath.binomialApproximation(N, theta);
+    document.getElementById("approximation-warning").textContent = warning;
     const xMin = sigma > 0 ? Math.min(0, mu - 5 * sigma) : mu - 1;
     const xMax = sigma > 0 ? Math.max(N, mu + 5 * sigma) : mu + 1;
     const normalStep = 0.1;
@@ -119,13 +127,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const commonXAxis = {
       min: Math.floor(xMin),
       max: Math.ceil(xMax),
-      type: 'linear',
+      type: "linear",
       ticks: {
         stepSize: 1,
-        callback: function(val, index) {
+        callback: function (val, index) {
           return Number.isInteger(val) ? val : null;
-        }
-      }
+        },
+      },
     };
 
     // Update binomial chart
@@ -146,10 +154,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Attach event listeners to sliders
-  thetaSlider.addEventListener('input', updateCharts);
-  NSlider.addEventListener('input', updateCharts);
+  thetaSlider.addEventListener("input", updateCharts);
+  NSlider.addEventListener("input", updateCharts);
 
   // Initialize charts
+  document.addEventListener("applet:state", updateCharts);
   updateCharts();
 });
-

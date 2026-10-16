@@ -1,42 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>F Distribution Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet visualizes the F distribution. Observe how the curve changes as you adjust the numerator and denominator degrees of freedom.</p>
-</details>
-
-<h1 class="page-title">F Distribution Explorer</h1>
-
-<div class="slider-container">
-  <label for="df1-slider">Degrees of Freedom 1 (df1): <span id="df1-value">1</span></label>
-  <input type="range" id="df1-slider" min="1" max="100" step="1" value="1">
-  <label for="df2-slider">Degrees of Freedom 2 (df2): <span id="df2-value">1</span></label>
-  <input type="range" id="df2-slider" min="1" max="100" step="1" value="1">
-</div>
-<div class="critical-value-container">
-  <p>Critical F-value for α=0.05: <span id="critical-value">N/A</span></p>
-</div>
-
-<p><label><input type="checkbox" id="log-axis"> Use logarithmic F axis</label></p>
-<p id="plot-note" class="notice"></p>
-<div class="chart-container">
-  <div class="plot-frame"><canvas id="distributionChart"></canvas></div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/f-distribution-explorer.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Locate an upper-tail critical value even when the distribution has a very long tail."
+    />
+    <title>F distribution · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="f-distribution-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Distributions</p>
+        <h1>F distribution</h1>
+        <p class="lede">
+          Locate an upper-tail critical value even when the distribution has a
+          very long tail.
+        </p>
+        <p class="equation">
+          F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)
+        </p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="df1-slider"
+            >Numerator df₁:
+            <output id="df1-value" for="df1-slider">1</output></label
+          ><input
+            type="range"
+            id="df1-slider"
+            min="1"
+            max="100"
+            step="1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label for="df2-slider"
+            >Denominator df₂:
+            <output id="df2-value" for="df2-slider">1</output></label
+          ><input
+            type="range"
+            id="df2-slider"
+            min="1"
+            max="100"
+            step="1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label
+            ><input type="checkbox" id="log-axis" /> Logarithmic F axis</label
+          >
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics">
+          <div class="metric">
+            <span>Upper 5% critical F</span
+            ><strong id="critical-value">—</strong>
+          </div>
+        </div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+        <p id="plot-note" class="notice" role="status"></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Null F density & rejection region</h2>
+          <div class="plot-frame">
+            <canvas
+              id="distributionChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Null F density & rejection region"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          F is non-negative and extends to infinity. Large F values reject an
+          upper-tail variance-ratio or ANOVA null. For df₁ < 2 its density
+          diverges at zero, so that endpoint is omitted from the curve. Shading
+          is truncated at the plot edge, while critical values refer to the full
+          distribution. A log axis changes spacing, not the probabilities.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/f-distribution-explorer.js"></script>
+  </body>
 </html>
-

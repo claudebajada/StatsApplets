@@ -1,35 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>t Distribution Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet plots the t distribution against the standard normal. Increase the degrees of freedom to watch the t curve approach normal.</p>
-</details>
-
-<h1 class="page-title">t Distribution Explorer</h1>
-
-<div class="slider-container">
-  <label for="df-slider">Degrees of Freedom (df): <span id="df-value">1</span></label>
-  <input type="range" id="df-slider" min="1" max="100" step="1" value="1">
-</div>
-
-<div class="chart-container">
-  <div class="plot-frame"><canvas id="distributionChart"></canvas></div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/t-distribution-explorer.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Explore how uncertainty in an estimated SD changes the reference distribution."
+    />
+    <title>Student’s t · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="t-distribution-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Distributions</p>
+        <h1>Student’s t</h1>
+        <p class="lede">
+          Explore how uncertainty in an estimated SD changes the reference
+          distribution.
+        </p>
+        <p class="equation">t = (x̄ − μ₀)/(s/√n); df = n − 1</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="df-slider"
+            >Degrees of freedom:
+            <output id="df-value" for="df-slider">1</output></label
+          ><input
+            type="range"
+            id="df-slider"
+            min="1"
+            max="100"
+            step="1"
+            value="1"
+          />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Standard normal & Student’s t densities</h2>
+          <div class="plot-frame">
+            <canvas
+              id="distributionChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Standard normal & Student’s t densities"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          Both curves are probability densities centred at zero; neither is an
+          observed sample histogram. The t curve is the null reference for (x̄ −
+          μ₀)/(s/√n) under independent normal sampling. The plotted range is
+          finite; t with df = 1 has no finite mean or variance. With df = 2 its
+          variance is also not finite.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/t-distribution-explorer.js"></script>
+  </body>
 </html>
-

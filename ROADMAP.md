@@ -1,38 +1,38 @@
-# Improvement stages
+# Planned work and verification limits
 
-## Stage 1: correctness and regression protection (this PR)
+The original correctness stage and the requested follow-up stages are implemented on `fix/statistical-correctness`, in the existing PR. Nothing is merged or deployed.
 
-- [x] Priority 1 #1–10: z initialisation/directional probabilities; one/independent t probabilities; finite chart scaling; integer chi-squared counts and Cohen's w; degenerate binomial handling; dynamic F extent; undefined correlation explanations.
-- [x] Independent SciPy numerical fixtures, Node tests, browser tests on all nine applets and CI (#17, #25, #27–29).
-- [x] Shared mean-test rendering, corrected labels/df, signed effects, hypothesis alternatives and matching tail shading for mean tests (#11–13 and parts of #15, #20, #26).
-- [x] Binomial/chi-squared validity messages and explanatory equations (#16 and parts of #24).
-- [x] Static-site README, dependency inventory, missing MathJax fonts, syntax/resource/label checks (#30–32; major dependency upgrades remain separate).
+| Original priorities | Completed work                                                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1–10               | All original numerical/initialisation/boundary fixes retained and regression-tested                                                                            |
+| #11–13              | Consistent mean-test alternatives, signed effects and sample/population notation; valid upper-tail-only GOF/ANOVA interpretation                               |
+| #14                 | Multi-observation correlation, complete centred/normalised component views and retained 2D geometry with equal axis units                                      |
+| #15–17              | Model/reference/uncertainty labels, validity messages and independent SciPy/statsmodels fixtures                                                               |
+| #18–21              | Grouped searchable catalogue, shared responsive layout, standard charts, focus/labels, data alternatives and automated accessibility/browser checks            |
+| #22–24              | Four presets and reset on all 15 applets, validated URL state, worked explanations, equations and learning objectives                                          |
+| #25–32              | DOM-free numerical modules, common rendering/control/state helpers, unit/browser tests, CI, authoring checks, documentation and audited pinned runtime bundles |
+| #33                 | CLT repeated sampling: normal, uniform, exponential and rare binary populations                                                                                |
+| #34                 | Repeated t/z confidence intervals, widths and empirical coverage                                                                                               |
+| #35                 | Known-σ one-sample z power, sample-size curve, significance and rejection areas                                                                                |
+| #36                 | Least-squares regression with generated/manual data, residuals, SSE and R²                                                                                     |
+| #37                 | One-way ANOVA with generated/manual groups, SS partition, F and η²                                                                                             |
+| #38                 | All-null multiple-comparison simulation with no adjustment, Bonferroni, Holm and BH                                                                            |
+| #39                 | Editable lecturer questions/notes, student view, guided discussion and shareable scenarios                                                                     |
 
-## Stage 2: statistical and teaching review
+## Deliberate model boundaries
 
-- [ ] Extend correlation beyond two observations while preserving the geometric explanation (#14). The current two-element version correctly produces ±1 for non-constant pairs; continuous correlations need more observations.
-- [ ] Complete a systematic review of every sampling-distribution label, uncertainty explanation and assumption (#15).
-- [ ] Add worked current-value explanations and explicit learning objectives to every applet (#24).
-- [ ] Review current upstream Chart.js, jStat and MathJax releases/advisories; update in isolation and rerun regression tests (#32).
+- The independent t-test remains the original pooled equal-variance model with a single sample SD; it is not Welch's test.
+- Power is an exact known-σ z model. A t-power extension would require a separately validated noncentral t implementation.
+- Confidence intervals use normal-population samples. The CLT explorer supplies the separate non-normal-population experiment.
+- Multiple comparisons uses independent, continuous, all-null p-values. Its BH illustration does not claim arbitrary-dependence control or demonstrate the mixed-null power trade-off.
+- Student view hides notes visually; the URL still includes them. It is not an examination/security feature.
+- Seeds reproduce numerical experiments. Exact canvas pixels can vary by browser/font.
 
-## Stage 3: consistent interface and reusable scenarios
+## Verification scope
 
-- [ ] Grouped landing page and consistent visual design (#18–19).
-- [ ] Complete interaction/accessibility audit: colour-independent chart distinctions, legends, screen-reader equivalents, keyboard and multiple real devices/browsers (#20–21). Initial canvas names, labels, focus styles and mobile regression coverage are present, but are not a complete accessibility certification.
-- [ ] Reset controls, standard examples and presets on all applets (#22).
-- [ ] Validated URL state and direct share links suitable for lecture slides (#23).
-- [ ] Further common chart/event/formatting extraction where it reduces duplication (#26).
+- Numerical tests use independent SciPy 1.17.0 and statsmodels 0.14.6 fixtures; simulation tests check deterministic reproduction and finite-sample tolerances.
+- Browser projects cover desktop/mobile Chromium, Firefox and WebKit. Mobile is emulated; physical devices and real assistive-technology users were not available in this execution environment.
+- Automated axe WCAG checks, native keyboard tests, data tables/CSV alternatives and visual review improve accessibility without constituting a full conformance certification.
+- Pinned npm versions and exact vendor-bundle checks make advisory review repeatable. No-known-advisory results are time-dependent and should be rechecked when updating dependencies.
 
-## Stage 4: future educational extensions
-
-Only after the existing tools have completed the statistical and interface review:
-
-- [ ] CLT repeated-sampling simulator (#33).
-- [ ] Confidence interval coverage explorer (#34).
-- [ ] Power and sample-size explorer (#35).
-- [ ] Linear regression, residuals and R² (#36).
-- [ ] ANOVA sums of squares and within/between variance (#37).
-- [ ] Multiple-comparisons simulation and corrections (#38).
-- [ ] Lecturer scenarios and guided exercises (#39).
-
-Each stage should be a separate reviewable PR. No backend or large framework is required by these goals. Deployment and merging require approval.
+Further work should follow teaching feedback and independently validated model extensions. The original staged scope is complete; the boundaries above describe what each implementation teaches.

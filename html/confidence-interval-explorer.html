@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See repeated intervals vary around a fixed population mean."
+    />
+    <title>Confidence interval coverage · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="confidence-interval-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Sampling & uncertainty</p>
+        <h1>Confidence interval coverage</h1>
+        <p class="lede">
+          See repeated intervals vary around a fixed population mean.
+        </p>
+        <p class="equation">
+          CI = x̄ ± critical × SE; t intervals use s and df = n − 1
+        </p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="populationMean"
+            >Fixed population mean μ:
+            <output id="populationMean-value" for="populationMean"
+              >0</output
+            ></label
+          ><input
+            type="range"
+            id="populationMean"
+            min="-5"
+            max="5"
+            step="0.1"
+            value="0"
+          />
+        </div>
+        <div class="control-field">
+          <label for="populationSD"
+            >Population SD σ:
+            <output id="populationSD-value" for="populationSD">1</output></label
+          ><input
+            type="range"
+            id="populationSD"
+            min="0.1"
+            max="3"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label for="sampleSize"
+            >Sample size n:
+            <output id="sampleSize-value" for="sampleSize">20</output></label
+          ><input
+            type="range"
+            id="sampleSize"
+            min="2"
+            max="100"
+            step="1"
+            value="20"
+          />
+        </div>
+        <div class="control-field">
+          <label for="repetitions"
+            >Repeated intervals:
+            <output id="repetitions-value" for="repetitions">500</output></label
+          ><input
+            type="range"
+            id="repetitions"
+            min="100"
+            max="1000"
+            step="100"
+            value="500"
+          />
+        </div>
+        <div class="control-field">
+          <label for="level"
+            >Nominal coverage:
+            <output id="level-value" for="level">0.95</output></label
+          ><input
+            type="range"
+            id="level"
+            min="0.8"
+            max="0.99"
+            step="0.01"
+            value="0.95"
+          />
+        </div>
+        <div class="control-field">
+          <label for="method">Interval procedure</label
+          ><select id="method">
+            <option value="t" selected>t interval (estimate s)</option>
+            <option value="z">z interval (known σ)</option>
+          </select>
+        </div>
+        <div class="control-field">
+          <label for="seed">Random seed</label
+          ><input
+            type="number"
+            id="seed"
+            min="0"
+            max="2147483647"
+            step="1"
+            value="42"
+          />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Repeated intervals around a fixed μ</h2>
+          <div class="plot-frame">
+            <canvas
+              id="intervalChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Repeated intervals around a fixed μ"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Empirical distribution of interval widths</h2>
+          <div class="plot-frame">
+            <canvas
+              id="widthChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Empirical distribution of interval widths"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          Independent samples come from a normal population. The t procedure
+          estimates s separately for each sample and uses df = n − 1; the z
+          procedure uses known σ. The population mean stays fixed. The chart
+          displays the first 80 intervals, whereas coverage and mean width use
+          every simulated interval. Circle-marked solid intervals cover μ;
+          triangle-marked dashed intervals miss it. The procedure’s long-run
+          coverage is a property of repeated sampling, not a posterior
+          probability that μ lies inside one realised interval.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+  </body>
+</html>

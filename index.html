@@ -1,26 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Statistics Applets</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <div class="nav-bar">
-    <button data-src="html/binomial-normal-explorer.html">Binomial & Normal Explorer</button>
-    <button data-src="html/binomial-components-explorer.html">Binomial Components</button>
-    <button data-src="html/chi-squared-explorer.html">Chi-Squared Explorer</button>
-    <button data-src="html/f-distribution-explorer.html">F Distribution Explorer</button>
-    <button data-src="html/correlation.html">Correlation</button>
-    <button data-src="html/one-sample-z-test.html">One-Sample Z Test</button>
-    <button data-src="html/one-sample-t-test.html">One-Sample t Test</button>
-    <button data-src="html/independent-samples-t-test.html">Independent Samples t Test</button>
-    <button data-src="html/t-distribution-explorer.html">t Distribution Explorer</button>
-  </div>
-  <div class="iframe-container">
-    <iframe title="Selected statistics applet" id="appletFrame" src="html/binomial-normal-explorer.html"></iframe>
-  </div>
-  <script src="javascript/index.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Fifteen interactive statistics explorers for teaching, learning and asking better questions."
+    />
+    <title>StatsApplets · Statistics, made visible</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="landing">
+    <a class="skip-link" href="#main">Skip to explorers</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">Stats<span>Applets</span></a
+      ><a href="#explorers">Browse explorers</a
+      ><a href="#lecturer">For lecturers</a>
+    </nav>
+    <main id="main">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">A small laboratory for statistical thinking</p>
+          <h1>Move a slider.<br />See the statistics.</h1>
+          <p class="lede">
+            Explore distributions, uncertainty and inference through interactive
+            models, worked values and repeatable experiments.
+          </p>
+        </div>
+        <aside class="hero-note">
+          <h2>Understand what changes.</h2>
+          <p>
+            Keep an eye on the assumptions. Compare the data with the model.
+            Then share the exact example with your students.
+          </p>
+          <p class="small">15 explorers · no accounts · runs in your browser</p>
+        </aside>
+      </header>
+      <section id="explorers" aria-label="Find an explorer">
+        <div class="catalogue-tools">
+          <label for="search">Find a concept</label
+          ><input
+            id="search"
+            type="search"
+            placeholder="Try “power” or “correlation”"
+          /><label class="check-label"
+            ><input id="lecture-links" type="checkbox" /> Open with lecturer
+            mode</label
+          >
+          <p id="catalogue-count" role="status"></p>
+        </div>
+        <div id="catalogue"></div>
+      </section>
+      <section class="teaching-banner" id="lecturer">
+        <p class="eyebrow">Made for the teaching room</p>
+        <h2>Bring a question, leave with a scenario.</h2>
+        <p>
+          Every explorer has presets, a reset button, a worked explanation and a
+          shareable link. Lecturer mode adds an editable scenario title, student
+          question and discussion notes.
+        </p>
+        <ol>
+          <li>Choose an explorer and set up your example.</li>
+          <li>Turn on lecturer mode and edit the guided question.</li>
+          <li>
+            Use student view to hide notes, then copy the example link into your
+            slides.
+          </li>
+        </ol>
+        <p class="small">
+          Settings and notes are encoded in the URL. Answers are hidden visually
+          in student view, not protected. No server stores the scenario.
+        </p>
+      </section>
+    </main>
+    <footer>
+      StatsApplets · Claude J. Bajada ·
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source, methods & contribution guide</a
+      >
+    </footer>
+    <script src="javascript/catalogue.js"></script>
+    <script src="javascript/index.js"></script>
+  </body>
 </html>

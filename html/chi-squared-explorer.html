@@ -1,66 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chi-Squared Test Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-
-</head>
-
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<h1 class="page-title">Chi-Squared Goodness-of-Fit Explorer</h1>
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet visualizes the chi-squared test for goodness of fit. Adjust category counts to see how the statistic and distribution respond.</p>
-<p>χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ, df = k − 1, and Cohen's w = √(χ²/N).
-Here the null probabilities are uniform and no parameters are estimated. w is a non-negative measure of departure from those probabilities; zero means an exact match and larger values mean greater departure. It is not bounded by 1. The observed bars are a deterministic teaching example, not a random sample. Counts are allocated by the largest remainder method after clipping and normalising weights; when N is not divisible by k, an exactly uniform integer allocation is impossible.</p></details>
-
-<div class="slider-container">
-  <label for="categories">Number of Categories: <span id="categories-value">0</span></label>
-  <input type="range" id="categories" min="2" max="10" step="1" value="5">
-
-  <label for="total-observations">Total Observations: <span id="total-observations-value">0</span></label>
-  <input type="range" id="total-observations" min="10" max="1000" step="10" value="100">
-
-  <label for="skew">Change Observed Frequencies: <span id="skew-value"></span></label>
-  <input type="range" id="skew" min="0" max="10" step="0.1" value="5">
-</div>
-
-<p id="validity-warning" class="notice" role="status"></p>
-<div class="stats-container">
-  <div class="stat-item">
-    <label>Effect Size (Cohen's w): <span id="effect-size-value">0</span></label>
-  </div>
-  <div class="stat-item">
-    <label>Chi-Squared Statistic: <span id="chi-squared-value">0</span></label>
-  </div>
-  <div class="stat-item">
-    <label>p Value: <span id="p-value">0</span></label>
-  </div>
-</div>
-
-
-
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">Observed vs Expected Frequencies</h3>
-    <div class="plot-frame"><canvas id="frequencyChart" class="chart-canvas"></canvas></div>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Chi-Squared Distribution</h3>
-    <div class="plot-frame"><canvas id="chiSquaredChart" class="chart-canvas"></canvas></div>
-  </div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/chi-squared-explorer.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Relate deviations in counts to χ² and Cohen’s w under a uniform null."
+    />
+    <title>Chi-squared goodness of fit · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="chi-squared-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Hypothesis testing</p>
+        <h1>Chi-squared goodness of fit</h1>
+        <p class="lede">
+          Relate deviations in counts to χ² and Cohen’s w under a uniform null.
+        </p>
+        <p class="equation">χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="categories"
+            >Number of categories k:
+            <output id="categories-value" for="categories">5</output></label
+          ><input
+            type="range"
+            id="categories"
+            min="2"
+            max="10"
+            step="1"
+            value="5"
+          />
+        </div>
+        <div class="control-field">
+          <label for="total-observations"
+            >Total observations N:
+            <output id="total-observations-value" for="total-observations"
+              >100</output
+            ></label
+          ><input
+            type="range"
+            id="total-observations"
+            min="10"
+            max="1000"
+            step="10"
+            value="100"
+          />
+        </div>
+        <div class="control-field">
+          <label for="skew"
+            >Departure in count weights:
+            <output id="skew-value" for="skew">5</output></label
+          ><input
+            type="range"
+            id="skew"
+            min="0"
+            max="10"
+            step="0.1"
+            value="5"
+          />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics">
+          <div class="metric">
+            <span>Effect size (Cohen's w)</span
+            ><strong id="effect-size-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>χ² statistic</span><strong id="chi-squared-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Upper-tail p</span><strong id="p-value">—</strong>
+          </div>
+        </div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+        <p id="validity-warning" class="notice" role="status"></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Observed integer counts & uniform expected counts
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="frequencyChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Observed integer counts & uniform expected counts"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Null χ² sampling distribution</h2>
+          <div class="plot-frame">
+            <canvas
+              id="chiSquaredChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Null χ² sampling distribution"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          The null category probabilities are uniform; no parameters are
+          estimated from the data, so df = k − 1. Counts are deterministic
+          teaching examples, allocated by clipping weights, normalising and
+          assigning largest remainders. They are not simulated random samples.
+          When N is not divisible by k, a perfectly uniform integer allocation
+          is impossible. Cohen’s w = √(χ²/N) measures departure from the null
+          probabilities and need not be ≤ 1. This goodness-of-fit test is
+          upper-tailed: large non-negative χ² values indicate any departure.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/chi-squared-explorer.js"></script>
+  </body>
 </html>
-

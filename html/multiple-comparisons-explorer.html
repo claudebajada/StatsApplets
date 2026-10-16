@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Observe false-positive inflation and compare family-wise and FDR procedures."
+    />
+    <title>Multiple comparisons · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="multiple-comparisons-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Hypothesis testing</p>
+        <h1>Multiple comparisons</h1>
+        <p class="lede">
+          Observe false-positive inflation and compare family-wise and FDR
+          procedures.
+        </p>
+        <p class="equation">Independent null tests: FWER = 1 − (1 − α)ᵐ</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="tests"
+            >Independent tests per family m:
+            <output id="tests-value" for="tests">20</output></label
+          ><input
+            type="range"
+            id="tests"
+            min="1"
+            max="100"
+            step="1"
+            value="20"
+          />
+        </div>
+        <div class="control-field">
+          <label for="repetitions"
+            >Simulated families:
+            <output id="repetitions-value" for="repetitions"
+              >1000</output
+            ></label
+          ><input
+            type="range"
+            id="repetitions"
+            min="100"
+            max="2000"
+            step="100"
+            value="1000"
+          />
+        </div>
+        <div class="control-field">
+          <label for="alpha"
+            >Error-rate threshold α:
+            <output id="alpha-value" for="alpha">0.05</output></label
+          ><input
+            type="range"
+            id="alpha"
+            min="0.01"
+            max="0.2"
+            step="0.01"
+            value="0.05"
+          />
+        </div>
+        <div class="control-field">
+          <label for="correction">Adjustment</label
+          ><select id="correction">
+            <option value="none" selected>None</option>
+            <option value="bonferroni">Bonferroni (FWER)</option>
+            <option value="holm">Holm (FWER)</option>
+            <option value="bh">Benjamini–Hochberg (FDR)</option>
+          </select>
+        </div>
+        <div class="control-field">
+          <label for="seed">Random seed</label
+          ><input
+            type="number"
+            id="seed"
+            min="0"
+            max="2147483647"
+            step="1"
+            value="42"
+          />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Families with at least one false discovery
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="familyChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Families with at least one false discovery"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            False discoveries in each simulated family
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="discoveryChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="False discoveries in each simulated family"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          Every null hypothesis is true. Each test is represented by an
+          independent Uniform(0,1) p-value, which is exact for a continuous
+          correctly calibrated null test. The unadjusted theoretical FWER is 1 −
+          (1 − α)ᵐ. Bonferroni and Holm control FWER without requiring
+          independent tests. BH controls FDR under independence or suitable
+          positive dependence; arbitrary dependence is outside this simulation.
+          Because every discovery here is false, FDR equals FWER in this
+          all-null experiment. This does not demonstrate the mixed-null power
+          trade-off.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+  </body>
+</html>

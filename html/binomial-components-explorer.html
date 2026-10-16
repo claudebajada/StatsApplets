@@ -1,48 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Binomial Components Explorer</title>
-  <script src="../lib/chart.min.js"></script>
-  <link rel="stylesheet" href="../css/styles.css">
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet illustrates how individual binomial coefficients and probability terms combine to form the binomial distribution.</p>
-</details>
-
-<h1 class="page-title">Binomial Components Explorer</h1>
-
-<div class="slider-container">
-  <label for="p">Probability of Success (p): <span id="p-value">0.5</span></label>
-  <input type="range" id="p" min="0" max="1" step="0.01" value="0.5">
-
-  <label for="n">Number of Trials (n): <span id="n-value">10</span></label>
-  <input type="range" id="n" min="1" max="30" step="1" value="10">
-</div>
-
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">1) Binomial Coefficient Only</h3>
-    <div class="plot-frame"><canvas id="coeffChart" class="chart-canvas"></canvas></div>
-  </div>
-  <div class="chart-container">
-    <h3 class="chart-title">2) Probability Term Only</h3>
-    <div class="plot-frame"><canvas id="probTermChart" class="chart-canvas"></canvas></div>
-  </div>
-  <div class="chart-container">
-    <h3 class="chart-title">3) Full Binomial Distribution</h3>
-    <div class="plot-frame"><canvas id="fullDistChart" class="chart-canvas"></canvas></div>
-  </div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/binomial-components-explorer.js"></script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See why a probability term must be multiplied by the number of arrangements."
+    />
+    <title>Building the binomial · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="binomial-components-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Distributions</p>
+        <h1>Building the binomial</h1>
+        <p class="lede">
+          See why a probability term must be multiplied by the number of
+          arrangements.
+        </p>
+        <p class="equation">P(X = k) = C(n,k) pᵏ(1 − p)ⁿ⁻ᵏ</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="p"
+            >Success probability p:
+            <output id="p-value" for="p">0.5</output></label
+          ><input type="range" id="p" min="0" max="1" step="0.01" value="0.5" />
+        </div>
+        <div class="control-field">
+          <label for="n"
+            >Number of trials n: <output id="n-value" for="n">10</output></label
+          ><input type="range" id="n" min="1" max="30" step="1" value="10" />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">1 · Number of arrangements C(n,k)</h2>
+          <div class="plot-frame">
+            <canvas
+              id="coeffChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="1 · Number of arrangements C(n,k)"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">2 · Probability of each arrangement</h2>
+          <div class="plot-frame">
+            <canvas
+              id="probTermChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="2 · Probability of each arrangement"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">3 · Product: binomial probabilities</h2>
+          <div class="plot-frame">
+            <canvas
+              id="fullDistChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="3 · Product: binomial probabilities"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          The coefficient counts how many arrangements give k successes. The
+          probability factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each
+          arrangement. Their product is P(X = k); only this final distribution
+          must sum to 1. The first two panels are factors, not probability
+          distributions.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/binomial-components-explorer.js"></script>
+  </body>
 </html>
-

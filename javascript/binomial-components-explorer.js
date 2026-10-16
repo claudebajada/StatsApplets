@@ -1,71 +1,77 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const pSlider = document.getElementById('p');
-  const nSlider = document.getElementById('n');
-  const pValueDisplay = document.getElementById('p-value');
-  const nValueDisplay = document.getElementById('n-value');
+document.addEventListener("DOMContentLoaded", function () {
+  const pSlider = document.getElementById("p");
+  const nSlider = document.getElementById("n");
+  const pValueDisplay = document.getElementById("p-value");
+  const nValueDisplay = document.getElementById("n-value");
 
-  const coeffCtx = document.getElementById('coeffChart').getContext('2d');
-  const probTermCtx = document.getElementById('probTermChart').getContext('2d');
-  const fullDistCtx = document.getElementById('fullDistChart').getContext('2d');
+  const coeffCtx = document.getElementById("coeffChart").getContext("2d");
+  const probTermCtx = document.getElementById("probTermChart").getContext("2d");
+  const fullDistCtx = document.getElementById("fullDistChart").getContext("2d");
 
   // Initialize Charts
   let coeffChart = initializeChart(coeffCtx, {
-    type: 'bar',
+    type: "bar",
     data: {
       labels: [],
-      datasets: [{
-        label: 'Binomial Coefficient',
-        data: [],
-        backgroundColor: 'rgba(0, 123, 255, 0.7)'
-      }]
+      datasets: [
+        {
+          label: "Binomial Coefficient",
+          data: [],
+          backgroundColor: "rgba(0, 123, 255, 0.7)",
+        },
+      ],
     },
-    options: commonChartOptions()
+    options: commonChartOptions(),
   });
 
   let probTermChart = initializeChart(probTermCtx, {
-    type: 'bar',
+    type: "bar",
     data: {
       labels: [],
-      datasets: [{
-        label: 'Probability Term',
-        data: [],
-        backgroundColor: 'rgba(255, 193, 7, 0.7)'
-      }]
+      datasets: [
+        {
+          label: "Probability Term",
+          data: [],
+          backgroundColor: "rgba(255, 193, 7, 0.7)",
+        },
+      ],
     },
-    options: commonChartOptions()
+    options: commonChartOptions(),
   });
 
   let fullDistChart = initializeChart(fullDistCtx, {
-    type: 'bar',
+    type: "bar",
     data: {
       labels: [],
-      datasets: [{
-        label: 'Binomial Distribution',
-        data: [],
-        backgroundColor: 'rgba(40, 167, 69, 0.7)'
-      }]
+      datasets: [
+        {
+          label: "Binomial Distribution",
+          data: [],
+          backgroundColor: "rgba(40, 167, 69, 0.7)",
+        },
+      ],
     },
-    options: commonChartOptions()
+    options: commonChartOptions(),
   });
 
   function commonChartOptions() {
     return {
       scales: {
         y: {
-          beginAtZero: true
+          beginAtZero: true,
         },
         x: {
-          type: 'linear',
+          type: "linear",
           ticks: {
             stepSize: 1,
-            callback: function(val) {
+            callback: function (val) {
               return Number.isInteger(val) ? val : null;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
     };
   }
 
@@ -81,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const probabilityTerm = [];
     const fullDistribution = [];
 
-    kValues.forEach(k => {
+    kValues.forEach((k) => {
       const coeff = combinations(n, k);
       const probTerm = Math.pow(p, k) * Math.pow(1 - p, n - k);
       const fullProb = coeff * probTerm;
@@ -107,9 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
     fullDistChart.update();
   }
 
-  pSlider.addEventListener('input', updateCharts);
-  nSlider.addEventListener('input', updateCharts);
+  pSlider.addEventListener("input", updateCharts);
+  nSlider.addEventListener("input", updateCharts);
 
+  document.addEventListener("applet:state", updateCharts);
   updateCharts();
 });
-

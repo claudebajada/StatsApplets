@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Inspect fitted values and residuals and see how least squares determines a line."
+    />
+    <title>Linear regression · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="regression-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Relationships</p>
+        <h1>Linear regression</h1>
+        <p class="lede">
+          Inspect fitted values and residuals and see how least squares
+          determines a line.
+        </p>
+        <p class="equation">ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="dataMode">Data source</label
+          ><select id="dataMode">
+            <option value="generated" selected>Seeded illustrative data</option>
+            <option value="manual">Use the pairs below</option>
+          </select>
+        </div>
+        <div class="control-field">
+          <label for="sampleSize"
+            >Generated observations n:
+            <output id="sampleSize-value" for="sampleSize">30</output></label
+          ><input
+            type="range"
+            id="sampleSize"
+            min="3"
+            max="100"
+            step="1"
+            value="30"
+          />
+        </div>
+        <div class="control-field">
+          <label for="slope"
+            >Generating population slope:
+            <output id="slope-value" for="slope">1</output></label
+          ><input
+            type="range"
+            id="slope"
+            min="-3"
+            max="3"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label for="noise"
+            >Generating noise SD:
+            <output id="noise-value" for="noise">1</output></label
+          ><input
+            type="range"
+            id="noise"
+            min="0"
+            max="3"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label for="seed">Random seed</label
+          ><input
+            type="number"
+            id="seed"
+            min="0"
+            max="2147483647"
+            step="1"
+            value="42"
+          />
+        </div>
+        <div class="control-field wide">
+          <label for="pairs">Manual x, y pairs: one pair per line</label
+          ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
+1,1
+2,3
+3,2
+4,5
+5,4</textarea>
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Observations, least-squares line & residual segments
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="fitChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Observations, least-squares line & residual segments"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Residuals against fitted values</h2>
+          <div class="plot-frame">
+            <canvas
+              id="residualChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Residuals against fitted values"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          Generated data use fixed x values, population intercept 1 and
+          independent normal errors with the chosen SD. The fitted line
+          estimates intercept and slope from the displayed sample. Least squares
+          minimises the sum of squared vertical residuals. R² uses a model with
+          an intercept and is undefined for constant y. Slope is undefined for
+          constant x. Descriptive fitting itself needs no normality assumption;
+          the familiar normal-theory inference would require additional
+          assumptions. Generating controls have no effect when manual data are
+          selected.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+  </body>
+</html>

@@ -1,93 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Sample t-Test Explorer</title>
-  <script src="../lib/chart.min.js"></script>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/mathjax/tex-mml-chtml.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-
-
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet explores the one-sample t test. Modify the sample mean, size, and standard deviation to see the resulting t statistic.</p>
-<p>The sliders specify sample statistics x̄, s and n, not known population parameters. t = (x̄ − μ₀)/(s/√n), df = n − 1; signed Cohen’s d = (x̄ − μ₀)/s. The first curve is an illustrative normal model; the middle curve shows estimated uncertainty centred on the observed difference. The null sampling distribution appears in the final plot. The exact t test assumes independent normal observations; small samples are sensitive to non-normality and outliers. Choose the alternative before examining the data.</p>
-</details>
-
-<h1 class="page-title">One Sample t-Test Explorer</h1>
-
-<!-- Sliders for Population Distribution -->
-<div class="slider-container">
-  <label for="mu">Sample Mean (\( \bar{x} \)): <span id="mu-value">0</span></label>
-  <input type="range" id="mu" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="mu0">Hypothesized Mean (\( \mu_0 \)): <span id="mu0-value">0</span></label>
-  <input type="range" id="mu0" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="sigma">Sample Standard Deviation (\( s \)): <span id="sigma-value">1</span></label>
-  <input type="range" id="sigma" class="slider" min="0.1" max="5" step="0.1" value="1">
-
-  <label for="N">Sample Size (\( N \)): <span id="N-value">30</span></label>
-  <input type="range" id="N" class="slider" min="5" max="100" step="1" value="30">
-  
-<label for="alternative">Alternative hypothesis: μ is</label>
-<select id="alternative">
-  <option value="upper">greater than</option>
-  <option value="lower">less than</option>
-  <option value="twoSided">different from</option>
-</select>
-<span>μ₀</span>
-<p>Selected p-value: <strong id="p-value-selected" aria-live="polite"></strong></p>
-<p>Lower-tail p-value: <span id="p-value-lower"></span></p>
-<p id="calculation"></p>
-
-<div class="cohen-d-container">
-  Signed standardised difference (Cohen's d): <span id="cohen-d-value">0</span>
-</div>
-<div class="degrees-of-freedom-container">
-  Degrees of freedom (df): <span id="df-value">0</span>
-</div>
-<div class="t-value-container">
-  t statistic: <span id="t-value">0</span>
-</div>
-<div class="p-value-container">
-  Upper-tail p-value: <span id="p-value-one-sided">0</span>
-</div>
-<div class="p-value-container">
-  Two Tailed p-value: <span id="p-value-two-sided">0</span>
-</div>
-
-
-</div>
-
-<!-- Containers for Charts -->
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">Illustrative Normal Model</h3>
-    <div class="plot-frame"><canvas id="populationChart" class="chart-canvas"></canvas></div>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Estimated Uncertainty of Mean Difference</h3>
-    <div class="plot-frame"><canvas id="stderrChart" class="chart-canvas"></canvas></div>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">t Statistic Sampling Distribution</h3>
-    <div class="plot-frame"><canvas id="tChart" class="chart-canvas"></canvas></div>
-  </div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"></script>
-<script src="../javascript/mean-test-explorer.js"></script>
-<script src="../javascript/one-sample-t-test.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Connect sample statistics, estimated standard error and the null t distribution."
+    />
+    <title>One-sample t test · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="one-sample-t-test">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Hypothesis testing</p>
+        <h1>One-sample t test</h1>
+        <p class="lede">
+          Connect sample statistics, estimated standard error and the null t
+          distribution.
+        </p>
+        <p class="equation">t = (x̄ − μ₀)/(s/√n); df = n − 1; d = (x̄ − μ₀)/s</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="mu"
+            >Sample mean x̄: <output id="mu-value" for="mu">0</output></label
+          ><input
+            type="range"
+            id="mu"
+            min="-10"
+            max="10"
+            step="0.1"
+            value="0"
+          />
+        </div>
+        <div class="control-field">
+          <label for="mu0"
+            >Null population mean μ₀:
+            <output id="mu0-value" for="mu0">0</output></label
+          ><input
+            type="range"
+            id="mu0"
+            min="-10"
+            max="10"
+            step="0.1"
+            value="0"
+          />
+        </div>
+        <div class="control-field">
+          <label for="sigma"
+            >Sample SD s: <output id="sigma-value" for="sigma">1</output></label
+          ><input
+            type="range"
+            id="sigma"
+            min="0.1"
+            max="5"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="control-field">
+          <label for="N"
+            >Sample size n: <output id="N-value" for="N">30</output></label
+          ><input type="range" id="N" min="5" max="100" step="1" value="30" />
+        </div>
+        <div class="control-field">
+          <label for="alternative">H₁: μ is … μ₀</label
+          ><select id="alternative">
+            <option value="upper" selected>greater than</option>
+            <option value="lower">less than</option>
+            <option value="twoSided">different from</option>
+          </select>
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics">
+          <div class="metric">
+            <span>Selected p-value</span
+            ><strong id="p-value-selected">—</strong>
+          </div>
+          <div class="metric">
+            <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+          </div>
+          <div class="metric">
+            <span>Upper-tail p</span><strong id="p-value-one-sided">—</strong>
+          </div>
+          <div class="metric">
+            <span>Two-sided p</span><strong id="p-value-two-sided">—</strong>
+          </div>
+          <div class="metric">
+            <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>t statistic</span><strong id="t-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Degrees of freedom</span><strong id="df-value">—</strong>
+          </div>
+        </div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Illustrative normal model</h2>
+          <div class="plot-frame">
+            <canvas
+              id="populationChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Illustrative normal model"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Estimated uncertainty of the mean difference
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="stderrChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Estimated uncertainty of the mean difference"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Null sampling distribution & observed statistic
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="tChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Null sampling distribution & observed statistic"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          The sliders are sample statistics, not population parameters. Exact t
+          inference assumes independent normal observations. Small samples are
+          sensitive to skewness and outliers. The middle location/scale t curve
+          represents estimated uncertainty centred on x̄ − μ₀; it is not a second
+          null distribution or a posterior probability density. Cohen’s d is
+          signed.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/mean-test-explorer.js"></script>
+    <script src="../javascript/one-sample-t-test.js"></script>
+  </body>
 </html>
-

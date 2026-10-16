@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Relate a signed effect, sample size and rejection region to power."
+    />
+    <title>Statistical power · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="power-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Sampling & uncertainty</p>
+        <h1>Statistical power</h1>
+        <p class="lede">
+          Relate a signed effect, sample size and rejection region to power.
+        </p>
+        <p class="equation">
+          Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)
+        </p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="sampleSize"
+            >Sample size n:
+            <output id="sampleSize-value" for="sampleSize">30</output></label
+          ><input
+            type="range"
+            id="sampleSize"
+            min="2"
+            max="300"
+            step="1"
+            value="30"
+          />
+        </div>
+        <div class="control-field">
+          <label for="effect"
+            >True signed standardised effect d:
+            <output id="effect-value" for="effect">0.5</output></label
+          ><input
+            type="range"
+            id="effect"
+            min="-2"
+            max="2"
+            step="0.05"
+            value="0.5"
+          />
+        </div>
+        <div class="control-field">
+          <label for="alpha"
+            >Significance level α:
+            <output id="alpha-value" for="alpha">0.05</output></label
+          ><input
+            type="range"
+            id="alpha"
+            min="0.01"
+            max="0.2"
+            step="0.01"
+            value="0.05"
+          />
+        </div>
+        <div class="control-field">
+          <label for="alternative">H₁: μ is … μ₀</label
+          ><select id="alternative">
+            <option value="upper">greater than</option>
+            <option value="lower">less than</option>
+            <option value="twoSided" selected>different from</option>
+          </select>
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics"></div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Null & specified alternative sampling densities
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="powerChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Null & specified alternative sampling densities"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Power as sample size changes</h2>
+          <div class="plot-frame">
+            <canvas
+              id="powerCurveChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Power as sample size changes"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          This explorer uses an exact one-sample z test with known population σ
+          and independent normal observations. d = (μ − μ₀)/σ is the specified
+          population effect, not an estimated sample effect. The sampling SD of
+          Z is 1; its mean under the specified alternative is d√n. Rejection
+          regions are determined under H₀ before power is calculated under H₁.
+          These calculations are not t-test power; a directional alternative can
+          have power below α when the true effect points the other way.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+  </body>
+</html>

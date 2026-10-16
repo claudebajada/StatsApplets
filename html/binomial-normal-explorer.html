@@ -1,51 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Binomial and Normal Distribution Explorer</title>
-<script src="../lib/chart.min.js"></script>
-<link rel="stylesheet" href="../css/styles.css">
-
-</head>
-<body class="applet">
-<nav aria-label="Applet navigation"><a class="back-link" href="../index.html">← All applets</a></nav>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet compares the binomial distribution to a normal approximation. Adjust the parameters to see when the curves align.</p>
-<p>For X ∼ Binomial(n,p), μ = np and σ² = np(1 − p). Binomial bars are point probabilities; the normal curve is a density. To approximate P(X = k), use the normal area from k − 0.5 to k + 0.5 (continuity correction), rather than the curve height.</p></details>
-
-<h1 class="page-title">Binomial and Normal Distribution Explorer</h1>
-
-
-<div class="slider-container">
-  <label for="theta">Theta (Probability of Success): <span id="theta-value">0.5</span></label>
-  <input type="range" id="theta" class="slider" min="0" max="1" step="0.01" value="0.5">
-
-  <label for="N">N (Number of Trials): <span id="N-value">15</span></label>
-  <input type="range" id="N" class="slider" min="0" max="30" step="1" value="15">
-</div>
-
-<p id="approximation-warning" class="notice" role="status"></p>
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">The Binomial Distribution</h3>
-    <div class="plot-frame"><canvas id="binomialChart" class="chart-canvas"></canvas></div>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Normal Approximation to Binomial</h3>
-    <p>Mu: <span id="mu-value"></span></p>
-    <p>Sigma: <span id="sigma-value"></span></p>
-    <div class="plot-frame"><canvas id="normalChart" class="chart-canvas"></canvas></div>
-  </div>
-</div>
-
-<script src="../javascript/statistics.js"></script>
-<script src="../javascript/common.js"> </script>
-<script src="../javascript/binomial-normal-explorer.js"></script> <!-- Link to the specific applet JavaScript file -->
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare exact probabilities with a continuous approximation and recognise its limits."
+    />
+    <title>Binomial &amp; normal · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="binomial-normal-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">Stats<span>Applets</span></a
+      ><a href="../index.html">All explorers</a
+      ><a href="../index.html#lecturer">Teaching scenarios</a>
+    </nav>
+    <main id="main">
+      <header class="page-header">
+        <p class="eyebrow">Distributions</p>
+        <h1>Binomial & normal</h1>
+        <p class="lede">
+          Compare exact probabilities with a continuous approximation and
+          recognise its limits.
+        </p>
+        <p class="equation">X ∼ Bin(n,p); μ = np; σ² = np(1 − p)</p>
+      </header>
+      <div id="scenario-toolbar"></div>
+      <section class="controls-panel" id="controls" aria-label="Parameters">
+        <div class="control-field">
+          <label for="theta"
+            >Success probability p:
+            <output id="theta-value" for="theta">0.5</output></label
+          ><input
+            type="range"
+            id="theta"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
+        </div>
+        <div class="control-field">
+          <label for="N"
+            >Number of trials n: <output id="N-value" for="N">15</output></label
+          ><input type="range" id="N" min="0" max="30" step="1" value="15" />
+        </div>
+      </section>
+      <section class="result-card" aria-label="Current results">
+        <div class="metrics">
+          <div class="metric">
+            <span>Population mean μ = np</span><strong id="mu-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Population SD σ</span><strong id="sigma-value">—</strong>
+          </div>
+        </div>
+        <p id="calculation" aria-live="polite"></p>
+        <p id="input-warning" class="notice" role="status" hidden></p>
+        <p id="approximation-warning" class="notice" role="status"></p>
+      </section>
+      <section class="container" aria-label="Interactive plots">
+        <figure class="chart-container">
+          <h2 class="chart-title">Exact binomial probabilities</h2>
+          <div class="plot-frame">
+            <canvas
+              id="binomialChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Exact binomial probabilities"
+            ></canvas>
+          </div>
+        </figure>
+        <figure class="chart-container">
+          <h2 class="chart-title">Normal approximation: probability density</h2>
+          <div class="plot-frame">
+            <canvas
+              id="normalChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Normal approximation: probability density"
+            ></canvas>
+          </div>
+        </figure>
+      </section>
+      <details class="info">
+        <summary>Model, assumptions & interpretation</summary>
+        <p>
+          Binomial bars are point probabilities; the normal curve is a density.
+          Approximate P(X = k) by the normal area from k − 0.5 to k + 0.5
+          (continuity correction), not by the curve height. Trials must be
+          independent with a common success probability. The rule np ≥ 5 and n(1
+          − p) ≥ 5 is a rough approximation check, not a guarantee.
+        </p>
+      </details>
+      <section id="lecturer-panel"></section>
+    </main>
+    <footer>
+      Built for explanation, exploration and better questions.
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source & documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/binomial-normal-explorer.js"></script>
+  </body>
 </html>
-

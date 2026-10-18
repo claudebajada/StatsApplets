@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,8 +26,44 @@
           Explore the pooled equal-variance test with different group sample
           sizes.
         </p>
-        <p class="equation">
-          t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
+            ><mrow
+              ><mi>t</mi><mo>=</mo
+              ><mfrac
+                ><mrow
+                  ><msub
+                    ><mover><mi>x</mi><mo>¯</mo></mover
+                    ><mn>1</mn></msub
+                  ><mo>−</mo
+                  ><msub
+                    ><mover><mi>x</mi><mo>¯</mo></mover
+                    ><mn>2</mn></msub
+                  ></mrow
+                ><mrow
+                  ><msub><mi>s</mi><mi>p</mi></msub
+                  ><msqrt
+                    ><mrow
+                      ><mfrac
+                        ><mn>1</mn><msub><mi>n</mi><mn>1</mn></msub></mfrac
+                      ><mo>+</mo
+                      ><mfrac
+                        ><mn>1</mn><msub><mi>n</mi><mn>2</mn></msub></mfrac
+                      ></mrow
+                    ></msqrt
+                  ></mrow
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄₁ and x̄₂ are sample means; sₚ is the pooled sample SD; n₁ and n₂ are
+          the sample sizes. The denominator estimates the standard error of the
+          mean difference.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -98,62 +133,80 @@
             ><strong id="p-value-selected">—</strong>
           </div>
           <div class="metric">
-            <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            <span>t score</span><strong id="t-value">—</strong>
           </div>
           <div class="metric">
-            <span>Upper-tail p</span><strong id="one-tailed-p-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Two-sided p</span><strong id="two-tailed-p-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>t statistic</span><strong id="t-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Degrees of freedom</span><strong id="df-value">—</strong>
+            <span>Estimated standard error (SE)</span
+            ><strong id="se-value">—</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
         <p id="input-warning" class="notice" role="status" hidden></p>
+        <details class="info">
+          <summary>Effect size and other tail probabilities</summary>
+          <div class="metrics">
+            <div class="metric">
+              <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Degrees of freedom</span><strong id="df-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            </div>
+            <div class="metric">
+              <span>Upper-tail p</span
+              ><strong id="one-tailed-p-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Two-sided p</span><strong id="two-tailed-p-value">—</strong>
+            </div>
+          </div>
+          <p>
+            The selected p-value above corresponds to your alternative
+            hypothesis. These other probabilities answer different directional
+            questions. The signed effect size divides the observed difference by
+            the sample SD; its sign follows the order of subtraction.
+          </p>
+        </details>
       </section>
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
-          <h2 class="chart-title">Illustrative normal models</h2>
+          <h2 class="chart-title">
+            1 · Compare the sample estimate with the null value
+          </h2>
+          <p class="chart-explanation" id="meanEstimateChart-explanation">
+            The circle is the sample estimate; the diamond is the value claimed
+            by the null hypothesis. The horizontal bar extends one standard
+            error either side of the estimate. Read the horizontal axis in the
+            original measurement units. This bar is not a confidence interval.
+          </p>
           <div class="plot-frame">
             <canvas
-              id="populationChart"
+              id="meanEstimateChart"
               class="chart-canvas"
               role="img"
-              aria-label="Illustrative normal models"
+              aria-label="1 · Compare the sample estimate with the null value"
             ></canvas>
           </div>
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">
-            Estimated uncertainty of the mean difference
+            2 · Read the p-value under the null hypothesis
           </h2>
-          <div class="plot-frame">
-            <canvas
-              id="stderrChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Estimated uncertainty of the mean difference"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Null sampling distribution & observed statistic
-          </h2>
+          <p class="chart-explanation" id="tChart-explanation">
+            Imagine repeating the study when the null hypothesis is true. This
+            curve shows the distribution of the resulting t scores, not the
+            distribution of individual measurements. The vertical line marks
+            your t score. The shaded area is the p-value for your chosen
+            alternative.
+          </p>
           <div class="plot-frame">
             <canvas
               id="tChart"
               class="chart-canvas"
               role="img"
-              aria-label="Null sampling distribution & observed statistic"
+              aria-label="2 · Read the p-value under the null hypothesis"
             ></canvas>
           </div>
         </figure>
@@ -161,18 +214,17 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          This retains the pooled equal-variance model: s₁ = s₂ = s, so sₚ = s.
-          It is not Welch’s test. Groups and observations must be independent;
-          exact inference assumes normal populations with equal variances. The
-          middle location/scale t curve is an uncertainty representation centred
-          on the observed difference; it is not the sampling distribution under
-          H₁. Cohen’s d is signed.
+          This is the pooled equal-variance test with s₁ = s₂ = s, so sₚ = s.
+          Degrees of freedom are n₁ + n₂ − 2. Groups and observations must be
+          independent; exact inference assumes normal populations with equal
+          variances. The first chart displays the observed mean difference and
+          its estimated standard error. The second chart is the null reference
+          distribution of t scores.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

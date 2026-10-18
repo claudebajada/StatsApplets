@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -26,8 +25,22 @@
         <p class="lede">
           See repeated intervals vary around a fixed population mean.
         </p>
-        <p class="equation">
-          CI = x̄ ± critical × SE; t intervals use s and df = n − 1
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="CI = x̄ ± critical × SE; t intervals use s and df = n − 1"
+            ><mrow
+              ><mover><mi>x</mi><mo>¯</mo></mover
+              ><mo>±</mo><mtext>critical value</mtext><mo>×</mo
+              ><mi>SE</mi></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄ is the sample mean. The t procedure uses SE = s/√n and a t critical
+          value with n − 1 degrees of freedom. The z procedure uses known σ/√n
+          and a normal critical value.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -126,6 +139,11 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">Repeated intervals around a fixed μ</h2>
+          <p class="chart-explanation" id="intervalChart-explanation">
+            Each horizontal segment is a confidence interval from a different
+            sample. The vertical reference line is the fixed population mean.
+            Dashed, triangle-marked intervals miss that mean.
+          </p>
           <div class="plot-frame">
             <canvas
               id="intervalChart"
@@ -137,6 +155,10 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Empirical distribution of interval widths</h2>
+          <p class="chart-explanation" id="widthChart-explanation">
+            These bars count the widths of the simulated intervals. Wider
+            intervals express less precise estimates.
+          </p>
           <div class="plot-frame">
             <canvas
               id="widthChart"
@@ -160,10 +182,9 @@
           probability that μ lies inside one realised interval.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

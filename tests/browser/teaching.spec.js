@@ -22,7 +22,7 @@ async function chartData(page) {
   );
 }
 for (const item of catalogue) {
-  test(`${item.id}: presets, reset, URL settings and guided scenario round-trip`, async ({
+  test(`${item.id}: presets, reset and student URL settings round-trip`, async ({
     page,
   }) => {
     await page.goto("/html/" + item.id + ".html");
@@ -34,31 +34,14 @@ for (const item of catalogue) {
       for (const [key, v] of Object.entries(item.presets[i][1]))
         expect(String(current[key])).toBe(String(v));
     }
-    await page.locator("#lecturer").check();
-    await page.locator("#lesson-title").fill("Lecture example: <text>");
-    await page
-      .locator("#lesson-prompt")
-      .fill("Predict what happens before moving a slider.");
-    await page
-      .locator("#lesson-answer")
-      .fill("Discuss the mechanism and assumptions.");
-    await page.locator("#student-view").check();
     const configured = await state(page),
       data = await chartData(page),
       link = page.url();
     await page.goto(link);
     expect(await state(page)).toEqual(configured);
     expect(await chartData(page)).toEqual(data);
-    await expect(page.locator("#lecturer-panel")).toBeVisible();
-    await expect(page.locator(".lesson-fields")).toBeHidden();
-    await expect(page.locator("#exercise-title")).toHaveText(
-      "Lecture example: <text>",
-    );
-    await expect(page.locator("#exercise-answer")).toBeHidden();
-    await page.locator("#reveal-answer").click();
-    await expect(page.locator("#exercise-answer")).toHaveText(
-      "Discuss the mechanism and assumptions.",
-    );
+    await expect(page.locator("#lecturer, #lecturer-panel")).toHaveCount(0);
+    await expect(page.locator(".page-header math")).toBeVisible();
     await page.locator("#reset").click();
     expect(await state(page)).toEqual(initial);
     await expect(page.locator("#input-warning")).toBeHidden();
@@ -67,7 +50,6 @@ for (const item of catalogue) {
     page,
   }) => {
     await page.goto("/html/" + item.id + ".html");
-    await page.locator("#lecturer").check();
     const result = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
@@ -114,6 +96,8 @@ test("correlation handles more than two observations and malformed pairs", async
   page,
 }) => {
   await page.goto("/html/correlation.html");
+  await page.locator(".input-details summary").click();
+  await page.locator("#dataMode").selectOption("manual");
   await page.locator("#pairs").fill("1,1\n2,3\n3,2");
   await expect(page.locator("#data-pearson-value")).toHaveText("0.5000");
   const data = await chartData(page);
@@ -161,26 +145,65 @@ test("invalid URL numbers cannot create non-finite results or inject markup", as
   await expect(page.locator("#mu")).toHaveValue("0");
   await expect(page.locator("#sigma")).toHaveValue("1");
   await expect(page.locator("#N")).toHaveValue("30");
-  await expect(page.locator("#exercise-title img")).toHaveCount(0);
+  await expect(page.locator("#lecturer, #lecturer-panel, img")).toHaveCount(0);
+  expect(new URL(page.url()).searchParams.has("_lecture")).toBe(false);
+  expect(new URL(page.url()).searchParams.has("_title")).toBe(false);
   await expect(page.locator("#t-value")).toHaveText("0.0000");
 });
 
-test("geometric coordinate axes use equal pixel lengths per unit", async ({
+test("correlation starts with one scatterplot and offers optional calculation steps", async ({
   page,
 }) => {
   await page.goto("/html/correlation.html");
-  const ratios = await page.evaluate(() =>
-    ["dotProductChart", "cosineChart", "pearsonNormChart"].map((id) => {
-      const c = Chart.getChart(id),
-        x = c.scales.x,
-        y = c.scales.y;
-      return Math.abs(
-        (x.getPixelForValue(1) - x.getPixelForValue(0)) /
-          (y.getPixelForValue(1) - y.getPixelForValue(0)),
-      );
-    }),
+  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.locator("#data-pearson-value")).toHaveText("0.6000");
+  await expect(page.locator("#correlation-working")).not.toHaveAttribute(
+    "open",
+    "",
   );
-  ratios.forEach((r) => expect(r).toBeCloseTo(1, 5));
+  await page.locator("#correlation-working summary").click();
+  await expect(page.locator("#correlation-working math mfrac")).toHaveCount(1);
+  await expect(page.locator("#correlation-rows tr")).toHaveCount(12);
+  await expect(page.locator("#correlation-sums")).toContainText("r = 0.6000");
+});
+test("mean-test estimate bars represent the sample estimate and one SE in original units", async ({
+  page,
+}) => {
+  for (const id of [
+    "one-sample-z-test",
+    "one-sample-t-test",
+    "independent-samples-t-test",
+  ]) {
+    await page.goto(
+      `/html/${id}.html?mu=2&mu0=1&mu1=2&mu2=1&sigma=2&N=25&N1=25&N2=25`,
+    );
+    await expect(page.locator("canvas")).toHaveCount(2);
+    const independent = id.startsWith("independent");
+    const estimate = independent ? 1 : 2,
+      se = independent ? 2 * Math.sqrt(2 / 25) : 0.4;
+    const data = await page.evaluate(() =>
+      Chart.getChart("meanEstimateChart").data.datasets.map((ds) => ds.data),
+    );
+    const ticks = await page.evaluate(() =>
+      Chart.getChart("meanEstimateChart").scales.y.ticks.map((t) => t.label),
+    );
+    expect(ticks).toContain("Your sample");
+    expect(ticks).toContain("Null claim");
+    expect(data[0]).toEqual([{ x: estimate, y: 1 }]);
+    expect(data[1]).toEqual([{ x: independent ? 0 : 1, y: 0 }]);
+    expect(data[2][0].x).toBeCloseTo(estimate - se, 12);
+    expect(data[2][1].x).toBeCloseTo(estimate + se, 12);
+    await expect(page.locator(".chart-explanation").first()).toContainText(
+      "not a confidence interval",
+    );
+    // Browser layout must stack a fraction, rather than printing slash notation.
+    const fraction = page.locator(".page-header math > mrow > mfrac");
+    const geometry = await fraction.evaluate((el) => {
+      const [a, b] = [...el.children].map((c) => c.getBoundingClientRect());
+      return { numerator: a.y + a.height / 2, denominator: b.y + b.height / 2 };
+    });
+    expect(geometry.denominator - geometry.numerator).toBeGreaterThan(8);
+  }
 });
 test("plotted-value CSV download contains numerical chart data", async ({
   page,
@@ -193,11 +216,20 @@ test("plotted-value CSV download contains numerical chart data", async ({
     .getByRole("button", { name: "Download all plotted values" })
     .click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("populationChart.csv");
+  expect(download.suggestedFilename()).toBe("meanEstimateChart.csv");
   const stream = await download.createReadStream();
   const chunks = [];
   for await (const chunk of stream) chunks.push(chunk);
   const csv = Buffer.concat(chunks).toString();
   expect(csv).toContain("series,x,y");
-  expect(csv.split("\n").length).toBeGreaterThan(400);
+  expect(csv.split("\n").length).toBeGreaterThan(7);
+});
+
+test("legacy paired-data links select manual correlation data", async ({
+  page,
+}) => {
+  await page.goto("/html/correlation.html?pairs=1,1%0A2,3%0A3,2&_lecture=1");
+  await expect(page.locator("#dataMode")).toHaveValue("manual");
+  await expect(page.locator("#data-pearson-value")).toHaveText("0.5000");
+  expect(new URL(page.url()).searchParams.has("_lecture")).toBe(false);
 });

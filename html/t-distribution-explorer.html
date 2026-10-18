@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,28 @@
           Explore how uncertainty in an estimated SD changes the reference
           distribution.
         </p>
-        <p class="equation">t = (x̄ − μ₀)/(s/√n); df = n − 1</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="t = (x̄ − μ₀)/(s/√n); df = n − 1"
+            ><mrow
+              ><mi>t</mi><mo>=</mo
+              ><mfrac
+                ><mrow
+                  ><mover><mi>x</mi><mo>¯</mo></mover
+                  ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                ><mfrac
+                  ><mi>s</mi><msqrt><mi>n</mi></msqrt></mfrac
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄ is a sample mean; μ₀ is the null mean; s is the sample SD; n is the
+          sample size. A one-sample t statistic has n − 1 degrees of freedom.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -53,6 +73,12 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">Standard normal & Student’s t densities</h2>
+          <p class="chart-explanation" id="distributionChart-explanation">
+            Both curves describe possible standardised scores. Compare their
+            tail areas: a t curve assigns more probability to extreme scores at
+            small degrees of freedom. As df increases, it approaches the normal
+            reference.
+          </p>
           <div class="plot-frame">
             <canvas
               id="distributionChart"
@@ -73,10 +99,9 @@
           variance is also not finite.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

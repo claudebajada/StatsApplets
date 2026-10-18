@@ -22,15 +22,61 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
           },
         ),
       });
-    const modelChart = chart(
-      "populationChart",
-      independent
-        ? ["Normal model for group 1", "Normal model for group 2"]
-        : ["Illustrative normal model"],
+    const estimateChart = initializeChart(
+      get("meanEstimateChart").getContext("2d"),
+      {
+        type: "scatter",
+        data: {
+          datasets: [
+            {
+              ...lineDataset("Sample estimate", [], chartPalette[0]),
+              pointRadius: 7,
+              showLine: false,
+            },
+            {
+              ...lineDataset("Null value", [], chartPalette[1]),
+              pointRadius: 7,
+              pointStyle: "rectRot",
+              showLine: false,
+            },
+            {
+              ...lineDataset("Estimate ± 1 SE", [], chartPalette[0]),
+              showLine: true,
+              borderWidth: 3,
+            },
+            {
+              ...lineDataset("SE end caps", [], chartPalette[0]),
+              showLine: true,
+            },
+          ],
+        },
+        options: chartOptions(
+          {
+            type: "linear",
+            title: {
+              display: true,
+              text: independent
+                ? "Mean difference (original units)"
+                : "Mean (original units)",
+            },
+          },
+          {
+            min: -0.5,
+            max: 1.5,
+            ticks: {
+              stepSize: 0.5,
+              autoSkip: false,
+              callback: (v) =>
+                v === 0 ? "Null claim" : v === 1 ? "Your sample" : "",
+            },
+            grid: { display: false },
+          },
+        ),
+      },
     );
-    const uncertaintyChart = chart("stderrChart", [
-      "Uncertainty curve centred on observed difference",
-    ]);
+    estimateChart.options.plugins.legend.display = false;
+    estimateChart.options.plugins.tooltip.callbacks.label = (context) =>
+      `${context.dataset.label}: ${context.parsed.x.toFixed(4)}`;
     const nullChart = chart(isT ? "tChart" : "zChart", [
       "Null sampling distribution",
       "Selected p-value region",
@@ -66,32 +112,31 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
       ).textContent = formatProbability(tails.twoSided);
       get("p-value-lower").textContent = formatProbability(tails.lower);
       get("p-value-selected").textContent = formatProbability(tails[direction]);
-      get("calculation").textContent =
-        `${statisticName} = (${mean1.toFixed(2)} − ${mean2.toFixed(2)}) / ${se.toFixed(4)} = ${statistic.toFixed(4)}; ${isT ? "estimated " : ""}SE = ${se.toFixed(4)}${isT ? `; df = ${df}` : ""}. Shading shows the selected alternative's p-value under H₀.`;
-      const modelMin =
-        Math.min(mean1, ...(independent ? [mean2] : [])) - 4 * sd;
-      const modelMax =
-        Math.max(mean1, ...(independent ? [mean2] : [])) + 4 * sd;
-      modelChart.data.datasets.forEach((dataset, i) => {
-        dataset.data = curvePoints(modelMin, modelMax, (x) =>
-          normalDensity(x, i ? mean2 : mean1, sd),
-        );
-      });
-      modelChart.update();
+      get("se-value").textContent = se.toFixed(4);
       const difference = mean1 - mean2;
-      const uncertaintyPDF = (x) =>
-        isT
-          ? jStat.studentt.pdf((x - difference) / se, df) / se
-          : normalDensity(x, difference, se);
-      uncertaintyChart.data.datasets[0].data = curvePoints(
-        difference - 5 * se,
-        difference + 5 * se,
-        uncertaintyPDF,
-      );
-      uncertaintyChart.data.datasets[0].label = isT
-        ? `t uncertainty curve (df = ${df})`
-        : "Normal model at observed difference";
-      uncertaintyChart.update();
+      get("calculation").textContent =
+        `Your ${independent ? "mean difference" : "sample mean"} ${difference === 0 ? "matches the null value" : `is ${Math.abs(difference).toFixed(2)} units ${difference < 0 ? "below" : "above"} the null value`}. Dividing the signed difference by the ${isT ? "estimated " : ""}standard error ${se.toFixed(4)} gives ${statisticName} = ${statistic.toFixed(4)}. This is ${Math.abs(statistic).toFixed(2)} standard errors from the null. The p-value is the shaded area in plot 2, assuming the null hypothesis is true.`;
+      const estimate = independent ? difference : mean1;
+      const nullValue = independent ? 0 : mean2;
+      estimateChart.data.datasets[0].data = [{ x: estimate, y: 1 }];
+      estimateChart.data.datasets[1].data = [{ x: nullValue, y: 0 }];
+      estimateChart.data.datasets[2].data = [
+        { x: estimate - se, y: 1 },
+        { x: estimate + se, y: 1 },
+      ];
+      estimateChart.data.datasets[3].data = [
+        { x: estimate - se, y: 0.9 },
+        { x: estimate - se, y: 1.1 },
+        { x: estimate, y: null },
+        { x: estimate + se, y: 0.9 },
+        { x: estimate + se, y: 1.1 },
+      ];
+      const padding = Math.max(se, Math.abs(difference) * 0.15);
+      estimateChart.options.scales.x.min =
+        Math.min(nullValue, estimate - se) - padding;
+      estimateChart.options.scales.x.max =
+        Math.max(nullValue, estimate + se) + padding;
+      estimateChart.update();
       const pdf = (x) =>
         isT ? jStat.studentt.pdf(x, df) : normalDensity(x, 0, 1);
       const extent = Math.max(5, Math.abs(statistic) * 1.1);

@@ -1,6 +1,7 @@
 // Optional authoring helper. Generated HTML is committed; production needs no build.
 const fs = require("node:fs");
 const catalogue = require("../javascript/catalogue.js");
+const math = require("./mathml.js");
 const escape = (s) =>
   String(s)
     .replaceAll("&", "&amp;")
@@ -19,8 +20,84 @@ const directions = [
   ["lower", "less than"],
   ["twoSided", "different from"],
 ];
-const chart = (id, title) =>
-  `<figure class="chart-container ${["dotProductChart", "cosineChart", "pearsonBeforeChart", "pearsonCenteredChart", "pearsonNormChart"].includes(id) ? "geometry-chart" : ""}"><h2 class="chart-title">${title}</h2><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div></figure>`;
+const captions = {
+  meanEstimateChart:
+    "The circle is the sample estimate; the diamond is the value claimed by the null hypothesis. The horizontal bar extends one standard error either side of the estimate. Read the horizontal axis in the original measurement units. This bar is not a confidence interval.",
+  zChart:
+    "Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting z scores, not the distribution of individual measurements. The vertical line marks your z score. The shaded area is the p-value for your chosen alternative.",
+  tChart:
+    "Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting t scores, not the distribution of individual measurements. The vertical line marks your t score. The shaded area is the p-value for your chosen alternative.",
+  pairsChart:
+    "Each dot is one observation with an x value and a y value. An upward pattern gives positive r; a downward pattern gives negative r. A tighter straight-line pattern puts r closer to +1 or −1.",
+  binomialChart:
+    "Each bar is the exact probability of a whole-number count of successes. All bar probabilities add to 1.",
+  normalChart:
+    "This smooth curve approximates the binomial probabilities. Probabilities are areas under the curve; a curve height is not a probability.",
+  coeffChart:
+    "For each possible count k, the bar counts the arrangements of successes and failures. These counts are not probabilities.",
+  probTermChart:
+    "Each bar gives the probability of one particular arrangement with k successes. It does not yet account for all the different arrangements.",
+  fullDistChart:
+    "Multiply each arrangement count by its probability. The resulting bars give the exact probability of each possible count of successes.",
+  frequencyChart:
+    "Compare the observed count in each category with the count predicted by a uniform null model. Both sets of counts add to the selected N.",
+  chiSquaredChart:
+    "Under the null model, repeated studies produce these χ² statistics approximately. The line marks this example’s statistic; the shaded area is the chance of a value at least as large under the null.",
+  distributionChart:
+    "The horizontal axis gives a possible value of the random variable. Probability is area under a density curve, not its height.",
+  populationChart:
+    "These bars summarise individual values drawn from the selected population. Compare their shape with the distribution of sample means in the next plot.",
+  meansChart:
+    "Each sample contributes one mean to these bars. The normal curve has the theoretical mean and standard error of the sample mean; it is a comparison, not a fitted curve.",
+  intervalChart:
+    "Each horizontal segment is a confidence interval from a different sample. The vertical reference line is the fixed population mean. Dashed, triangle-marked intervals miss that mean.",
+  widthChart:
+    "These bars count the widths of the simulated intervals. Wider intervals express less precise estimates.",
+  powerChart:
+    "The null curve describes z scores when the null is true. The other curve describes z scores for the chosen true effect. The shaded area under the latter is power: the chance of rejecting the null for that effect.",
+  powerCurveChart:
+    "Each point gives the chance of rejecting the null at that sample size, holding the true effect, significance level and alternative fixed.",
+  fitChart:
+    "Each dot is one x, y observation. The fitted line predicts y from x. Vertical segments are residuals: observed y minus predicted y.",
+  residualChart:
+    "Each dot shows one fitted value and its residual. The horizontal zero line separates over-predictions from under-predictions.",
+  groupsChart:
+    "Dots show individual observations in each group; the separate mean markers summarise those groups. Compare separation between groups with variation inside groups.",
+  anovaChart:
+    "This curve describes F statistics from repeated studies with equal population means. The vertical line is the observed F; the shaded upper tail is its p-value.",
+  familyChart:
+    "Compare the theoretical chance of at least one false rejection without adjustment with the simulated proportion for your chosen procedure. The vertical axis is a probability, not a number of tests.",
+  discoveryChart:
+    "Each bar counts simulated families with that many false rejections. Every null hypothesis is true in this simulation, so every rejection is a false positive.",
+};
+const symbolKeys = {
+  "binomial-normal-explorer":
+    "n is the number of trials; p is the success probability. μ and σ² are the mean and variance of the binomial count.",
+  "binomial-components-explorer":
+    "k is a count of successes out of n trials. The bracketed coefficient counts arrangements; p is the success probability on each trial.",
+  "t-distribution-explorer":
+    "x̄ is a sample mean; μ₀ is the null mean; s is the sample SD; n is the sample size. A one-sample t statistic has n − 1 degrees of freedom.",
+  "f-distribution-explorer":
+    "U and V are independent chi-squared variables, with df₁ and df₂ degrees of freedom. F is the ratio after dividing each by its own degrees of freedom.",
+  "chi-squared-explorer":
+    "Oᵢ is the observed count in category i; Eᵢ is its expected count under the null. Add the contributions across all categories.",
+  "clt-explorer":
+    "x̄ is the mean of n observations. σ is the population SD; SE is the standard deviation of sample means across repeated samples.",
+  "confidence-interval-explorer":
+    "x̄ is the sample mean. The t procedure uses SE = s/√n and a t critical value with n − 1 degrees of freedom. The z procedure uses known σ/√n and a normal critical value.",
+  "power-explorer":
+    "H₀ is the null hypothesis. μ₁ is the specified true population mean. Power is the chance of rejecting H₀ when this true mean applies.",
+  "regression-explorer":
+    "ŷ is the predicted y value; b₀ is the fitted intercept; b₁ is the fitted slope. Each residual is the observed y minus ŷ.",
+  "anova-explorer":
+    "SS measures sums of squared deviations; k is the number of groups and N is the total sample size. Divide each SS by its degrees of freedom to form the two mean squares.",
+  "multiple-comparisons-explorer":
+    "For m independent tests of true null hypotheses, each at significance level α, FWER is the chance of at least one false rejection without adjustment.",
+};
+const chart = (id, title, caption = captions[id]) => {
+  if (!caption) throw Error("Missing chart explanation: " + id);
+  return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><p class="chart-explanation" id="${id}-explanation">${caption}</p><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div></figure>`;
+};
 const metric = (label, id) =>
   `<div class="metric"><span>${label}</span><strong id="${id}">—</strong></div>`;
 const pages = {};
@@ -62,6 +139,17 @@ for (const id of [
       ),
     metrics:
       metric("Selected p-value", "p-value-selected") +
+      metric(z ? "z score" : "t score", z ? "z-value" : "t-value") +
+      metric(
+        z ? "Standard error (SE)" : "Estimated standard error (SE)",
+        "se-value",
+      ),
+    extraResults: `<details class="info"><summary>Effect size and other tail probabilities</summary><div class="metrics">${
+      metric(
+        z ? "Signed standardised difference (σ)" : "Signed Cohen’s d",
+        "cohen-d-value",
+      ) +
+      (z ? "" : metric("Degrees of freedom", "df-value")) +
       metric("Lower-tail p", "p-value-lower") +
       metric(
         "Upper-tail p",
@@ -70,30 +158,27 @@ for (const id of [
       metric(
         "Two-sided p",
         independent ? "two-tailed-p-value" : "p-value-two-sided",
-      ) +
-      metric(
-        z ? "Signed standardised difference (σ)" : "Signed Cohen’s d",
-        "cohen-d-value",
-      ) +
-      metric(z ? "z statistic" : "t statistic", z ? "z-value" : "t-value") +
-      (z ? "" : metric("Degrees of freedom", "df-value")),
+      )
+    }</div><p>The selected p-value above corresponds to your alternative hypothesis. These other probabilities answer different directional questions. The signed effect size divides the observed difference by ${z ? "the known population SD" : "the sample SD"}; its sign follows the order of subtraction.</p></details>`,
     charts:
       chart(
-        "populationChart",
-        independent
-          ? "Illustrative normal models"
-          : "Illustrative normal model",
+        "meanEstimateChart",
+        "1 · Compare the sample estimate with the null value",
       ) +
-      chart("stderrChart", "Estimated uncertainty of the mean difference") +
       chart(
         z ? "zChart" : "tChart",
-        "Null sampling distribution & observed statistic",
+        "2 · Read the p-value under the null hypothesis",
       ),
-    method: z
-      ? "The normal model around x̄ is illustrative; the true population mean is unknown. The middle curve uses the known standard error σ/√n, centred on the observed difference. Only the final curve is the null sampling distribution. Independent observations and a normal sampling distribution of the mean are assumed. Choose the alternative before looking at the data."
+    symbolKey: z
+      ? "x̄ is your sample mean; μ₀ is the null population mean; σ is the known population SD; n is the sample size. The denominator is the standard error (SE)."
       : independent
-        ? "This retains the pooled equal-variance model: s₁ = s₂ = s, so sₚ = s. It is not Welch’s test. Groups and observations must be independent; exact inference assumes normal populations with equal variances. The middle location/scale t curve is an uncertainty representation centred on the observed difference; it is not the sampling distribution under H₁. Cohen’s d is signed."
-        : "The sliders are sample statistics, not population parameters. Exact t inference assumes independent normal observations. Small samples are sensitive to skewness and outliers. The middle location/scale t curve represents estimated uncertainty centred on x̄ − μ₀; it is not a second null distribution or a posterior probability density. Cohen’s d is signed.",
+        ? "x̄₁ and x̄₂ are sample means; sₚ is the pooled sample SD; n₁ and n₂ are the sample sizes. The denominator estimates the standard error of the mean difference."
+        : "x̄ is your sample mean; μ₀ is the null population mean; s is the sample SD; n is the sample size. The denominator estimates the standard error (SE).",
+    method: z
+      ? "Independent observations and a normal sampling distribution of the mean are assumed. The standard error σ/√n describes how sample means vary across repeated studies. The z score expresses the observed difference from μ₀ in standard-error units. Choose the alternative before looking at the data."
+      : independent
+        ? "This is the pooled equal-variance test with s₁ = s₂ = s, so sₚ = s. Degrees of freedom are n₁ + n₂ − 2. Groups and observations must be independent; exact inference assumes normal populations with equal variances. The first chart displays the observed mean difference and its estimated standard error. The second chart is the null reference distribution of t scores."
+        : "The sliders specify sample statistics. Exact t inference assumes independent normal observations and uses n − 1 degrees of freedom. Small samples are sensitive to skewness and outliers. The first chart displays your sample mean and its estimated standard error. The second chart is the null reference distribution of t scores. Choose the alternative before looking at the data.",
     scripts: ["mean-test-explorer", id],
   };
 }
@@ -147,7 +232,11 @@ pages["chi-squared-explorer"] = {
 pages["t-distribution-explorer"] = {
   controls: range("df-slider", "Degrees of freedom", 1, 100, 1, 1),
   metrics: "",
-  charts: chart("distributionChart", "Standard normal & Student’s t densities"),
+  charts: chart(
+    "distributionChart",
+    "Standard normal & Student’s t densities",
+    "Both curves describe possible standardised scores. Compare their tail areas: a t curve assigns more probability to extreme scores at small degrees of freedom. As df increases, it approaches the normal reference.",
+  ),
   method:
     "Both curves are probability densities centred at zero; neither is an observed sample histogram. The t curve is the null reference for (x̄ − μ₀)/(s/√n) under independent normal sampling. The plotted range is finite; t with df = 1 has no finite mean or variance. With df = 2 its variance is also not finite.",
   scripts: ["t-distribution-explorer"],
@@ -158,7 +247,11 @@ pages["f-distribution-explorer"] = {
     range("df2-slider", "Denominator df₂", 1, 100, 1, 1) +
     '<div class="control-field"><label><input type="checkbox" id="log-axis"> Logarithmic F axis</label></div>',
   metrics: metric("Upper 5% critical F", "critical-value"),
-  charts: chart("distributionChart", "Null F density & rejection region"),
+  charts: chart(
+    "distributionChart",
+    "Null F density & rejection region",
+    "The curve shows possible F values under the null hypothesis. The dashed line is the upper 5% critical value, not an observed statistic. Values to its right form the rejection region; the plot extends far enough to show that threshold.",
+  ),
   notice: "plot-note",
   method:
     "F is non-negative and extends to infinity. Large F values reject an upper-tail variance-ratio or ANOVA null. For df₁ < 2 its density diverges at zero, so that endpoint is omitted from the curve. Shading is truncated at the plot edge, while critical values refer to the full distribution. A log axis changes spacing, not the probabilities.",
@@ -166,51 +259,29 @@ pages["f-distribution-explorer"] = {
 };
 pages.correlation = {
   controls:
-    text(
-      "pairs",
-      "Paired observations: one A, B pair per line",
-      "1,1\n2,3\n3,2\n4,5\n5,4\n6,3",
-    ) +
-    range(
-      "observations",
-      "Generate this many paired observations",
-      3,
-      20,
-      1,
-      6,
-    ) +
-    '<fieldset class="wide"><legend>Two-dimensional geometry controls</legend>' +
-    range("vectorAX1", "A₁", -10, 10, 1, 0) +
-    range("vectorAY1", "A₂", -10, 10, 1, 0) +
-    range("vectorBX1", "B₁", -10, 10, 1, 0) +
-    range("vectorBY1", "B₂", -10, 10, 1, 0) +
-    "</fieldset>",
+    range("association", "Linear association r", -1, 1, 0.05, 0.6) +
+    range("observations", "Number of observations", 3, 30, 1, 12) +
+    `<details class="wide input-details"><summary>Use your own paired observations</summary><p>Choose manual data, then enter one x, y pair per line. The sliders apply only to constructed examples.</p>${select(
+      "dataMode",
+      "Data source",
+      [
+        ["generated", "Constructed example"],
+        ["manual", "My paired observations"],
+      ],
+      "generated",
+    )}${text("pairs", "x, y pairs", "1,1\n2,3\n3,2")}${seed}</details>`,
   metrics:
-    metric("Paired-data dot product", "data-dot-value") +
-    metric("Paired-data cosine", "data-cosine-value") +
-    metric("Paired-data Pearson r", "data-pearson-value"),
-  charts:
-    chart("pairsChart", "Paired observations: A against B") +
-    chart("centeredComponentsChart", "Centre each vector: indexed components") +
-    chart(
-      "normalisedComponentsChart",
-      "Normalise centred vectors: indexed components",
-    ) +
-    '<section class="wide geometry"><h2>Keep the two-dimensional geometric picture</h2><p>These five views use only the four component sliders. With two observations Pearson r can only be ±1, or undefined. A is the solid circle-marked line; B is dashed with triangles. Projection is dotted with squares.</p><div class="metrics">' +
-    metric("A", "vectorAOutput") +
-    metric("B", "vectorBOutput") +
-    metric("Dot product", "dotProductValue") +
-    metric("Cosine similarity", "cosineSimilarityValue") +
-    metric("Pearson r", "pearsonCorrelationValue") +
-    "</div></section>" +
-    chart("dotProductChart", "2D dot product & projection") +
-    chart("cosineChart", "2D normalised vectors & angle") +
-    chart("pearsonBeforeChart", "2D before centring") +
-    chart("pearsonCenteredChart", "2D after centring") +
-    chart("pearsonNormChart", "2D centred & normalised") +
-    '<div class="wide steps-grid"><section><h2>Dot product steps</h2><ol id="dotProductSteps"></ol></section><section><h2>Cosine steps</h2><ol id="cosineSteps"></ol></section><section><h2>Pearson steps</h2><ol id="pearsonSteps"></ol></section></div>',
+    metric("Pearson correlation r", "data-pearson-value") +
+    metric("Observations", "pair-count"),
+  charts: chart(
+    "pairsChart",
+    "Look for the direction and closeness of a straight-line pattern",
+  ),
+  after: `<details class="info" id="correlation-working"><summary>How is r calculated?</summary><p>First subtract each variable’s own mean. These centred values show whether each observation is above or below its mean. Multiply the two centred values for each observation, then add those products.</p><div class="equation">${math.pearson}</div><p>Finally divide by the lengths of the two centred vectors. This is the dot product of the centred, normalised vectors, or their cosine similarity. Centring removes location; normalising removes units.</p><p id="correlation-sums"></p><div class="table-scroll"><table><caption>Centred values for the first 30 observations</caption><thead><tr><th scope="col">x</th><th scope="col">y</th><th scope="col">x − x̄</th><th scope="col">y − ȳ</th><th scope="col">Product</th></tr></thead><tbody id="correlation-rows"></tbody></table></div></details>`,
+  symbolKey:
+    "r measures the direction and strength of a straight-line association. It has no units. It is undefined if either variable has no variation.",
   method:
-    "For any number of paired observations, cosine is the dot product divided by the vector lengths. Pearson r first subtracts each vector’s own mean and then applies the same normalisation. The indexed-component panels show the full vectors, not projections into a two-dimensional plane. The separate geometric panels preserve the two-component explanation. Zero-length vectors have no direction; constant vectors have undefined Pearson correlation. Correlation alone does not imply causation.",
+    "The slider constructs a set of points with the selected Pearson r; it does not simulate a population correlation or a hypothesis test. New pattern rearranges the constructed points while keeping r fixed. Manual input calculates r from your own paired observations. A value of zero means no linear association, but other relationships can still exist. Outliers can strongly affect r, and correlation does not imply causation.",
   scripts: ["correlation"],
 };
 pages["clt-explorer"] = {
@@ -365,12 +436,12 @@ async function generate() {
     if (!p) throw Error("Missing page " + meta.id);
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">Stats<span>Applets</span></a><a href="../index.html">All explorers</a><a href="../index.html#lecturer">Teaching scenarios</a></nav>
-<main id="main"><header class="page-header"><p class="eyebrow">${meta.group}</p><h1>${meta.title}</h1><p class="lede">${meta.objective}</p><p class="equation">${escape(meta.equation)}</p></header>
+<body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">Stats<span>Applets</span></a><a href="../index.html">All explorers</a></nav>
+<main id="main"><header class="page-header"><p class="eyebrow">${meta.group}</p><h1>${meta.title}</h1><p class="lede">${meta.objective}</p><div class="equation">${math.equation(meta.id, meta.equation)}</div><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></header>
 <div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section>
-<section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div><p id="calculation" aria-live="polite"></p><p id="input-warning" class="notice" role="status" hidden></p>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section>
-<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="info"><summary>Model, assumptions & interpretation</summary><p>${p.method}</p></details><section id="lecturer-panel"></section>
-</main><footer>Built for explanation, exploration and better questions. <a href="https://github.com/claudebajada/StatsApplets">Source & documentation</a></footer>
+<section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div><p id="calculation" aria-live="polite"></p><p id="input-warning" class="notice" role="status" hidden></p>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}${p.extraResults || ""}</section>
+<section class="container" aria-label="Interactive plots">${p.charts}</section>${p.after || ""}<details class="info"><summary>Model, assumptions & interpretation</summary><p>${p.method}</p></details>
+</main><footer>Explore, compare and learn. <a href="https://github.com/claudebajada/StatsApplets">Source & documentation</a></footer>
 <script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}
 </body></html>\n`;
     const formatted = await require("prettier").format(html, {

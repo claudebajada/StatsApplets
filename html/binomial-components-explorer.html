@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,34 @@
           See why a probability term must be multiplied by the number of
           arrangements.
         </p>
-        <p class="equation">P(X = k) = C(n,k) pᵏ(1 − p)ⁿ⁻ᵏ</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="P(X = k) = C(n,k) pᵏ(1 − p)ⁿ⁻ᵏ"
+            ><mrow
+              ><mi>P</mi
+              ><mrow
+                ><mo>(</mo><mrow><mi>X</mi><mo>=</mo><mi>k</mi></mrow
+                ><mo>)</mo></mrow
+              ><mo>=</mo
+              ><mrow
+                ><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac
+                ><mo>)</mo></mrow
+              ><msup><mi>p</mi><mi>k</mi></msup
+              ><msup
+                ><mrow
+                  ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                  ><mo>)</mo></mrow
+                ><mrow><mi>n</mi><mo>−</mo><mi>k</mi></mrow></msup
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          k is a count of successes out of n trials. The bracketed coefficient
+          counts arrangements; p is the success probability on each trial.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -51,6 +77,10 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">1 · Number of arrangements C(n,k)</h2>
+          <p class="chart-explanation" id="coeffChart-explanation">
+            For each possible count k, the bar counts the arrangements of
+            successes and failures. These counts are not probabilities.
+          </p>
           <div class="plot-frame">
             <canvas
               id="coeffChart"
@@ -62,6 +92,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">2 · Probability of each arrangement</h2>
+          <p class="chart-explanation" id="probTermChart-explanation">
+            Each bar gives the probability of one particular arrangement with k
+            successes. It does not yet account for all the different
+            arrangements.
+          </p>
           <div class="plot-frame">
             <canvas
               id="probTermChart"
@@ -73,6 +108,10 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">3 · Product: binomial probabilities</h2>
+          <p class="chart-explanation" id="fullDistChart-explanation">
+            Multiply each arrangement count by its probability. The resulting
+            bars give the exact probability of each possible count of successes.
+          </p>
           <div class="plot-frame">
             <canvas
               id="fullDistChart"
@@ -93,10 +132,9 @@
           distributions.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

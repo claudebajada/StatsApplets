@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Build correlations between −1 and +1 by centring and normalising paired observations."
+      content="Explore how the direction and closeness of a straight-line pattern change Pearson’s r."
     />
-    <title>Correlation &amp; inner products · StatsApplets</title>
+    <title>Correlation · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
     <script src="../lib/chart.min.js"></script>
     <script src="../lib/jstat.min.js"></script>
@@ -16,115 +16,103 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
         <p class="eyebrow">Relationships</p>
-        <h1>Correlation & inner products</h1>
+        <h1>Correlation</h1>
         <p class="lede">
-          Build correlations between −1 and +1 by centring and normalising
-          paired observations.
+          Explore how the direction and closeness of a straight-line pattern
+          change Pearson’s r.
         </p>
-        <p class="equation">
-          cos θ = A·B/(‖A‖‖B‖); r = (A − Ā)·(B − B̄)/(‖A − Ā‖‖B − B̄‖)
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="−1 ≤ r ≤ 1, when both variables vary"
+            ><mrow
+              ><mo>−</mo><mn>1</mn><mo>≤</mo><mi>r</mi><mo>≤</mo
+              ><mn>1</mn></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          r measures the direction and strength of a straight-line association.
+          It has no units. It is undefined if either variable has no variation.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field wide">
-          <label for="pairs">Paired observations: one A, B pair per line</label
-          ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
-1,1
-2,3
-3,2
-4,5
-5,4
-6,3</textarea>
+        <div class="control-field">
+          <label for="association"
+            >Linear association r:
+            <output id="association-value" for="association">0.6</output></label
+          ><input
+            type="range"
+            id="association"
+            min="-1"
+            max="1"
+            step="0.05"
+            value="0.6"
+          />
         </div>
         <div class="control-field">
           <label for="observations"
-            >Generate this many paired observations:
-            <output id="observations-value" for="observations">6</output></label
+            >Number of observations:
+            <output id="observations-value" for="observations"
+              >12</output
+            ></label
           ><input
             type="range"
             id="observations"
             min="3"
-            max="20"
+            max="30"
             step="1"
-            value="6"
+            value="12"
           />
         </div>
-        <fieldset class="wide">
-          <legend>Two-dimensional geometry controls</legend>
+        <details class="wide input-details">
+          <summary>Use your own paired observations</summary>
+          <p>
+            Choose manual data, then enter one x, y pair per line. The sliders
+            apply only to constructed examples.
+          </p>
           <div class="control-field">
-            <label for="vectorAX1"
-              >A₁:
-              <output id="vectorAX1-value" for="vectorAX1">0</output></label
-            ><input
-              type="range"
-              id="vectorAX1"
-              min="-10"
-              max="10"
-              step="1"
-              value="0"
-            />
+            <label for="dataMode">Data source</label
+            ><select id="dataMode">
+              <option value="generated" selected>Constructed example</option>
+              <option value="manual">My paired observations</option>
+            </select>
+          </div>
+          <div class="control-field wide">
+            <label for="pairs">x, y pairs</label
+            ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
+1,1
+2,3
+3,2</textarea>
           </div>
           <div class="control-field">
-            <label for="vectorAY1"
-              >A₂:
-              <output id="vectorAY1-value" for="vectorAY1">0</output></label
+            <label for="seed">Random seed</label
             ><input
-              type="range"
-              id="vectorAY1"
-              min="-10"
-              max="10"
+              type="number"
+              id="seed"
+              min="0"
+              max="2147483647"
               step="1"
-              value="0"
+              value="42"
             />
           </div>
-          <div class="control-field">
-            <label for="vectorBX1"
-              >B₁:
-              <output id="vectorBX1-value" for="vectorBX1">0</output></label
-            ><input
-              type="range"
-              id="vectorBX1"
-              min="-10"
-              max="10"
-              step="1"
-              value="0"
-            />
-          </div>
-          <div class="control-field">
-            <label for="vectorBY1"
-              >B₂:
-              <output id="vectorBY1-value" for="vectorBY1">0</output></label
-            ><input
-              type="range"
-              id="vectorBY1"
-              min="-10"
-              max="10"
-              step="1"
-              value="0"
-            />
-          </div>
-        </fieldset>
+        </details>
       </section>
       <section class="result-card" aria-label="Current results">
         <div class="metrics">
           <div class="metric">
-            <span>Paired-data dot product</span
-            ><strong id="data-dot-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Paired-data cosine</span
-            ><strong id="data-cosine-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Paired-data Pearson r</span
+            <span>Pearson correlation r</span
             ><strong id="data-pearson-value">—</strong>
+          </div>
+          <div class="metric">
+            <span>Observations</span><strong id="pair-count">—</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
@@ -132,155 +120,120 @@
       </section>
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
-          <h2 class="chart-title">Paired observations: A against B</h2>
+          <h2 class="chart-title">
+            Look for the direction and closeness of a straight-line pattern
+          </h2>
+          <p class="chart-explanation" id="pairsChart-explanation">
+            Each dot is one observation with an x value and a y value. An upward
+            pattern gives positive r; a downward pattern gives negative r. A
+            tighter straight-line pattern puts r closer to +1 or −1.
+          </p>
           <div class="plot-frame">
             <canvas
               id="pairsChart"
               class="chart-canvas"
               role="img"
-              aria-label="Paired observations: A against B"
+              aria-label="Look for the direction and closeness of a straight-line pattern"
             ></canvas>
           </div>
         </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Centre each vector: indexed components</h2>
-          <div class="plot-frame">
-            <canvas
-              id="centeredComponentsChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Centre each vector: indexed components"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Normalise centred vectors: indexed components
-          </h2>
-          <div class="plot-frame">
-            <canvas
-              id="normalisedComponentsChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Normalise centred vectors: indexed components"
-            ></canvas>
-          </div>
-        </figure>
-        <section class="wide geometry">
-          <h2>Keep the two-dimensional geometric picture</h2>
-          <p>
-            These five views use only the four component sliders. With two
-            observations Pearson r can only be ±1, or undefined. A is the solid
-            circle-marked line; B is dashed with triangles. Projection is dotted
-            with squares.
-          </p>
-          <div class="metrics">
-            <div class="metric">
-              <span>A</span><strong id="vectorAOutput">—</strong>
-            </div>
-            <div class="metric">
-              <span>B</span><strong id="vectorBOutput">—</strong>
-            </div>
-            <div class="metric">
-              <span>Dot product</span><strong id="dotProductValue">—</strong>
-            </div>
-            <div class="metric">
-              <span>Cosine similarity</span
-              ><strong id="cosineSimilarityValue">—</strong>
-            </div>
-            <div class="metric">
-              <span>Pearson r</span
-              ><strong id="pearsonCorrelationValue">—</strong>
-            </div>
-          </div>
-        </section>
-        <figure class="chart-container geometry-chart">
-          <h2 class="chart-title">2D dot product & projection</h2>
-          <div class="plot-frame">
-            <canvas
-              id="dotProductChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2D dot product & projection"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container geometry-chart">
-          <h2 class="chart-title">2D normalised vectors & angle</h2>
-          <div class="plot-frame">
-            <canvas
-              id="cosineChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2D normalised vectors & angle"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container geometry-chart">
-          <h2 class="chart-title">2D before centring</h2>
-          <div class="plot-frame">
-            <canvas
-              id="pearsonBeforeChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2D before centring"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container geometry-chart">
-          <h2 class="chart-title">2D after centring</h2>
-          <div class="plot-frame">
-            <canvas
-              id="pearsonCenteredChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2D after centring"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container geometry-chart">
-          <h2 class="chart-title">2D centred & normalised</h2>
-          <div class="plot-frame">
-            <canvas
-              id="pearsonNormChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2D centred & normalised"
-            ></canvas>
-          </div>
-        </figure>
-        <div class="wide steps-grid">
-          <section>
-            <h2>Dot product steps</h2>
-            <ol id="dotProductSteps"></ol>
-          </section>
-          <section>
-            <h2>Cosine steps</h2>
-            <ol id="cosineSteps"></ol>
-          </section>
-          <section>
-            <h2>Pearson steps</h2>
-            <ol id="pearsonSteps"></ol>
-          </section>
-        </div>
       </section>
+      <details class="info" id="correlation-working">
+        <summary>How is r calculated?</summary>
+        <p>
+          First subtract each variable’s own mean. These centred values show
+          whether each observation is above or below its mean. Multiply the two
+          centred values for each observation, then add those products.
+        </p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="Pearson r equals the sum of centred cross products divided by the square root of the product of the centred sums of squares"
+            ><mrow
+              ><mi>r</mi><mo>=</mo
+              ><mfrac
+                ><mrow
+                  ><mo>∑</mo
+                  ><mrow
+                    ><mo>(</mo
+                    ><mrow
+                      ><msub><mi>x</mi><mi>i</mi></msub
+                      ><mo>−</mo><mover><mi>x</mi><mo>¯</mo></mover></mrow
+                    ><mo>)</mo></mrow
+                  ><mrow
+                    ><mo>(</mo
+                    ><mrow
+                      ><msub><mi>y</mi><mi>i</mi></msub
+                      ><mo>−</mo><mover><mi>y</mi><mo>¯</mo></mover></mrow
+                    ><mo>)</mo></mrow
+                  ></mrow
+                ><msqrt
+                  ><mrow
+                    ><mo>∑</mo
+                    ><msup
+                      ><mrow
+                        ><mo>(</mo
+                        ><mrow
+                          ><msub><mi>x</mi><mi>i</mi></msub
+                          ><mo>−</mo><mover><mi>x</mi><mo>¯</mo></mover></mrow
+                        ><mo>)</mo></mrow
+                      ><mn>2</mn></msup
+                    ><mo>⋅</mo><mo>∑</mo
+                    ><msup
+                      ><mrow
+                        ><mo>(</mo
+                        ><mrow
+                          ><msub><mi>y</mi><mi>i</mi></msub
+                          ><mo>−</mo><mover><mi>y</mi><mo>¯</mo></mover></mrow
+                        ><mo>)</mo></mrow
+                      ><mn>2</mn></msup
+                    ></mrow
+                  ></msqrt
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p>
+          Finally divide by the lengths of the two centred vectors. This is the
+          dot product of the centred, normalised vectors, or their cosine
+          similarity. Centring removes location; normalising removes units.
+        </p>
+        <p id="correlation-sums"></p>
+        <div class="table-scroll">
+          <table>
+            <caption>
+              Centred values for the first 30 observations
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">x</th>
+                <th scope="col">y</th>
+                <th scope="col">x − x̄</th>
+                <th scope="col">y − ȳ</th>
+                <th scope="col">Product</th>
+              </tr>
+            </thead>
+            <tbody id="correlation-rows"></tbody>
+          </table>
+        </div>
+      </details>
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          For any number of paired observations, cosine is the dot product
-          divided by the vector lengths. Pearson r first subtracts each vector’s
-          own mean and then applies the same normalisation. The
-          indexed-component panels show the full vectors, not projections into a
-          two-dimensional plane. The separate geometric panels preserve the
-          two-component explanation. Zero-length vectors have no direction;
-          constant vectors have undefined Pearson correlation. Correlation alone
-          does not imply causation.
+          The slider constructs a set of points with the selected Pearson r; it
+          does not simulate a population correlation or a hypothesis test. New
+          pattern rearranges the constructed points while keeping r fixed.
+          Manual input calculates r from your own paired observations. A value
+          of zero means no linear association, but other relationships can still
+          exist. Outliers can strongly affect r, and correlation does not imply
+          causation.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,23 @@
           Inspect fitted values and residuals and see how least squares
           determines a line.
         </p>
-        <p class="equation">ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST"
+            ><mrow
+              ><mover><mi>y</mi><mo>^</mo></mover
+              ><mo>=</mo><msub><mi>b</mi><mn>0</mn></msub
+              ><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub
+              ><mi>x</mi></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          ŷ is the predicted y value; b₀ is the fitted intercept; b₁ is the
+          fitted slope. Each residual is the observed y minus ŷ.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -108,6 +123,10 @@
           <h2 class="chart-title">
             Observations, least-squares line & residual segments
           </h2>
+          <p class="chart-explanation" id="fitChart-explanation">
+            Each dot is one x, y observation. The fitted line predicts y from x.
+            Vertical segments are residuals: observed y minus predicted y.
+          </p>
           <div class="plot-frame">
             <canvas
               id="fitChart"
@@ -119,6 +138,10 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Residuals against fitted values</h2>
+          <p class="chart-explanation" id="residualChart-explanation">
+            Each dot shows one fitted value and its residual. The horizontal
+            zero line separates over-predictions from under-predictions.
+          </p>
           <div class="plot-frame">
             <canvas
               id="residualChart"
@@ -143,10 +166,9 @@
           selected.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

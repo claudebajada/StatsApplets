@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -26,8 +25,27 @@
         <p class="lede">
           Relate a signed effect, sample size and rejection region to power.
         </p>
-        <p class="equation">
-          Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"
+            ><mrow
+              ><mi>Power</mi><mo>=</mo><mi>P</mi
+              ><mrow
+                ><mo>(</mo
+                ><mrow
+                  ><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub
+                  ><mo>|</mo><mi>μ</mi><mo>=</mo
+                  ><msub><mi>μ</mi><mn>1</mn></msub></mrow
+                ><mo>)</mo></mrow
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          H₀ is the null hypothesis. μ₁ is the specified true population mean.
+          Power is the chance of rejecting H₀ when this true mean applies.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -90,6 +108,12 @@
           <h2 class="chart-title">
             Null & specified alternative sampling densities
           </h2>
+          <p class="chart-explanation" id="powerChart-explanation">
+            The null curve describes z scores when the null is true. The other
+            curve describes z scores for the chosen true effect. The shaded area
+            under the latter is power: the chance of rejecting the null for that
+            effect.
+          </p>
           <div class="plot-frame">
             <canvas
               id="powerChart"
@@ -101,6 +125,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Power as sample size changes</h2>
+          <p class="chart-explanation" id="powerCurveChart-explanation">
+            Each point gives the chance of rejecting the null at that sample
+            size, holding the true effect, significance level and alternative
+            fixed.
+          </p>
           <div class="plot-frame">
             <canvas
               id="powerCurveChart"
@@ -123,10 +152,9 @@
           have power below α when the true effect points the other way.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

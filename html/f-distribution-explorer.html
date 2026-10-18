@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,8 +26,27 @@
           Locate an upper-tail critical value even when the distribution has a
           very long tail.
         </p>
-        <p class="equation">
-          F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)"
+            ><mrow
+              ><mi>F</mi><mo>=</mo
+              ><mfrac
+                ><mfrac
+                  ><mi>U</mi><msub><mi>df</mi><mn>1</mn></msub></mfrac
+                ><mfrac
+                  ><mi>V</mi><msub><mi>df</mi><mn>2</mn></msub></mfrac
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          U and V are independent chi-squared variables, with df₁ and df₂
+          degrees of freedom. F is the ratio after dividing each by its own
+          degrees of freedom.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -79,6 +97,12 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">Null F density & rejection region</h2>
+          <p class="chart-explanation" id="distributionChart-explanation">
+            The curve shows possible F values under the null hypothesis. The
+            dashed line is the upper 5% critical value, not an observed
+            statistic. Values to its right form the rejection region; the plot
+            extends far enough to show that threshold.
+          </p>
           <div class="plot-frame">
             <canvas
               id="distributionChart"
@@ -99,10 +123,9 @@
           distribution. A log axis changes spacing, not the probabilities.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

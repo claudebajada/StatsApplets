@@ -199,3 +199,35 @@ test("vendored runtime bundles exactly match their audited locked npm sources", 
   ])
     assert.deepEqual(fs.readFileSync(source), fs.readFileSync(target));
 });
+
+test("constructed correlation examples retain the requested Pearson r across sizes and seeds", () => {
+  for (const n of [3, 4, 12, 30, 100]) {
+    for (const seed of [0, 42, 2147483647]) {
+      for (const target of [-1, -0.95, -0.6, 0, 0.05, 0.8, 1]) {
+        const pairs = T.correlationSample(n, target, seed);
+        assert.equal(pairs.length, n);
+        assert.ok(pairs.flat().every(Number.isFinite));
+        close(
+          S.pearson(
+            pairs.map((p) => p[0]),
+            pairs.map((p) => p[1]),
+          ),
+          target,
+          1e-12,
+          1e-12,
+        );
+      }
+    }
+  }
+  assert.deepEqual(
+    T.correlationSample(12, 0.6, 42),
+    T.correlationSample(12, 0.6, 42),
+  );
+  assert.notDeepEqual(
+    T.correlationSample(12, 0.6, 42),
+    T.correlationSample(12, 0.6, 43),
+  );
+  for (const bad of [-1.1, 1.1, NaN, Infinity])
+    assert.throws(() => T.correlationSample(12, bad, 42));
+  assert.throws(() => T.correlationSample(2, 0.5, 42));
+});

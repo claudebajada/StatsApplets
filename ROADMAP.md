@@ -6,8 +6,8 @@ The original correctness stage and the requested follow-up stages are implemente
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | #1–10               | All original numerical/initialisation/boundary fixes retained and regression-tested                                                                            |
 | #11–13              | Consistent mean-test alternatives, signed effects and sample/population notation; valid upper-tail-only GOF/ANOVA interpretation                               |
-| #14                 | Multi-observation correlation, complete centred/normalised component views and retained 2D geometry with equal axis units                                      |
-| #15–17              | Model/reference/uncertainty labels, validity messages and independent SciPy/statsmodels fixtures                                                               |
+| #14                 | Student scatterplot with selectable sample r, manual pairs and optional centring/dot-product calculation                                                       |
+| #15–17              | Sample estimate/SE and null reference plots, explicit chart explanations, validity messages and independent numerical fixtures                                 |
 | #18–21              | Grouped searchable catalogue, shared responsive layout, standard charts, focus/labels, data alternatives and automated accessibility/browser checks            |
 | #22–24              | Four presets and reset on all 15 applets, validated URL state, worked explanations, equations and learning objectives                                          |
 | #25–32              | DOM-free numerical modules, common rendering/control/state helpers, unit/browser tests, CI, authoring checks, documentation and audited pinned runtime bundles |
@@ -17,7 +17,11 @@ The original correctness stage and the requested follow-up stages are implemente
 | #36                 | Least-squares regression with generated/manual data, residuals, SSE and R²                                                                                     |
 | #37                 | One-way ANOVA with generated/manual groups, SS partition, F and η²                                                                                             |
 | #38                 | All-null multiple-comparison simulation with no adjustment, Bonferroni, Holm and BH                                                                            |
-| #39                 | Editable lecturer questions/notes, student view, guided discussion and shareable scenarios                                                                     |
+| #39                 | Removed following student-focused feedback; simple presets and shareable parameter links retained                                                              |
+
+## Student-focused revision
+
+The home-page “Understand what changes.” panel and all lecturer controls have been removed. Equations are native MathML rather than code-like text. The three mean tests now use two distinct plots: an estimate with a ±1 standard-error bar in original units, then the null distribution of the test statistic. Correlation starts with one scatterplot; centring and normalisation are explained on request. All chart panels explain what their marks and axes represent.
 
 ## Deliberate model boundaries
 
@@ -25,7 +29,8 @@ The original correctness stage and the requested follow-up stages are implemente
 - Power is an exact known-σ z model. A t-power extension would require a separately validated noncentral t implementation.
 - Confidence intervals use normal-population samples. The CLT explorer supplies the separate non-normal-population experiment.
 - Multiple comparisons uses independent, continuous, all-null p-values. Its BH illustration does not claim arbitrary-dependence control or demonstrate the mixed-null power trade-off.
-- Student view hides notes visually; the URL still includes them. It is not an examination/security feature.
+- The site is for students. Lecturer mode and lesson metadata have been removed. Legacy lesson URL parameters are ignored.
+- Correlation sliders construct points with a selected sample r; they do not simulate population inference. Detailed vector calculations remain optional.
 - Seeds reproduce numerical experiments. Exact canvas pixels can vary by browser/font.
 
 ## Verification scope

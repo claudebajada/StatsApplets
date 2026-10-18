@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,27 @@
           Distinguish a population from the empirical sampling distribution of
           its mean.
         </p>
-        <p class="equation">E(x̄) = μ; SD(x̄) = σ/√n</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="E(x̄) = μ; SD(x̄) = σ/√n"
+            ><mrow
+              ><mi>SE</mi
+              ><mrow
+                ><mo>(</mo><mover><mi>x</mi><mo>¯</mo></mover
+                ><mo>)</mo></mrow
+              ><mo>=</mo
+              ><mfrac
+                ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄ is the mean of n observations. σ is the population SD; SE is the
+          standard deviation of sample means across repeated samples.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -92,6 +111,11 @@
           <h2 class="chart-title">
             Empirical population sample: individual observations
           </h2>
+          <p class="chart-explanation" id="populationChart-explanation">
+            These bars summarise individual values drawn from the selected
+            population. Compare their shape with the distribution of sample
+            means in the next plot.
+          </p>
           <div class="plot-frame">
             <canvas
               id="populationChart"
@@ -103,6 +127,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Empirical sampling distribution of x̄</h2>
+          <p class="chart-explanation" id="meansChart-explanation">
+            Each sample contributes one mean to these bars. The normal curve has
+            the theoretical mean and standard error of the sample mean; it is a
+            comparison, not a fitted curve.
+          </p>
           <div class="plot-frame">
             <canvas
               id="meansChart"
@@ -125,10 +154,9 @@
           example reproducible.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

@@ -230,6 +230,35 @@
       df: x.length - 2,
     };
   }
+  // Construct centred, orthogonal components with equal lengths, then mix them.
+  // This fixes the displayed sample r; it is not a sample from a population with r.
+  function correlationSample(n, r, seed) {
+    integer(n, 3, 100);
+    finite(r);
+    if (Math.abs(r) > 1)
+      throw new RangeError("Correlation must be from −1 to 1");
+    const random = rng(seed);
+    const x = Array.from({ length: n }, (_, i) => -2 + (4 * i) / (n - 1));
+    const raw = x.map(() => gaussian(random));
+    const centre = mean(raw);
+    const xx = x.reduce((sum, v) => sum + v * v, 0);
+    const projection =
+      raw.reduce((sum, v, i) => sum + (v - centre) * x[i], 0) / xx;
+    let orthogonal = raw.map((v, i) => v - centre - projection * x[i]);
+    let length = Math.hypot(...orthogonal);
+    if (length < 1e-10) {
+      // The quadratic is non-constant and orthogonal to this symmetric x grid.
+      const squares = x.map((v) => v * v),
+        average = mean(squares);
+      orthogonal = squares.map((v) => v - average);
+      length = Math.hypot(...orthogonal);
+    }
+    const scale = Math.sqrt(xx) / length;
+    return x.map((v, i) => [
+      v,
+      r * v + Math.sqrt(Math.max(0, 1 - r * r)) * orthogonal[i] * scale,
+    ]);
+  }
   function regressionSample(n, slope, noise, seed) {
     integer(n, 3, 100);
     finite(slope);
@@ -391,6 +420,7 @@
     parsePairs,
     regression,
     regressionSample,
+    correlationSample,
     anova,
     groupSample,
     adjustPValues,

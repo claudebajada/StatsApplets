@@ -126,10 +126,13 @@ const accessibleCharts = {
     let caption = figure.querySelector(".chart-summary");
     if (!caption) {
       caption = document.createElement("figcaption");
-      caption.className = "chart-summary";
+      caption.className = "chart-summary visually-hidden";
       caption.id = chart.canvas.id + "-summary";
       figure.append(caption);
-      chart.canvas.setAttribute("aria-describedby", caption.id);
+      chart.canvas.setAttribute(
+        "aria-describedby",
+        chart.canvas.id + "-explanation " + caption.id,
+      );
       const details = document.createElement("details");
       details.className = "chart-data";
       const summary = document.createElement("summary");

@@ -1,4 +1,4 @@
-// Shared presets, URL state, lecturer scenarios and current-value explanations.
+// Shared student examples, URL state and current-value explanations.
 (function () {
   const meta = AppletCatalogue.find(
     (item) => item.id === document.body.dataset.applet,
@@ -35,6 +35,13 @@
     ]),
   );
   const params = new URLSearchParams(location.search);
+  // Earlier paired-data links predate the explicit manual/generated switch.
+  if (
+    meta.id === "correlation" &&
+    params.has("pairs") &&
+    !params.has("dataMode")
+  )
+    params.set("dataMode", "manual");
   const initial = AppletState.decode(params, schema);
   const read = () =>
     Object.fromEntries(
@@ -56,7 +63,7 @@
   const toolbar = document.getElementById("scenario-toolbar");
   toolbar.className = "toolbar";
   toolbar.innerHTML =
-    '<div class="preset-picker"><label for="preset">Teaching example</label><select id="preset"><option value="">Custom settings</option></select></div><button id="reset" type="button">Reset</button><button id="share" type="button">Copy example link</button><button id="resample" type="button" hidden>New random sample</button><label class="check-label"><input id="lecturer" type="checkbox"> Lecturer mode</label><p id="share-status" role="status"></p>';
+    '<div class="preset-picker"><label for="preset">Example</label><select id="preset"><option value="">Custom settings</option></select></div><button id="reset" type="button">Reset</button><button id="share" type="button">Copy example link</button><button id="resample" type="button" hidden>New random sample</button><p id="share-status" role="status"></p>';
   const preset = document.getElementById("preset");
   meta.presets.forEach(([label], index) => {
     const option = document.createElement("option");
@@ -64,46 +71,9 @@
     option.textContent = label;
     preset.appendChild(option);
   });
-  const panel = document.getElementById("lecturer-panel");
-  panel.className = "lecturer-card";
-  panel.hidden = true;
-  panel.innerHTML =
-    '<h2>Lecturer scenario</h2><p>Notes, a guided question and the current settings travel together in the example link. Keep shared notes free of personal information.</p><div class="lesson-fields"><div><label for="lesson-title">Scenario title</label><input id="lesson-title" maxlength="120"></div><div><label for="lesson-prompt">Student question</label><textarea id="lesson-prompt" rows="3" maxlength="800"></textarea></div><div><label for="lesson-answer">Teaching notes / answer</label><textarea id="lesson-answer" rows="3" maxlength="1200"></textarea></div></div><label class="check-label"><input type="checkbox" id="student-view"> Present student view (hide answers and editing fields)</label><section class="exercise"><h3 id="exercise-title"></h3><p id="exercise-prompt"></p><button id="reveal-answer" type="button">Reveal discussion notes</button><p id="exercise-answer" hidden></p></section><p class="small">Student view hides the answer on screen; it is still included in the URL. This is for teaching, not secure assessment.</p>';
-  const lecturer = document.getElementById("lecturer"),
-    student = document.getElementById("student-view");
-  const lessonFields = [
-    ["lesson-title", "_title", meta.title],
-    ["lesson-prompt", "_prompt", meta.question],
-    ["lesson-answer", "_answer", meta.answer],
-  ];
-  for (const [id, key, fallback] of lessonFields) {
-    const el = document.getElementById(id),
-      raw = params.get(key);
-    el.value = raw && raw.length <= el.maxLength ? raw : fallback;
-  }
-  lecturer.checked = params.get("_lecture") === "1";
-  student.checked = params.get("_student") === "1";
-  function updateLesson() {
-    panel.hidden = !lecturer.checked;
-    document.getElementById("exercise-title").textContent =
-      document.getElementById("lesson-title").value;
-    document.getElementById("exercise-prompt").textContent =
-      document.getElementById("lesson-prompt").value;
-    document.getElementById("exercise-answer").textContent =
-      document.getElementById("lesson-answer").value;
-    panel.querySelector(".lesson-fields").hidden = student.checked;
-    if (student.checked)
-      document.getElementById("exercise-answer").hidden = true;
-  }
   function url() {
     const target = new URL(location.pathname, location.href),
       query = AppletState.encode(read(), schema);
-    if (lecturer.checked) {
-      query.set("_lecture", "1");
-      for (const [id, key] of lessonFields)
-        query.set(key, document.getElementById(id).value);
-      if (student.checked) query.set("_student", "1");
-    }
     target.search = query;
     return target;
   }
@@ -113,7 +83,6 @@
       if (out) out.value = el.value;
       if (el.type === "range") el.setAttribute("aria-valuetext", el.value);
     });
-    updateLesson();
     history.replaceState(null, "", url());
   }
   function explain() {
@@ -192,19 +161,6 @@
     });
     el.addEventListener("change", () => queueMicrotask(afterChange));
   }
-  for (const el of [
-    lecturer,
-    student,
-    ...lessonFields.map(([id]) => document.getElementById(id)),
-  ])
-    el.addEventListener("input", () => {
-      updateLesson();
-      sync();
-    });
-  document.getElementById("reveal-answer").addEventListener("click", () => {
-    const answer = document.getElementById("exercise-answer");
-    answer.hidden = !answer.hidden;
-  });
   document.addEventListener("DOMContentLoaded", () => {
     sync();
     explain();

@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,26 @@
           Compare exact probabilities with a continuous approximation and
           recognise its limits.
         </p>
-        <p class="equation">X ∼ Bin(n,p); μ = np; σ² = np(1 − p)</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
+            ><mrow
+              ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
+              ><msup><mi>σ</mi><mn>2</mn></msup
+              ><mo>=</mo><mi>n</mi><mi>p</mi
+              ><mrow
+                ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                ><mo>)</mo></mrow
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          n is the number of trials; p is the success probability. μ and σ² are
+          the mean and variance of the binomial count.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -66,6 +84,10 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">Exact binomial probabilities</h2>
+          <p class="chart-explanation" id="binomialChart-explanation">
+            Each bar is the exact probability of a whole-number count of
+            successes. All bar probabilities add to 1.
+          </p>
           <div class="plot-frame">
             <canvas
               id="binomialChart"
@@ -77,6 +99,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Normal approximation: probability density</h2>
+          <p class="chart-explanation" id="normalChart-explanation">
+            This smooth curve approximates the binomial probabilities.
+            Probabilities are areas under the curve; a curve height is not a
+            probability.
+          </p>
           <div class="plot-frame">
             <canvas
               id="normalChart"
@@ -97,10 +124,9 @@
           − p) ≥ 5 is a rough approximation check, not a guarantee.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

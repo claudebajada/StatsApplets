@@ -1,7 +1,6 @@
 const root = document.getElementById("catalogue");
 function renderCatalogue() {
-  const query = document.getElementById("search").value.toLowerCase(),
-    lecture = document.getElementById("lecture-links").checked;
+  const query = document.getElementById("search").value.toLowerCase();
   root.replaceChildren();
   let count = 0;
   for (const group of [
@@ -32,7 +31,7 @@ function renderCatalogue() {
     for (const entry of entries) {
       const a = document.createElement("a");
       a.className = "applet-card";
-      a.href = `html/${entry.id}.html${lecture ? "?_lecture=1" : ""}`;
+      a.href = `html/${entry.id}.html`;
       const h3 = document.createElement("h3");
       h3.textContent = entry.title;
       const p = document.createElement("p");
@@ -50,7 +49,4 @@ function renderCatalogue() {
     `${count} of ${AppletCatalogue.length} explorers`;
 }
 document.getElementById("search").addEventListener("input", renderCatalogue);
-document
-  .getElementById("lecture-links")
-  .addEventListener("change", renderCatalogue);
 renderCatalogue();

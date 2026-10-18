@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,29 @@
           Connect sample statistics, estimated standard error and the null t
           distribution.
         </p>
-        <p class="equation">t = (x̄ − μ₀)/(s/√n); df = n − 1; d = (x̄ − μ₀)/s</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="t = (x̄ − μ₀)/(s/√n); df = n − 1; d = (x̄ − μ₀)/s"
+            ><mrow
+              ><mi>t</mi><mo>=</mo
+              ><mfrac
+                ><mrow
+                  ><mover><mi>x</mi><mo>¯</mo></mover
+                  ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                ><mfrac
+                  ><mi>s</mi><msqrt><mi>n</mi></msqrt></mfrac
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄ is your sample mean; μ₀ is the null population mean; s is the sample
+          SD; n is the sample size. The denominator estimates the standard error
+          (SE).
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -89,62 +110,79 @@
             ><strong id="p-value-selected">—</strong>
           </div>
           <div class="metric">
-            <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            <span>t score</span><strong id="t-value">—</strong>
           </div>
           <div class="metric">
-            <span>Upper-tail p</span><strong id="p-value-one-sided">—</strong>
-          </div>
-          <div class="metric">
-            <span>Two-sided p</span><strong id="p-value-two-sided">—</strong>
-          </div>
-          <div class="metric">
-            <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>t statistic</span><strong id="t-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>Degrees of freedom</span><strong id="df-value">—</strong>
+            <span>Estimated standard error (SE)</span
+            ><strong id="se-value">—</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
         <p id="input-warning" class="notice" role="status" hidden></p>
+        <details class="info">
+          <summary>Effect size and other tail probabilities</summary>
+          <div class="metrics">
+            <div class="metric">
+              <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Degrees of freedom</span><strong id="df-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            </div>
+            <div class="metric">
+              <span>Upper-tail p</span><strong id="p-value-one-sided">—</strong>
+            </div>
+            <div class="metric">
+              <span>Two-sided p</span><strong id="p-value-two-sided">—</strong>
+            </div>
+          </div>
+          <p>
+            The selected p-value above corresponds to your alternative
+            hypothesis. These other probabilities answer different directional
+            questions. The signed effect size divides the observed difference by
+            the sample SD; its sign follows the order of subtraction.
+          </p>
+        </details>
       </section>
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
-          <h2 class="chart-title">Illustrative normal model</h2>
+          <h2 class="chart-title">
+            1 · Compare the sample estimate with the null value
+          </h2>
+          <p class="chart-explanation" id="meanEstimateChart-explanation">
+            The circle is the sample estimate; the diamond is the value claimed
+            by the null hypothesis. The horizontal bar extends one standard
+            error either side of the estimate. Read the horizontal axis in the
+            original measurement units. This bar is not a confidence interval.
+          </p>
           <div class="plot-frame">
             <canvas
-              id="populationChart"
+              id="meanEstimateChart"
               class="chart-canvas"
               role="img"
-              aria-label="Illustrative normal model"
+              aria-label="1 · Compare the sample estimate with the null value"
             ></canvas>
           </div>
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">
-            Estimated uncertainty of the mean difference
+            2 · Read the p-value under the null hypothesis
           </h2>
-          <div class="plot-frame">
-            <canvas
-              id="stderrChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Estimated uncertainty of the mean difference"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Null sampling distribution & observed statistic
-          </h2>
+          <p class="chart-explanation" id="tChart-explanation">
+            Imagine repeating the study when the null hypothesis is true. This
+            curve shows the distribution of the resulting t scores, not the
+            distribution of individual measurements. The vertical line marks
+            your t score. The shaded area is the p-value for your chosen
+            alternative.
+          </p>
           <div class="plot-frame">
             <canvas
               id="tChart"
               class="chart-canvas"
               role="img"
-              aria-label="Null sampling distribution & observed statistic"
+              aria-label="2 · Read the p-value under the null hypothesis"
             ></canvas>
           </div>
         </figure>
@@ -152,18 +190,17 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          The sliders are sample statistics, not population parameters. Exact t
-          inference assumes independent normal observations. Small samples are
-          sensitive to skewness and outliers. The middle location/scale t curve
-          represents estimated uncertainty centred on x̄ − μ₀; it is not a second
-          null distribution or a posterior probability density. Cohen’s d is
-          signed.
+          The sliders specify sample statistics. Exact t inference assumes
+          independent normal observations and uses n − 1 degrees of freedom.
+          Small samples are sensitive to skewness and outliers. The first chart
+          displays your sample mean and its estimated standard error. The second
+          chart is the null reference distribution of t scores. Choose the
+          alternative before looking at the data.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

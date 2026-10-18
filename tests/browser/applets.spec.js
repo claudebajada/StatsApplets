@@ -224,18 +224,13 @@ test("undefined correlations have mathematical explanations and recover after in
   page,
 }) => {
   await page.goto("/html/correlation.html");
-  await expect(page.locator("#cosineSimilarityValue")).toContainText(
-    "zero vector",
-  );
-  await expect(page.locator("#pearsonCorrelationValue")).toContainText(
-    "zero variance",
-  );
-  await expect(page.locator("#pearsonSteps")).not.toContainText(
-    "r = Projection length = 0",
-  );
-  await move(page, "vectorAX1", 1);
-  await move(page, "vectorBX1", 1);
-  await expect(page.locator("#pearsonCorrelationValue")).toHaveText("1.00");
+  await page.locator(".input-details summary").click();
+  await page.locator("#dataMode").selectOption("manual");
+  await page.locator("#pairs").fill("1,2\n1,3\n1,4");
+  await expect(page.locator("#data-pearson-value")).toHaveText("Undefined");
+  await expect(page.locator("#calculation")).toContainText("zero variance");
+  await page.locator("#pairs").fill("1,2\n2,3\n3,4");
+  await expect(page.locator("#data-pearson-value")).toHaveText("1.0000");
   await assertFiniteCharts(page);
 });
 test("landing catalogue groups and links all fifteen explorers", async ({
@@ -254,9 +249,11 @@ test("landing catalogue groups and links all fifteen explorers", async ({
   await page.goto("/");
   await page.locator("#search").fill("correlation");
   await expect(page.locator(".applet-card")).toHaveCount(1);
-  await page.locator("#lecture-links").check();
+  await expect(
+    page.locator("#lecture-links, #lecturer, .hero-note"),
+  ).toHaveCount(0);
   await expect(page.locator(".applet-card")).toHaveAttribute(
     "href",
-    /lecture=1/,
+    "html/correlation.html",
   );
 });

@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -26,7 +25,32 @@
         <p class="lede">
           Relate deviations in counts to χ² and Cohen’s w under a uniform null.
         </p>
-        <p class="equation">χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)"
+            ><mrow
+              ><msup><mi>χ</mi><mn>2</mn></msup
+              ><mo>=</mo><mo>∑</mo
+              ><mfrac
+                ><msup
+                  ><mrow
+                    ><mo>(</mo
+                    ><mrow
+                      ><msub><mi>O</mi><mi>i</mi></msub
+                      ><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow
+                    ><mo>)</mo></mrow
+                  ><mn>2</mn></msup
+                ><msub><mi>E</mi><mi>i</mi></msub></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          Oᵢ is the observed count in category i; Eᵢ is its expected count under
+          the null. Add the contributions across all categories.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -94,6 +118,10 @@
           <h2 class="chart-title">
             Observed integer counts & uniform expected counts
           </h2>
+          <p class="chart-explanation" id="frequencyChart-explanation">
+            Compare the observed count in each category with the count predicted
+            by a uniform null model. Both sets of counts add to the selected N.
+          </p>
           <div class="plot-frame">
             <canvas
               id="frequencyChart"
@@ -105,6 +133,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Null χ² sampling distribution</h2>
+          <p class="chart-explanation" id="chiSquaredChart-explanation">
+            Under the null model, repeated studies produce these χ² statistics
+            approximately. The line marks this example’s statistic; the shaded
+            area is the chance of a value at least as large under the null.
+          </p>
           <div class="plot-frame">
             <canvas
               id="chiSquaredChart"
@@ -128,10 +161,9 @@
           upper-tailed: large non-negative χ² values indicate any departure.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

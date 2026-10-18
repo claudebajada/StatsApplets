@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,8 +26,29 @@
           Partition total variability into within-group and between-group sums
           of squares.
         </p>
-        <p class="equation">
-          F = (SSbetween/(k − 1))/(SSwithin/(N − k)); η² = SSbetween/SStotal
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="F = (SSbetween/(k − 1))/(SSwithin/(N − k)); η² = SSbetween/SStotal"
+            ><mrow
+              ><mi>F</mi><mo>=</mo
+              ><mfrac
+                ><mfrac
+                  ><msub><mi>SS</mi><mtext>between</mtext></msub
+                  ><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac
+                ><mfrac
+                  ><msub><mi>SS</mi><mtext>within</mtext></msub
+                  ><mrow><mi>N</mi><mo>−</mo><mi>k</mi></mrow></mfrac
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          SS measures sums of squared deviations; k is the number of groups and
+          N is the total sample size. Divide each SS by its degrees of freedom
+          to form the two mean squares.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -112,6 +132,11 @@
           <h2 class="chart-title">
             Individual observations & sample group means
           </h2>
+          <p class="chart-explanation" id="groupsChart-explanation">
+            Dots show individual observations in each group; the separate mean
+            markers summarise those groups. Compare separation between groups
+            with variation inside groups.
+          </p>
           <div class="plot-frame">
             <canvas
               id="groupsChart"
@@ -123,6 +148,11 @@
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">Null F density & observed F</h2>
+          <p class="chart-explanation" id="anovaChart-explanation">
+            This curve describes F statistics from repeated studies with equal
+            population means. The vertical line is the observed F; the shaded
+            upper tail is its p-value.
+          </p>
           <div class="plot-frame">
             <canvas
               id="anovaChart"
@@ -147,10 +177,9 @@
           per group are required.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

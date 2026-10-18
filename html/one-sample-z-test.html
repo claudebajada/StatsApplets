@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,29 @@
           Distinguish the sign of a statistic from the tail specified by the
           alternative.
         </p>
-        <p class="equation">z = (x̄ − μ₀)/(σ/√n), with known population σ</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="z = (x̄ − μ₀)/(σ/√n), with known population σ"
+            ><mrow
+              ><mi>z</mi><mo>=</mo
+              ><mfrac
+                ><mrow
+                  ><mover><mi>x</mi><mo>¯</mo></mover
+                  ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                ><mfrac
+                  ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
+                ></mfrac
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          x̄ is your sample mean; μ₀ is the null population mean; σ is the known
+          population SD; n is the sample size. The denominator is the standard
+          error (SE).
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -90,60 +111,76 @@
             ><strong id="p-value-selected">—</strong>
           </div>
           <div class="metric">
-            <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            <span>z score</span><strong id="z-value">—</strong>
           </div>
           <div class="metric">
-            <span>Upper-tail p</span><strong id="p-value-one-sided">—</strong>
-          </div>
-          <div class="metric">
-            <span>Two-sided p</span><strong id="p-value-two-sided">—</strong>
-          </div>
-          <div class="metric">
-            <span>Signed standardised difference (σ)</span
-            ><strong id="cohen-d-value">—</strong>
-          </div>
-          <div class="metric">
-            <span>z statistic</span><strong id="z-value">—</strong>
+            <span>Standard error (SE)</span><strong id="se-value">—</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
         <p id="input-warning" class="notice" role="status" hidden></p>
+        <details class="info">
+          <summary>Effect size and other tail probabilities</summary>
+          <div class="metrics">
+            <div class="metric">
+              <span>Signed standardised difference (σ)</span
+              ><strong id="cohen-d-value">—</strong>
+            </div>
+            <div class="metric">
+              <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+            </div>
+            <div class="metric">
+              <span>Upper-tail p</span><strong id="p-value-one-sided">—</strong>
+            </div>
+            <div class="metric">
+              <span>Two-sided p</span><strong id="p-value-two-sided">—</strong>
+            </div>
+          </div>
+          <p>
+            The selected p-value above corresponds to your alternative
+            hypothesis. These other probabilities answer different directional
+            questions. The signed effect size divides the observed difference by
+            the known population SD; its sign follows the order of subtraction.
+          </p>
+        </details>
       </section>
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
-          <h2 class="chart-title">Illustrative normal model</h2>
+          <h2 class="chart-title">
+            1 · Compare the sample estimate with the null value
+          </h2>
+          <p class="chart-explanation" id="meanEstimateChart-explanation">
+            The circle is the sample estimate; the diamond is the value claimed
+            by the null hypothesis. The horizontal bar extends one standard
+            error either side of the estimate. Read the horizontal axis in the
+            original measurement units. This bar is not a confidence interval.
+          </p>
           <div class="plot-frame">
             <canvas
-              id="populationChart"
+              id="meanEstimateChart"
               class="chart-canvas"
               role="img"
-              aria-label="Illustrative normal model"
+              aria-label="1 · Compare the sample estimate with the null value"
             ></canvas>
           </div>
         </figure>
         <figure class="chart-container">
           <h2 class="chart-title">
-            Estimated uncertainty of the mean difference
+            2 · Read the p-value under the null hypothesis
           </h2>
-          <div class="plot-frame">
-            <canvas
-              id="stderrChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Estimated uncertainty of the mean difference"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Null sampling distribution & observed statistic
-          </h2>
+          <p class="chart-explanation" id="zChart-explanation">
+            Imagine repeating the study when the null hypothesis is true. This
+            curve shows the distribution of the resulting z scores, not the
+            distribution of individual measurements. The vertical line marks
+            your z score. The shaded area is the p-value for your chosen
+            alternative.
+          </p>
           <div class="plot-frame">
             <canvas
               id="zChart"
               class="chart-canvas"
               role="img"
-              aria-label="Null sampling distribution & observed statistic"
+              aria-label="2 · Read the p-value under the null hypothesis"
             ></canvas>
           </div>
         </figure>
@@ -151,18 +188,16 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          The normal model around x̄ is illustrative; the true population mean is
-          unknown. The middle curve uses the known standard error σ/√n, centred
-          on the observed difference. Only the final curve is the null sampling
-          distribution. Independent observations and a normal sampling
-          distribution of the mean are assumed. Choose the alternative before
-          looking at the data.
+          Independent observations and a normal sampling distribution of the
+          mean are assumed. The standard error σ/√n describes how sample means
+          vary across repeated studies. The z score expresses the observed
+          difference from μ₀ in standard-error units. Choose the alternative
+          before looking at the data.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

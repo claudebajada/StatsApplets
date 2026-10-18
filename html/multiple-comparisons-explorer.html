@@ -16,8 +16,7 @@
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a
-      ><a href="../index.html#lecturer">Teaching scenarios</a>
+      ><a href="../index.html">All explorers</a>
     </nav>
     <main id="main">
       <header class="page-header">
@@ -27,7 +26,27 @@
           Observe false-positive inflation and compare family-wise and FDR
           procedures.
         </p>
-        <p class="equation">Independent null tests: FWER = 1 − (1 − α)ᵐ</p>
+        <div class="equation">
+          <math
+            xmlns="http://www.w3.org/1998/Math/MathML"
+            display="block"
+            aria-label="Independent null tests: FWER = 1 − (1 − α)ᵐ"
+            ><mrow
+              ><mi>FWER</mi><mo>=</mo><mn>1</mn><mo>−</mo
+              ><msup
+                ><mrow
+                  ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow
+                  ><mo>)</mo></mrow
+                ><mi>m</mi></msup
+              ></mrow
+            ></math
+          >
+        </div>
+        <p class="symbol-key">
+          For m independent tests of true null hypotheses, each at significance
+          level α, FWER is the chance of at least one false rejection without
+          adjustment.
+        </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
@@ -103,6 +122,12 @@
           <h2 class="chart-title">
             Families with at least one false discovery
           </h2>
+          <p class="chart-explanation" id="familyChart-explanation">
+            Compare the theoretical chance of at least one false rejection
+            without adjustment with the simulated proportion for your chosen
+            procedure. The vertical axis is a probability, not a number of
+            tests.
+          </p>
           <div class="plot-frame">
             <canvas
               id="familyChart"
@@ -116,6 +141,11 @@
           <h2 class="chart-title">
             False discoveries in each simulated family
           </h2>
+          <p class="chart-explanation" id="discoveryChart-explanation">
+            Each bar counts simulated families with that many false rejections.
+            Every null hypothesis is true in this simulation, so every rejection
+            is a false positive.
+          </p>
           <div class="plot-frame">
             <canvas
               id="discoveryChart"
@@ -140,10 +170,9 @@
           trade-off.
         </p>
       </details>
-      <section id="lecturer-panel"></section>
     </main>
     <footer>
-      Built for explanation, exploration and better questions.
+      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source & documentation</a
       >

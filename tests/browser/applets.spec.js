@@ -229,6 +229,8 @@ test("undefined correlations have mathematical explanations and recover after in
   await page.locator("#pairs").fill("1,2\n1,3\n1,4");
   await expect(page.locator("#data-pearson-value")).toHaveText("Undefined");
   await expect(page.locator("#calculation")).toContainText("zero variance");
+  await page.locator("#pairs").fill("0.1,2\n0.1,3\n0.1,4");
+  await expect(page.locator("#data-pearson-value")).toHaveText("Undefined");
   await page.locator("#pairs").fill("1,2\n2,3\n3,4");
   await expect(page.locator("#data-pearson-value")).toHaveText("1.0000");
   await assertFiniteCharts(page);

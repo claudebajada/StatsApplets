@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
       y = pairs.map((p) => p[1]);
     const mx = TeachingMath.mean(x),
       my = TeachingMath.mean(y);
-    const a = x.map((v) => v - mx),
-      b = y.map((v) => v - my);
+    const a = StatsMath.center(x),
+      b = StatsMath.center(y);
     const cross = a.reduce((s, v, i) => s + v * b[i], 0);
     const xx = a.reduce((s, v) => s + v * v, 0),
       yy = b.reduce((s, v) => s + v * v, 0);

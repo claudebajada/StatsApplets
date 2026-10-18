@@ -27,7 +27,8 @@
   }
   function mean(a) {
     if (!a.length) throw new RangeError("Empty data");
-    return a.reduce((s, x) => s + finite(x), 0) / a.length;
+    const origin = finite(a[0]);
+    return origin + a.reduce((s, x) => s + (finite(x) - origin), 0) / a.length;
   }
   function variance(a) {
     integer(a.length, 2);

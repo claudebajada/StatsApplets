@@ -67,6 +67,24 @@ test("least squares, residual sum of squares and R² agree with SciPy", () => {
     ]).rSquared,
     null,
   );
+  assert.equal(T.mean([0.1, 0.1, 0.1]), 0.1);
+  assert.equal(T.variance([0.1, 0.1, 0.1]), 0);
+  assert.equal(
+    T.regression([
+      [0.1, 1],
+      [0.1, 2],
+      [0.1, 3],
+    ]).defined,
+    false,
+  );
+  assert.equal(
+    T.regression([
+      [1, 0.1],
+      [2, 0.1],
+      [3, 0.1],
+    ]).rSquared,
+    null,
+  );
 });
 test("ANOVA partition and F tail agree with SciPy, including unequal groups and tiny tails", () => {
   for (const row of r.anova) {

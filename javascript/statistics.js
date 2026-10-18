@@ -187,8 +187,10 @@
     return Math.hypot(...v);
   }
   function center(v) {
-    const mean = v.reduce((s, x) => s + x, 0) / v.length;
-    return v.map((x) => x - mean);
+    // Translate before summing: constant decimal vectors then centre to exact zero.
+    const offsets = v.map((x) => x - v[0]);
+    const mean = offsets.reduce((s, x) => s + x, 0) / v.length;
+    return offsets.map((x) => x - mean);
   }
   function cosine(a, b) {
     const denominator = norm(a) * norm(b);

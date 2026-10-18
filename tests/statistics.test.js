@@ -111,6 +111,12 @@ test("inner products, Pearson r and undefined vector cases", () => {
   assert.equal(s.cosine([0, 0], [1, 2]), null);
   assert.equal(s.pearson([1, 1], [1, 2]), null);
   assert.equal(s.dot([0, 0], [0, 0]), 0);
+  for (const constant of [0.1, 0.7, 999999.9]) {
+    const repeated = Array(3).fill(constant);
+    assert.deepEqual(s.center(repeated), [0, 0, 0]);
+    assert.equal(s.pearson(repeated, [1, 2, 3]), null);
+    assert.equal(s.pearson([1, 2, 3], repeated), null);
+  }
 });
 test("invalid test parameters are rejected", () => {
   assert.throws(() => s.tTails(1, 0), RangeError);

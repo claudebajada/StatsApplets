@@ -9,6 +9,18 @@
       "#controls input, #controls select, #controls textarea",
     ),
   ];
+  function authoredDefault(el) {
+    // Firefox can restore live form values on reload. Reset must use the HTML defaults.
+    if (el.type === "checkbox") return el.defaultChecked;
+    if (el.tagName === "SELECT")
+      return (
+        [...el.options].find((option) => option.defaultSelected)?.value ??
+        el.options[0]?.value ??
+        ""
+      );
+    if (el.tagName === "TEXTAREA") return el.defaultValue;
+    return Number(el.defaultValue);
+  }
   const schema = Object.fromEntries(
     settings.map((el) => [
       el.id,
@@ -21,12 +33,7 @@
               : el.type === "checkbox"
                 ? "checkbox"
                 : "number",
-        default:
-          el.type === "checkbox"
-            ? el.checked
-            : el.tagName === "SELECT" || el.tagName === "TEXTAREA"
-              ? el.value
-              : Number(el.value),
+        default: authoredDefault(el),
         options: [...(el.options || [])].map((o) => o.value),
         min: Number(el.min),
         max: Number(el.max),

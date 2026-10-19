@@ -235,3 +235,34 @@ test("legacy paired-data links select manual correlation data", async ({
   await expect(page.locator("#data-pearson-value")).toHaveText("0.5000");
   expect(new URL(page.url()).searchParams.has("_lecture")).toBe(false);
 });
+
+test("restored form values cannot redefine the applet defaults", async ({
+  page,
+}) => {
+  // Reproduce browser form restoration before the shell captures its control schema.
+  await page.route("**/javascript/shell.js", async (route) => {
+    const response = await route.fetch();
+    const restored = `
+      if (document.getElementById('dataMode')) {
+        document.getElementById('dataMode').value = 'manual';
+        document.getElementById('pairs').value = '10,30\\n20,10\\n30,20';
+        document.getElementById('observations').value = '3';
+        document.getElementById('association').value = '-0.8';
+      }
+      if (document.getElementById('log-axis')) document.getElementById('log-axis').checked = true;
+    `;
+    await route.fulfill({ response, body: restored + (await response.text()) });
+  });
+  await page.goto(
+    "/html/correlation.html?dataMode=manual&pairs=2,-1%0A4,3%0A6,1",
+  );
+  await expect(page.locator("#pair-count")).toHaveText("3");
+  await page.locator("#reset").click();
+  await expect(page.locator("#dataMode")).toHaveValue("generated");
+  await expect(page.locator("#observations")).toHaveValue("12");
+  await expect(page.locator("#association")).toHaveValue("0.6");
+  await expect(page.locator("#pairs")).toHaveValue("1,1\n2,3\n3,2");
+  await expect(page.locator("#pair-count")).toHaveText("12");
+  await page.goto("/html/f-distribution-explorer.html");
+  await expect(page.locator("#log-axis")).not.toBeChecked();
+});

@@ -1,6 +1,7 @@
 // Start with paired observations; expose the vector calculation only on request.
 document.addEventListener("DOMContentLoaded", () => {
   const get = (id) => document.getElementById(id);
+  const walkthrough = createCorrelationWalkthrough();
   const scatter = initializeChart(get("pairsChart").getContext("2d"), {
     type: "scatter",
     data: {
@@ -46,13 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     inputWarning();
     const x = pairs.map((p) => p[0]),
       y = pairs.map((p) => p[1]);
-    const mx = TeachingMath.mean(x),
-      my = TeachingMath.mean(y);
-    const a = StatsMath.center(x),
-      b = StatsMath.center(y);
-    const cross = a.reduce((s, v, i) => s + v * b[i], 0);
-    const xx = a.reduce((s, v) => s + v * v, 0),
-      yy = b.reduce((s, v) => s + v * v, 0);
     const r = StatsMath.pearson(x, y);
     get("data-pearson-value").textContent =
       r === null ? "Undefined" : format(r);
@@ -62,20 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "Pearson’s r is undefined because at least one variable has zero variance: all its values are equal. There is no variation to compare. Change those values to explore an association."
         : Math.abs(r) < 1e-10
           ? "r = 0: these points have no linear association. This does not rule out a curved relationship. Correlation alone cannot show that one variable causes the other."
-          : `r = ${format(r)}: ${r > 0 ? "higher x values tend to go with higher y values" : "higher x values tend to go with lower y values"}. ${Math.abs(r) > 0.999999 ? "All points lie on a straight line." : "Move r towards −1 or +1 to make the straight-line pattern tighter, or towards 0 to weaken it."} Correlation alone cannot show causation.`;
-    get("correlation-sums").textContent =
-      `x̄ = ${format(mx)}, ȳ = ${format(my)}. Sum of centred products = ${format(cross)}; centred sums of squares = ${format(xx)} and ${format(yy)}. ${r === null ? "The denominator is zero, so division is undefined." : `After normalising, r = ${format(r)}.`}`;
-    const rows = get("correlation-rows");
-    rows.replaceChildren();
-    pairs.slice(0, 30).forEach(([vx, vy], i) => {
-      const tr = document.createElement("tr");
-      [vx, vy, a[i], b[i], a[i] * b[i]].forEach((value) => {
-        const td = document.createElement("td");
-        td.textContent = format(value);
-        tr.append(td);
-      });
-      rows.append(tr);
-    });
+          : `r = ${format(r)}: ${r > 0 ? "higher x values tend to go with higher y values" : "higher x values tend to go with lower y values"}. ${Math.abs(r) > 0.999999 ? "All points lie on a straight line." : "Values closer to −1 or +1 indicate a tighter straight-line pattern."} Correlation alone cannot show causation.`;
+    walkthrough.update(pairs);
     scatter.data.datasets[0].data = pairs.map(([x, y]) => ({ x, y }));
     scatter.update();
   }

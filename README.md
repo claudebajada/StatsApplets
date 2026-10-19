@@ -49,7 +49,9 @@ Each applet maintains its parameter state in its own direct URL. **Copy example 
 
 The interface is designed for students. Presets, reset and sharing are available directly; there is no lecturer mode, editable lesson metadata or student/lecturer view switch. Legacy lecturer URL fields are ignored and removed from the canonical example link. Avoid personal information in shared data.
 
-Correlation starts with a single scatterplot and Pearson’s r. Its sliders construct a sample with a specified r; **New pattern** changes the seed while preserving that sample correlation. This is a constructed example, not sampling from a population with a specified correlation. Manual paired data (3–100 observations) are optional. Older paired-data URLs automatically select manual data. The centring table, dot product and normalisation formula are in **How is r calculated?**; constant variables receive a mathematical explanation instead of NaN.
+Correlation starts with a single scatterplot and Pearson’s r. Its sliders construct a sample with a specified r; **New pattern** changes the seed while preserving that sample correlation. This is a constructed example, not sampling from a population with a specified correlation. Manual paired data (3–100 observations) are optional. Older paired-data URLs automatically select manual data. The optional **How is r calculated?** walkthrough has four steps: treat columns as vectors, centre them, normalise their lengths, and interpret their angle. It follows the current data, or loads a three-observation example with r = 0.5 and θ = 60°. Buttons add 10 to all y values or double them, updating the actual observations and shareable URL. The SVG preserves the full vectors’ lengths and angle in their shared plane; it does not select two components or use the scatterplot slope. Each view rescales to fit, with numerical lengths shown. The final view marks the signed projection onto the first unit vector. Constant variables receive an undefined-angle explanation.
+
+Conceptual inspiration and further reading: [Brendan O’Connor (2012), Cosine similarity, Pearson correlation, and OLS coefficients](https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html). The student explanations, example and graphics were authored for StatsApplets. Positive changes of scale preserve r; negative changes of scale reverse its sign.
 
 All simulations use an explicit integer seed and a deterministic Mulberry32 generator. **New random sample** increments the seed. Reopening a link reproduces the same numerical experiment, including population settings and repetition count. Reset restores the applet's original parameter defaults.
 
@@ -74,7 +76,7 @@ npm run test:all               # checks + units + complete browser suite
 
 An existing Chromium executable can be supplied using `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chromium`; this affects only the Chromium projects. Standard CI installs all browser engines normally. Firefox and WebKit are real browser engines in automation, not emulated by Chromium; mobile viewport testing remains emulation.
 
-The browser suite covers every explorer's initialisation, slider bounds and keyboard input, finite chart datasets/axes, every preset, reset and URL round-trip, MathML fraction layout, absence of lecturer controls, malformed data, manual regression/ANOVA references, seeded resampling, CSV export, estimate/error-bar positions and automated accessibility checks. The catalogue test visits all fifteen direct pages.
+The browser suite covers every explorer's initialisation, slider bounds and keyboard input, finite chart datasets/axes, every preset, reset and URL round-trip, MathML fraction layout, absence of lecturer controls, malformed data, manual regression/ANOVA references, seeded resampling, CSV export, estimate/error-bar positions, geometric angle/length/projection checks, every walkthrough step and automated accessibility checks. The catalogue test visits all fifteen direct pages.
 
 Numerical references were generated independently with **SciPy 1.17.0** and, for multiplicity corrections, **statsmodels 0.14.6**. Tests include both statistic signs, zero and extreme tails, low/large df, unequal group sizes, binomial boundaries, F quantiles, interval endpoints, regression, ANOVA and adjusted p-values. Tiny probability tests use relative error so an incorrect zero cannot pass a loose absolute tolerance. Near-zero interval endpoints allow 5e-8 absolute error from the upstream incomplete-beta calculation.
 
@@ -96,6 +98,7 @@ GitHub Actions runs checks, unit tests and the complete browser suite on pull re
 - `javascript/statistics.js`: DOM-free inference and distribution calculations; usable in a browser or Node.
 - `javascript/teaching-statistics.js`: seeded sampling, interval/power calculations, regression, ANOVA, multiplicity and histogram helpers. No Chart.js or DOM dependency.
 - `javascript/common.js`: chart creation/styles, data alternatives, result formatting and control binding.
+- `javascript/correlation-walkthrough.js`: staged explanation and SVG rendering; `TeachingMath.correlationGeometry` supplies independently tested geometry.
 - `javascript/mean-test-explorer.js`: shared rendering for the three mean-test pages.
 - `javascript/extensions.js`: rendering for the six new explorers; mathematical work stays in the pure modules.
 - `javascript/catalogue.js`: catalogue metadata, learning content, presets and explanatory content.

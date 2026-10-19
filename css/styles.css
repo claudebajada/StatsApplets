@@ -603,3 +603,123 @@ footer a {
 .info .metrics {
   margin-top: 1rem;
 }
+
+.walkthrough-experiments,
+.walkthrough-pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.walkthrough-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0;
+}
+.walkthrough-nav button {
+  width: 100%;
+  height: 100%;
+  font-size: 0.9rem;
+}
+.walkthrough-nav [aria-current="step"] {
+  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.correlation-step h3 {
+  margin-top: 1rem;
+}
+.vector-values {
+  font-variant-numeric: tabular-nums;
+}
+.angle-figure {
+  background: #f4f7f6;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.angle-figure svg {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: auto;
+}
+.angle-figure svg text {
+  font-size: 16px;
+  font-weight: 600;
+}
+.angle-figure figcaption {
+  font-size: 0.9rem;
+  max-width: 85ch;
+}
+.walkthrough-pager {
+  justify-content: space-between;
+}
+.walkthrough-pager span {
+  font-size: 0.85rem;
+}
+button:disabled {
+  cursor: default;
+  color: #5b6b72;
+  background: #e8ecec;
+  border-color: #9baeb5;
+}
+.formula-details {
+  margin-top: 1rem;
+}
+.angle-reference {
+  max-width: 600px;
+  margin-top: 1rem;
+}
+@media (max-width: 650px) {
+  .walkthrough-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .walkthrough-experiments button {
+    width: 100%;
+  }
+  .walkthrough-pager span {
+    width: 100%;
+    order: -1;
+  }
+}
+.equation:focus-visible,
+.table-scroll:focus-visible {
+  outline: 3px solid #793d91;
+  outline-offset: 3px;
+}
+.walkthrough-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.walkthrough-body .correlation-step {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+.walkthrough-body .angle-figure {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 1rem;
+  margin-top: 0;
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .walkthrough-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .walkthrough-body .angle-figure {
+    grid-column: 1;
+    grid-row: 2;
+    position: static;
+  }
+}

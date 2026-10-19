@@ -260,6 +260,55 @@
       r * v + Math.sqrt(Math.max(0, 1 - r * r)) * orthogonal[i] * scale,
     ]);
   }
+  // The two vectors are drawn in their own shared plane, preserving lengths/angle.
+  // These coordinates are unrelated to the original scatterplot axes.
+  function vectorGeometry(a, b) {
+    const lengthX = S.norm(a),
+      lengthY = S.norm(b);
+    const cosine = S.cosine(a, b);
+    return {
+      x: a,
+      y: b,
+      lengthX,
+      lengthY,
+      dot: S.dot(a, b),
+      cosine,
+      angleDegrees:
+        cosine === null ? null : (Math.acos(cosine) * 180) / Math.PI,
+      tipX: cosine === null ? null : [lengthX, 0],
+      tipY:
+        cosine === null
+          ? null
+          : [
+              lengthY * cosine,
+              lengthY * Math.sqrt(Math.max(0, 1 - cosine * cosine)),
+            ],
+    };
+  }
+  function correlationGeometry(pairs) {
+    integer(pairs.length, 3, 100);
+    pairs.forEach((pair) => {
+      if (!Array.isArray(pair) || pair.length !== 2)
+        throw new RangeError("Expected x, y pairs");
+      pair.forEach(finite);
+    });
+    const x = pairs.map((p) => p[0]),
+      y = pairs.map((p) => p[1]);
+    const a = S.center(x),
+      b = S.center(y);
+    const lx = S.norm(a),
+      ly = S.norm(b);
+    // Zero vectors cannot be given unit length. Keep zeros to expose the reason.
+    const u = a.map((v) => (lx === 0 ? 0 : v / lx)),
+      v = b.map((value) => (ly === 0 ? 0 : value / ly));
+    return {
+      meanX: mean(x),
+      meanY: mean(y),
+      raw: vectorGeometry(x, y),
+      centred: vectorGeometry(a, b),
+      unit: vectorGeometry(u, v),
+    };
+  }
   function regressionSample(n, slope, noise, seed) {
     integer(n, 3, 100);
     finite(slope);
@@ -422,6 +471,7 @@
     regression,
     regressionSample,
     correlationSample,
+    correlationGeometry,
     anova,
     groupSample,
     adjustPValues,

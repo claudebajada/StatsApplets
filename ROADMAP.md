@@ -21,7 +21,7 @@ The original correctness stage and the requested follow-up stages are implemente
 
 ## Student-focused revision
 
-The home-page “Understand what changes.” panel and all lecturer controls have been removed. Equations are native MathML rather than code-like text. The three mean tests now use two distinct plots: an estimate with a ±1 standard-error bar in original units, then the null distribution of the test statistic. Correlation starts with one scatterplot; centring and normalisation are explained on request. All chart panels explain what their marks and axes represent.
+The home-page “Understand what changes.” panel and all lecturer controls have been removed. Equations are native MathML rather than code-like text. The three mean tests now use two distinct plots: an estimate with a ±1 standard-error bar in original units, then the null distribution of the test statistic. Correlation starts with one scatterplot. Its optional guided walkthrough builds vectors, centring, unit lengths and the angle interpretation using the current data, a small worked example and affine-transformation experiments. Its SVG represents the full vectors in their shared plane, preserving the angle. All chart panels explain what their marks and axes represent.
 
 ## Deliberate model boundaries
 

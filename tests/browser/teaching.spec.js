@@ -161,8 +161,10 @@ test("correlation starts with one scatterplot and offers optional calculation st
     "open",
     "",
   );
-  await page.locator("#correlation-working summary").click();
-  await expect(page.locator("#correlation-working math mfrac")).toHaveCount(1);
+  await page.locator("#correlation-working > summary").click();
+  await expect(
+    page.locator("#correlation-final-formula math mfrac"),
+  ).toHaveCount(1);
   await expect(page.locator("#correlation-rows tr")).toHaveCount(12);
   await expect(page.locator("#correlation-sums")).toContainText("r = 0.6000");
 });

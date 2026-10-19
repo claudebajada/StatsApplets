@@ -157,6 +157,98 @@ module.exports = {
     if (!formulas[id]) throw Error("Missing formula: " + id);
     return math(formulas[id], label);
   },
+  correlationLesson: {
+    vectors: math(
+      row(
+        mi("x"),
+        eq,
+        par(
+          row(
+            sub(mi("x"), mn(1)),
+            op(","),
+            sub(mi("x"), mn(2)),
+            op(","),
+            op("…"),
+            op(","),
+            sub(mi("x"), n),
+          ),
+        ),
+        op(","),
+        mi("y"),
+        eq,
+        par(
+          row(
+            sub(mi("y"), mn(1)),
+            op(","),
+            sub(mi("y"), mn(2)),
+            op(","),
+            op("…"),
+            op(","),
+            sub(mi("y"), n),
+          ),
+        ),
+      ),
+      "x and y are vectors containing the observations for each variable",
+    ),
+    centre: math(
+      row(
+        sub(mi("a"), mi("i")),
+        eq,
+        sub(mi("x"), mi("i")),
+        minus,
+        bar("x"),
+        op(","),
+        sub(mi("b"), mi("i")),
+        eq,
+        sub(mi("y"), mi("i")),
+        minus,
+        bar("y"),
+      ),
+      "Subtract the x mean from each x and the y mean from each y",
+    ),
+    lengths: math(
+      row(
+        sub(mi("L"), mi("x")),
+        eq,
+        root(row(op("∑"), sup(sub(mi("a"), mi("i")), mn(2)))),
+        op(","),
+        sub(mi("L"), mi("y")),
+        eq,
+        root(row(op("∑"), sup(sub(mi("b"), mi("i")), mn(2)))),
+      ),
+      "Each centred vector length is the square root of the sum of its squared components",
+    ),
+    unit: math(
+      row(
+        sub(mi("u"), mi("i")),
+        eq,
+        frac(sub(mi("a"), mi("i")), sub(mi("L"), mi("x"))),
+        op(","),
+        sub(mi("v"), mi("i")),
+        eq,
+        frac(sub(mi("b"), mi("i")), sub(mi("L"), mi("y"))),
+      ),
+      "Divide each component by its vector length to obtain unit vectors u and v",
+    ),
+    angle: math(
+      row(
+        mi("r"),
+        eq,
+        frac(
+          row(mi("a"), op("·"), mi("b")),
+          row(sub(mi("L"), mi("x")), sub(mi("L"), mi("y"))),
+        ),
+        eq,
+        mi("u"),
+        op("·"),
+        mi("v"),
+        eq,
+        mi("cos"),
+        mi("θ"),
+      ),
+      "Pearson r is the centred dot product divided by the two centred lengths, equal to the unit vector dot product and the cosine of their angle",
+    ),
+  },
   pearson: math(
     pearson,
     "Pearson r equals the sum of centred cross products divided by the square root of the product of the centred sums of squares",

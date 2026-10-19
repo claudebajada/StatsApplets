@@ -277,12 +277,12 @@ pages.correlation = {
     "pairsChart",
     "Look for the direction and closeness of a straight-line pattern",
   ),
-  after: `<details class="info" id="correlation-working"><summary>How is r calculated?</summary><p>First subtract each variable’s own mean. These centred values show whether each observation is above or below its mean. Multiply the two centred values for each observation, then add those products.</p><div class="equation">${math.pearson}</div><p>Finally divide by the lengths of the two centred vectors. This is the dot product of the centred, normalised vectors, or their cosine similarity. Centring removes location; normalising removes units.</p><p id="correlation-sums"></p><div class="table-scroll"><table><caption>Centred values for the first 30 observations</caption><thead><tr><th scope="col">x</th><th scope="col">y</th><th scope="col">x − x̄</th><th scope="col">y − ȳ</th><th scope="col">Product</th></tr></thead><tbody id="correlation-rows"></tbody></table></div></details>`,
+  after: require("./correlation-walkthrough.js")(math),
   symbolKey:
     "r measures the direction and strength of a straight-line association. It has no units. It is undefined if either variable has no variation.",
   method:
     "The slider constructs a set of points with the selected Pearson r; it does not simulate a population correlation or a hypothesis test. New pattern rearranges the constructed points while keeping r fixed. Manual input calculates r from your own paired observations. A value of zero means no linear association, but other relationships can still exist. Outliers can strongly affect r, and correlation does not imply causation.",
-  scripts: ["correlation"],
+  scripts: ["correlation-walkthrough", "correlation"],
 };
 pages["clt-explorer"] = {
   controls:

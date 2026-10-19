@@ -249,3 +249,97 @@ test("constructed correlation examples retain the requested Pearson r across siz
     assert.throws(() => T.correlationSample(12, bad, 42));
   assert.throws(() => T.correlationSample(2, 0.5, 42));
 });
+
+test("correlation walkthrough geometry agrees with independent correlations and known angles", () => {
+  const references = require("./references/scipy.json").correlation.filter(
+    (row) => row.a.length >= 3,
+  );
+  for (const row of references) {
+    const g = T.correlationGeometry(row.a.map((x, i) => [x, row.b[i]]));
+    close(g.centred.cosine, row.r);
+    close(g.centred.angleDegrees, (Math.acos(row.r) * 180) / Math.PI);
+  }
+  const pairs = [
+    [2, -1],
+    [4, 3],
+    [6, 1],
+  ];
+  const g = T.correlationGeometry(pairs);
+  close(g.raw.cosine, 16 / Math.sqrt(56 * 11));
+  close(g.centred.dot, 4);
+  close(g.centred.lengthX, Math.sqrt(8));
+  close(g.centred.cosine, 0.5);
+  close(g.centred.angleDegrees, 60);
+  close(g.unit.lengthX, 1);
+  close(g.unit.lengthY, 1);
+  close(g.unit.dot, 0.5);
+  for (const n of [3, 12, 100])
+    for (const target of [-1, -0.5, 0, 0.5, 1]) {
+      const geometry = T.correlationGeometry(
+        T.correlationSample(n, target, 42),
+      );
+      for (const v of [geometry.raw, geometry.centred, geometry.unit]) {
+        close(Math.hypot(...v.tipX), v.lengthX);
+        close(Math.hypot(...v.tipY), v.lengthY);
+        close(
+          (v.tipX[0] * v.tipY[0] + v.tipX[1] * v.tipY[1]) /
+            (v.lengthX * v.lengthY),
+          v.cosine,
+        );
+      }
+      close(geometry.unit.cosine, target);
+      close(
+        geometry.centred.angleDegrees,
+        (Math.acos(target) * 180) / Math.PI,
+        2e-6,
+        3e-6,
+      );
+      close(
+        geometry.unit.angleDegrees,
+        geometry.centred.angleDegrees,
+        2e-6,
+        3e-6,
+      );
+    }
+});
+test("geometric correlation preserves positive affine changes and rejects zero-length directions", () => {
+  const pairs = [
+      [2, -1],
+      [4, 3],
+      [6, 1],
+    ],
+    original = T.correlationGeometry(pairs);
+  const moved = T.correlationGeometry(pairs.map(([x, y]) => [x, 2 * y + 10]));
+  close(moved.centred.cosine, original.centred.cosine);
+  close(moved.centred.angleDegrees, original.centred.angleDegrees);
+  close(moved.centred.lengthY, 2 * original.centred.lengthY);
+  assert.ok(Math.abs(moved.raw.angleDegrees - original.raw.angleDegrees) > 1);
+  close(
+    T.correlationGeometry(pairs.map(([x, y]) => [x, -y])).centred.angleDegrees,
+    120,
+  );
+  for (const value of [0, 0.1]) {
+    const g = T.correlationGeometry([
+      [value, 1],
+      [value, 2],
+      [value, 3],
+    ]);
+    assert.equal(g.centred.cosine, null);
+    assert.equal(g.unit.angleDegrees, null);
+    assert.equal(g.unit.tipX, null);
+    assert.equal(g.unit.tipY, null);
+  }
+  assert.throws(() =>
+    T.correlationGeometry([
+      [1, 2],
+      [3, 4],
+    ]),
+  );
+  assert.throws(() =>
+    T.correlationGeometry([
+      [1, 2],
+      [3, NaN],
+      [5, 6],
+    ]),
+  );
+});

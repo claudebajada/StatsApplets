@@ -214,5 +214,6 @@ function createCorrelationWalkthrough() {
       "Doubled each y value. Its centred length doubles, but its direction and r stay the same.",
     ),
   );
+  setStep(0, false);
   return { update };
 }

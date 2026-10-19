@@ -64,6 +64,13 @@ test("walkthrough builds the worked example from raw vectors to the 60-degree co
           Number(el.getAttribute("y2")) > Number(el.getAttribute("y1")),
       ),
   ).toBe(true);
+  await page.reload();
+  await page.locator("#correlation-working > summary").click();
+  await expect(page.locator("#correlation-previous")).toBeDisabled();
+  await expect(page.locator("#correlation-next")).toBeEnabled();
+  await expect(page.locator("#correlation-step-status")).toHaveText(
+    "Step 1 of 4",
+  );
 });
 test("shifting and stretching real observations preserve the centred angle and round-trip in URLs", async ({
   page,

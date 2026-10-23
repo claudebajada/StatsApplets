@@ -2,19 +2,22 @@
 const fs = require("node:fs");
 const catalogue = require("../javascript/catalogue.js");
 const math = require("./mathml.js");
+const learning = require("../javascript/learning-content.js");
 const escape = (s) =>
   String(s)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll('"', "&quot;");
-const range = (id, label, min, max, step, value) =>
-  `<div class="control-field"><label for="${id}">${label}: <output id="${{ "df-slider": "df-value", "df1-slider": "df1-value", "df2-slider": "df2-value" }[id] || id + "-value"}" for="${id}">${value}</output></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"></div>`;
+const range = (id, label, min, max, step, value) => {
+  const outputId = {"df-slider":"df-value","df1-slider":"df1-value","df2-slider":"df2-value"}[id] || id+"-value";
+  return `<div class="control-field"><label for="${id}">${label}: <output id="${outputId}" for="${id}">${value}</output></label><div class="range-pair"><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"><label class="visually-hidden" for="${id}-number">Exact value: ${label}</label><input type="number" class="range-number" data-range="${id}" id="${id}-number" min="${min}" max="${max}" step="${step}" value="${value}"></div><span class="range-bounds" aria-hidden="true">${min} to ${max}</span></div>`;
+};
 const select = (id, label, options, value) =>
   `<div class="control-field"><label for="${id}">${label}</label><select id="${id}">${options.map(([key, text]) => `<option value="${key}"${key === value ? " selected" : ""}>${text}</option>`).join("")}</select></div>`;
 const text = (id, label, value) =>
   `<div class="control-field wide"><label for="${id}">${label}</label><textarea id="${id}" rows="6" maxlength="12000" spellcheck="false">${escape(value)}</textarea></div>`;
 const seed =
-  '<div class="control-field"><label for="seed">Random seed</label><input type="number" id="seed" min="0" max="2147483647" step="1" value="42"></div>';
+  '<details class="wide seed-details"><summary>Reproduce this experiment</summary><div class="control-field"><label for="seed">Random seed</label><input type="number" id="seed" min="0" max="2147483647" step="1" value="42"></div><p class="small">The same seed and settings reproduce the same simulated values.</p></details>';
 const directions = [
   ["upper", "greater than"],
   ["lower", "less than"],
@@ -22,7 +25,7 @@ const directions = [
 ];
 const captions = {
   meanEstimateChart:
-    "The circle is the sample estimate. The diamond is the null value. The horizontal bar extends one standard error on either side of the estimate. The axis uses the original measurement units. The bar shows one standard error, which is narrower than a 95% confidence interval.",
+    "The circle is the sample estimate. The diamond is the null value. The blue horizontal bar extends one standard error on either side of the estimate. The thinner teal bar is the two-sided 95% confidence interval. The axis uses original measurement units. A two-sided 95% interval corresponds to a two-sided 5% test; directional tests use different rejection regions.",
   zChart:
     "Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting z scores, not the distribution of individual measurements. The vertical line marks your z score. The shaded area is the p-value for your chosen alternative.",
   tChart:
@@ -40,13 +43,13 @@ const captions = {
   fullDistChart:
     "Multiply each arrangement count by its probability. The resulting bars give the exact probability of each possible count of successes.",
   frequencyChart:
-    "Compare the observed count in each category with the count predicted by a uniform null model. Both sets of counts add to the selected N.",
+    "Compare the observed count in each category with the count predicted by a uniform null model. Both sets of counts add to the selected N. Holding the departure control fixed holds the underlying category proportions fixed.",
   chiSquaredChart:
     "This curve approximates the distribution of χ² from repeated studies under the null model. The line marks this example's statistic. The shaded area is the probability of a value at least as large when the null is true.",
   distributionChart:
     "The horizontal axis gives possible values of the random variable. The area under the curve between two values gives the probability of falling between them.",
   populationChart:
-    "These bars summarise individual values drawn from the selected population. Compare their shape with the distribution of sample means in the next plot.",
+    "These bars summarise individual values drawn from the selected population. Every population is standardised to mean 0 and SD 1; even the rare binary outcomes are shown in those standardised units. Compare this shape with the distribution of sample means.",
   meansChart:
     "Each sample contributes one mean to these bars. The comparison curve is a normal distribution with the theoretical mean and standard error. Its parameters come from the population and sample size.",
   intervalChart:
@@ -68,7 +71,7 @@ const captions = {
   familyChart:
     "The first bar gives the calculated probability of at least one false rejection without adjustment. The second gives the proportion of simulated families with a false rejection under your chosen method. The vertical axis runs from 0 to 1.",
   discoveryChart:
-    "Each bar counts simulated families with that many false rejections. Every null hypothesis is true in this simulation, so every rejection is a false positive.",
+    "Bars count families by their number of false or correct discoveries. A false discovery rejects a true null. A correct discovery detects one of the simulated real effects.",
 };
 const symbolKeys = {
   "binomial-normal-explorer":
@@ -123,7 +126,7 @@ for (const id of [
             ? "Common sample SD s₁ = s₂ = s"
             : "Sample SD s",
         0.1,
-        5,
+        20,
         0.1,
         1,
       ) +
@@ -135,20 +138,19 @@ for (const id of [
         "alternative",
         independent ? "H₁: μ₁ − μ₂ is … 0" : "H₁: μ is … μ₀",
         directions,
-        "upper",
-      ),
+        "twoSided",
+      ) + '<div class="control-field wide"><label><input id="lockScale" type="checkbox" checked> Keep axes fixed for comparison</label><button id="fit-axes" type="button">Fit axes to current example</button></div>',
     metrics:
+      metric(independent ? "Estimated difference" : "Estimated mean", "estimate-value") +
+      metric("95% confidence interval", "ci-value") +
+      metric(z ? "Standardised difference (σ)" : "Signed Cohen's d", "cohen-d-value") +
       metric("Selected p-value", "p-value-selected") +
       metric(z ? "z score" : "t score", z ? "z-value" : "t-value") +
       metric(
         z ? "Standard error, SE" : "Estimated standard error, SE",
         "se-value",
       ),
-    extraResults: `<details class="info"><summary>Effect size and other tail probabilities</summary><div class="metrics">${
-      metric(
-        z ? "Signed standardised difference (σ)" : "Signed Cohen's d",
-        "cohen-d-value",
-      ) +
+    extraResults: `<details class="info"><summary>Degrees of freedom and other tail probabilities</summary><div class="metrics">${
       (z ? "" : metric("Degrees of freedom", "df-value")) +
       metric("Lower-tail p", "p-value-lower") +
       metric(
@@ -177,7 +179,7 @@ for (const id of [
     method: z
       ? "The test assumes independent observations and a normal sampling distribution of the mean. The standard error σ/√n describes how sample means vary across repeated studies. The z score gives the observed difference from μ₀ in standard errors. Choose the alternative before looking at the data."
       : independent
-        ? "This is the pooled equal-variance test. The applet gives both groups the same sample standard deviation, so the pooled value is also s. The test has n₁ + n₂ − 2 degrees of freedom. Exact p-values assume independent observations from normal populations with equal variances. Plot 1 shows the observed mean difference and its estimated standard error. Plot 2 shows the distribution of t when the population means are equal. Choose the alternative before looking at the data."
+        ? "This is the pooled equal-variance test for different participants in the two groups. Repeated measurements on the same participants require a paired approach. The applet gives both groups the same sample SD for illustration; the pooled test in general does not require identical sample SDs. Welch's test, which allows unequal population variances, is outside this applet's model. Here the pooled SD is s. The test has n₁ + n₂ − 2 degrees of freedom. Exact p-values assume independent observations from normal populations with equal variances. Plot 1 shows the observed mean difference and its estimated standard error. Plot 2 shows the distribution of t when the population means are equal. Choose the alternative before looking at the data."
         : "The sliders set sample statistics. Exact t-test p-values assume independent observations from a normal population. The test uses n − 1 degrees of freedom. With small samples, skewness and outliers can make its p-values unreliable. Plot 1 shows the sample mean and its estimated standard error. Plot 2 shows the distribution of t when the null is true. Choose the alternative before looking at the data.",
     scripts: ["mean-test-explorer", id],
   };
@@ -185,7 +187,8 @@ for (const id of [
 pages["binomial-normal-explorer"] = {
   controls:
     range("theta", "Success probability p", 0, 1, 0.01, 0.5) +
-    range("N", "Number of trials n", 0, 30, 1, 15),
+    range("N", "Number of trials n", 0, 1000, 1, 15) +
+    range("k", "Inspect success count k", 0, 1000, 1, 7),
   metrics:
     metric("Population mean μ = np", "mu-value") +
     metric("Population SD σ", "sigma-value"),
@@ -200,7 +203,8 @@ pages["binomial-normal-explorer"] = {
 pages["binomial-components-explorer"] = {
   controls:
     range("p", "Success probability p", 0, 1, 0.01, 0.5) +
-    range("n", "Number of trials n", 1, 30, 1, 10),
+    range("n", "Number of trials n", 1, 30, 1, 3) +
+    range("k", "Inspect success count k", 0, 30, 1, 2),
   metrics: "",
   charts:
     chart("coeffChart", "1 · Number of arrangements C(n,k)") +
@@ -214,7 +218,7 @@ pages["chi-squared-explorer"] = {
   controls:
     range("categories", "Number of categories k", 2, 10, 1, 5) +
     range("total-observations", "Total observations N", 10, 1000, 10, 100) +
-    range("skew", "Departure in count weights", 0, 10, 0.1, 5),
+    range("skew", "Departure in proportions (0 = uniform)", 0, 10, 0.1, 5),
   metrics:
     metric("Effect size, Cohen's w", "effect-size-value") +
     metric("χ² statistic", "chi-squared-value") +
@@ -226,7 +230,7 @@ pages["chi-squared-explorer"] = {
     ) + chart("chiSquaredChart", "Null χ² sampling distribution"),
   notice: "validity-warning",
   method:
-    "The null gives each category the same probability. The test estimates no parameters from the counts, so it has k − 1 degrees of freedom. The applet constructs whole-number counts from the slider settings. It does not draw random samples. If N is not divisible by k, the observed counts cannot all be equal. Cohen's w = √(χ²/N) measures departure from the null probabilities and can exceed 1. Discrepancies in either direction increase χ², so the p-value uses the upper tail.",
+    "The null gives each category the same probability. The test estimates no parameters from the counts, so it has k − 1 degrees of freedom. The applet constructs whole-number counts from fixed category proportions and rounds them while preserving N. It does not draw random samples. The departure control is dimensionless, so increasing N keeps the underlying proportions fixed; integer rounding can cause small effect-size changes. If N is not divisible by k, the observed counts cannot all be equal. Cohen's w = √(χ²/N) measures departure from the null probabilities and can exceed 1. Discrepancies in either direction increase χ², so the p-value uses the upper tail.",
   scripts: ["chi-squared-explorer"],
 };
 pages["t-distribution-explorer"] = {
@@ -254,7 +258,7 @@ pages["f-distribution-explorer"] = {
   ),
   notice: "plot-note",
   method:
-    "F is non-negative and has no upper limit. For an upper-tail variance-ratio test or ANOVA, values above the critical value lead to rejection of the null. When the numerator has fewer than two degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. The shaded area ends at the plot edge, but the critical value uses the full distribution. A logarithmic axis changes the spacing of F values. Their probabilities stay the same.",
+    "F is non-negative and has no upper limit. For an upper-tail variance-ratio test or ANOVA, values above the critical value lead to rejection of the null. When the numerator has fewer than two degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. On a linear axis the shaded area ends at the plot edge, while the critical value uses the full distribution. On a logarithmic axis screen area is not proportional to probability; the fill is removed. The probability and critical value remain unchanged.",
   scripts: ["f-distribution-explorer"],
 };
 pages.correlation = {
@@ -299,8 +303,11 @@ pages["clt-explorer"] = {
     ) +
     range("sampleSize", "Observations per sample n", 1, 100, 1, 10) +
     range("repetitions", "Repeated samples", 100, 2000, 100, 1000) +
+    '<div class="control-field wide"><label><input type="checkbox" id="traceMode" checked> Build the means one study at a time</label><input type="hidden" id="traceCount" min="1" max="2000" step="1" value="1"></div>' +
+    '<div class="control-field wide"><label><input type="checkbox" id="lockScale" checked> Keep mean axis fixed for comparison</label></div>' +
     seed,
   metrics: "",
+  beforePlots:'<section class="sample-trace" aria-labelledby="trace-title"><h2 id="trace-title">Watch one study become one mean</h2><div id="sample-trace"></div></section>',
   charts:
     chart("populationChart", "Individual observations from the population") +
     chart("meansChart", "Means from repeated samples"),
@@ -315,6 +322,7 @@ pages["confidence-interval-explorer"] = {
     range("sampleSize", "Sample size n", 2, 100, 1, 20) +
     range("repetitions", "Repeated intervals", 100, 1000, 100, 500) +
     range("level", "Confidence level", 0.8, 0.99, 0.01, 0.95) +
+    '<div class="control-field wide"><label><input type="checkbox" id="lockScale" checked> Keep interval axis fixed for comparison</label></div>' +
     select(
       "method",
       "Interval procedure",
@@ -361,6 +369,10 @@ pages["regression-explorer"] = {
     range("sampleSize", "Generated observations n", 3, 100, 1, 30) +
     range("slope", "Population slope for simulated data", -3, 3, 0.1, 1) +
     range("noise", "Noise SD for simulated data", 0, 3, 0.1, 1) +
+    '<details class="wide candidate-controls"><summary>Try your own line</summary><div class="control-field"><label><input type="checkbox" id="tryLine"> Explore a candidate line</label></div>' +
+    range("candidateSlope", "Your slope", -6, 6, 0.1, 0) +
+    range("candidateIntercept", "Your intercept", -10, 10, 0.1, 1) +
+    '<div class="control-field"><label><input type="checkbox" id="revealFit" checked> Reveal the least-squares line</label></div></details>' +
     seed +
     text(
       "pairs",
@@ -408,6 +420,9 @@ pages["multiple-comparisons-explorer"] = {
     range("tests", "Independent tests per family m", 1, 100, 1, 20) +
     range("repetitions", "Simulated families", 100, 2000, 100, 1000) +
     range("alpha", "Error-rate threshold α", 0.01, 0.2, 0.01, 0.05) +
+    range("signalFraction", "Proportion of hypotheses with a real effect", 0, 1, 0.05, 0) +
+    range("signalEffect", "True effect d for real effects", 0.05, 1.5, 0.05, 0.5) +
+    range("signalN", "Observations per signal test", 2, 100, 1, 30) +
     select(
       "correction",
       "Adjustment",
@@ -425,22 +440,28 @@ pages["multiple-comparisons-explorer"] = {
     chart("familyChart", "Families with at least one false discovery") +
     chart("discoveryChart", "False discoveries in each simulated family"),
   method:
-    "Every null hypothesis in this simulation is true. The applet draws independent p-values uniformly between 0 and 1. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. Here, every rejection is false, so FDR equals FWER. This simulation cannot show what happens when some null hypotheses are false.",
+    "With the real-effect proportion set to zero, every null hypothesis is true. Null p-values are independent uniform values. Non-null p-values come from independent two-sided known-SD z tests at the chosen true effect and sample size. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. With every null true, FDR equals FWER. With real effects, the simulation counts true and false discoveries separately and estimates FDR by averaging the false-discovery proportion across all simulated families. All tests are independent.",
   scripts: ["extensions"],
 };
 async function generate() {
   for (const meta of catalogue) {
     const p = pages[meta.id];
     if (!p) throw Error("Missing page " + meta.id);
+    const lesson = learning[meta.id];
+    const contextControls = `<details class="wide context-controls"><summary>Research examples</summary>${select("context","Worked context",[["abstract","Abstract example"],["medicine","Medicine"],["cognition","Cognitive science"]],"abstract")}<p class="small" id="context-description">All research examples use fictional data.</p></details>`;
+    const relatedLinks = lesson.related.map(id => {
+      const entry = catalogue.find(a => a.id === id);
+      return `<a href="${id}.html">${entry.title}</a>`;
+    }).join(" · ");
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
-<main id="main"><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
-<div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section>
-<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<details class="info"><summary>Model, assumptions and interpretation</summary><p>${p.method}</p></details></div></div>
+<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: ${relatedLinks}</span></nav><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
+<p class="learning-orientation"><strong>${escape(lesson.role)}.</strong> ${escape(lesson.question)}</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}${contextControls}</section><p class="small context-status" id="context-status">${escape(lesson.plain)}</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
+<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
+${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<details class="info"><summary>Model, assumptions and interpretation</summary><p>${p.method}</p></details></div></div>
 </main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}
+<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}<script src="../javascript/learning.js"></script>
 </body></html>\n`;
     const formatted = await require("prettier").format(html, {
       parser: "html",

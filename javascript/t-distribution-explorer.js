@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const df = parseInt(dfSlider.value);
     dfValue.textContent = df;
     updateDistributionChart(distributionChart, df);
+    document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:"t-distribution-explorer",df}}));
   }
 
   dfSlider.addEventListener("input", updateChart);

@@ -1,19 +1,24 @@
 const root = document.getElementById("catalogue");
 function renderCatalogue() {
-  const query = document.getElementById("search").value.toLowerCase();
+  const query = document.getElementById("search").value.trim().toLowerCase();
+  const terms = query.split(/\s+/).filter(Boolean);
   root.replaceChildren();
   let count = 0;
   for (const group of [
+    "Sampling & uncertainty",
+    "Relationships",
     "Distributions",
     "Hypothesis testing",
-    "Relationships",
-    "Sampling & uncertainty",
   ]) {
     const entries = AppletCatalogue.filter(
       (a) =>
         a.group === group &&
-        `${a.title} ${a.objective} ${a.group}`.toLowerCase().includes(query),
+        terms.every(term => `${a.title} ${a.objective} ${a.group} ${LearningContent[a.id]?.keywords || ""}`.toLowerCase().includes(term)),
     );
+    if(group === "Hypothesis testing") {
+      const order=["one-sample-t-test","independent-samples-t-test","one-sample-z-test","chi-squared-explorer","anova-explorer","multiple-comparisons-explorer"];
+      entries.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
+    }
     if (!entries.length) continue;
     count += entries.length;
     const section = document.createElement("section");

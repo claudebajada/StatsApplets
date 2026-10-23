@@ -84,10 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ),
       ];
       population.update();
-      const data = T.histogram(result.means, 30, true),
+      const shown = el("traceMode").checked ? Math.min(reps,num("traceCount")) : reps;
+      const displayedMeans = result.means.slice(0,shown);
+      const data = T.histogram(displayedMeans, 30, true),
         extent = Math.max(4 / Math.sqrt(n), ...data.map((p) => Math.abs(p.x)));
       means.data.datasets = [
-        bars("Repeated sample means", data),
+        shown < 20
+          ? point("One point per study mean",displayedMeans.map(x=>xy(x,0)))
+          : bars("Repeated sample means", data),
         lineDataset(
           "Normal approximation",
           curvePoints(-extent, extent, (x) =>
@@ -96,17 +100,28 @@ document.addEventListener("DOMContentLoaded", () => {
           chartPalette[1],
         ),
       ];
+      if (el("lockScale").checked) {
+        means.options.scales.x.min=-4; means.options.scales.x.max=4;
+      } else { delete means.options.scales.x.min; delete means.options.scales.x.max; }
       means.update();
+      el("scale-note").textContent=el("lockScale").checked
+        ? "The means use a fixed −4 to +4 axis. Increasing n makes their spread visibly narrower. Density heights may rescale."
+        : "The mean axis resizes. Compare tick values as well as the shape.";
+      el("meansChart-explanation").textContent="Showing " + shown + " of " + reps +
+        " study means. Each study adds one mean, rather than all its observations. " +
+        (shown===1 ? "One mean cannot yet reveal a sampling distribution." : "As more studies accumulate, their sampling distribution becomes visible.") +
+        " The comparison curve uses the population mean and theoretical SE.";
       resultMetrics([
         ["Population μ", 0],
         ["Population σ", 1],
         ["Theoretical SE", f(result.theoreticalSE)],
-        ["Mean of simulated sample means", f(result.empiricalMean)],
-        ["SD of simulated sample means", f(result.empiricalSD)],
+        ["Mean of displayed study means", f(T.mean(displayedMeans))],
+        ["SD of displayed study means", shown>1 ? f(Math.sqrt(T.variance(displayedMeans))) : "Need 2 studies"],
       ]);
       setCalculation(
         `The applet drew ${reps} independent samples of ${n} observations from the chosen population. The theoretical standard error is 1/√${n} = ${f(result.theoreticalSE)}. The standard deviation of the simulated sample means is ${f(result.empiricalSD)}. Changing n affects the sample means, while the population stays the same. The comparison curve uses the theoretical standard error. Random seed ${num("seed")} reproduces these samples with the same settings.`,
       );
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,n,reps,shown,population:value("population"),seed:num("seed"),result}}));
     };
   } else if (id === "confidence-interval-explorer") {
     const intervals = chart(
@@ -122,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "Frequency",
       "bar",
     );
+    let intervalBounds;
     update = () => {
       const mu = num("populationMean"),
         sigma = num("populationSD"),
@@ -165,6 +181,18 @@ document.addEventListener("DOMContentLoaded", () => {
       ];
       intervals.options.scales.y.min = 0;
       intervals.options.scales.y.max = display.length + 1;
+      if (!intervalBounds) intervalBounds=[mu-4*sigma,mu+4*sigma];
+      if(el("lockScale").checked) {
+        intervals.options.scales.x.min=intervalBounds[0];
+        intervals.options.scales.x.max=intervalBounds[1];
+      } else { delete intervals.options.scales.x.min; delete intervals.options.scales.x.max; }
+      const clipped=display.filter(i=>i.low<intervalBounds[0]||i.high>intervalBounds[1]).length;
+      el("intervalChart-explanation").textContent =
+        "Showing the first " + display.length + " of " + reps + " intervals; coverage uses all " + reps +
+        ". Each horizontal segment comes from a different sample. The vertical line is fixed μ. Dashed triangles mark misses.";
+      el("scale-note").textContent=el("lockScale").checked
+        ? "Interval axis fixed for comparison." + (clipped ? " " + clipped + " displayed intervals extend beyond it; uncheck the scale lock to fit them." : "")
+        : "Interval axis resizes; compare its tick values when changing sample size.";
       intervals.update();
       widths.data.datasets = [
         bars(
@@ -186,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setCalculation(
         `The first sample has mean ${f(first.mean)} and ${method === "t" ? "an estimated" : "a known"} standard error of ${f(first.se)}. Its critical value is ${f(first.critical)}. The interval is [${f(first.low)}, ${f(first.high)}], which ${first.covers ? "contains" : "misses"} the population mean μ = ${f(mu)}. In total, ${result.covered} of ${reps} intervals contain μ. Random sampling makes this proportion vary. Near the chosen confidence level, its standard error across simulations is about ${f(Math.sqrt((level * (1 - level)) / reps))}.`,
       );
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,mu,sigma,n,reps,level,method,seed:num("seed"),result}}));
     };
   } else if (id === "power-explorer") {
     const density = chart(
@@ -227,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
           xs.map((x) => xy(x, S.normalDensity(x, 0, 1))),
         ),
         lineDataset(
-          "Specified H₁: shifted Z",
+          d===0 ? "True null: N(0,1)" : result.beta===null ? "Specified true effect (outside chosen H₁)" : "Specified H₁: shifted Z",
           xs.map((x) => xy(x, S.normalDensity(x, result.shift, 1))),
           chartPalette[1],
         ),
@@ -263,14 +292,16 @@ document.addEventListener("DOMContentLoaded", () => {
       curve.options.scales.y.max = 1;
       curve.update();
       resultMetrics([
-        ["Power", percent(result.power)],
-        ["Type II error β", percent(result.beta)],
+        [d===0 ? "Rejection probability at the null" : "Power at specified effect", percent(result.power)],
+        ["Type II error β", result.beta===null ? "Not applicable" : percent(result.beta)],
+        ["Non-rejection probability", percent(result.nonRejection)],
         ["Significance α", percent(alpha)],
         ["H₁ mean of Z", f(result.shift)],
       ]);
       setCalculation(
-        `At n = ${n}, the true effect d = ${f(d)} gives the alternative z distribution a mean of d√n = ${f(result.shift)}. The ${direction === "twoSided" ? "two-sided" : direction === "upper" ? "greater-than" : "less-than"} rejection boundary is ${direction === "twoSided" ? "±" : direction === "lower" ? "−" : ""}${f(result.critical)}. The area under the alternative curve inside the rejection region gives power = ${f(result.power, 4)}. The remaining area is β = ${f(result.beta, 4)}, the probability of failing to reject the null for this effect. When d = 0, the rejection probability equals α.`,
+        `At n = ${n}, the true effect d = ${f(d)} gives the alternative z distribution a mean of d√n = ${f(result.shift)}. The ${direction === "twoSided" ? "two-sided" : direction === "upper" ? "greater-than" : "less-than"} rejection boundary is ${direction === "twoSided" ? "±" : direction === "lower" ? "−" : ""}${f(result.critical)}. The area under the alternative curve inside the rejection region gives power = ${f(result.power, 4)}. The remaining area is the non-rejection probability ${f(result.nonRejection, 4)}. ${result.beta===null ? "This specified value is not in the chosen alternative, so non-rejection is not labelled Type II error." : "At this alternative it is Type II error β."} When d = 0, the rejection probability equals α and non-rejection is a correct decision.`,
       );
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,n,d,alpha,direction,result}}));
     };
   } else if (id === "regression-explorer") {
     const fit = chart("fitChart", "Data and fit", "x", "y", "scatter");
@@ -312,6 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
         residual.update();
         resultMetrics([["Fit", "Undefined"]]);
         setCalculation(result.reason);
+        document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,pairs,result,manual}}));
         return;
       }
       const segments = pairs.flatMap(([x, y], i) => [
@@ -337,13 +369,31 @@ document.addEventListener("DOMContentLoaded", () => {
           showLine: true,
         },
       );
+      const tryLine = el("tryLine").checked;
+      const reveal = el("revealFit").checked;
+      const candidate = LearningMath.candidateLine(pairs,num("candidateIntercept"),num("candidateSlope"));
+      fit.data.datasets[1].hidden = !reveal;
+      fit.data.datasets[2].hidden = !reveal;
+      if(tryLine) fit.data.datasets.push({
+        ...lineDataset("Your candidate line",[
+          xy(min,num("candidateIntercept")+num("candidateSlope")*min),
+          xy(max,num("candidateIntercept")+num("candidateSlope")*max),
+        ],chartPalette[3]), showLine:true,
+      });
+      if(!manual && reveal) fit.data.datasets.push({
+        ...lineDataset("Population generating line",[
+          xy(min,1+num("slope")*min),xy(max,1+num("slope")*max),
+        ],chartPalette[4]),showLine:true,borderDash:[3,5],
+      });
       fit.update();
-      const fittedMin = Math.min(...result.fitted),
-        fittedMax = Math.max(...result.fitted);
+      const activeFitted = tryLine ? pairs.map(([x])=>num("candidateIntercept")+num("candidateSlope")*x) : result.fitted;
+      const activeResiduals = tryLine ? candidate.residuals : result.residuals;
+      const fittedMin = Math.min(...activeFitted),
+        fittedMax = Math.max(...activeFitted);
       residual.data.datasets = [
         point(
-          "Residuals",
-          result.fitted.map((x, i) => xy(x, result.residuals[i])),
+          tryLine ? "Candidate-line residuals" : "Least-squares residuals",
+          activeFitted.map((x, i) => xy(x, activeResiduals[i])),
         ),
         {
           ...lineDataset(
@@ -356,7 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       ];
       residual.update();
-      resultMetrics([
+      el("residualChart-explanation").textContent=(tryLine?"This plot follows your candidate line. ":"This plot follows the least-squares fit. ")+"Each point shows a predicted value and its vertical residual; the zero reference separates over-predictions from under-predictions.";
+      resultMetrics(reveal ? [
         ["Fitted slope b₁", f(result.slope)],
         ["Fitted intercept b₀", f(result.intercept)],
         [
@@ -367,13 +418,16 @@ document.addEventListener("DOMContentLoaded", () => {
         ],
         ["Residual SD", f(result.residualSD)],
         ["SSE", f(result.sse)],
-      ]);
+        ...(tryLine ? [["Your line SSE",f(candidate.sse)]] : []),
+      ] : [["Your line SSE", f(candidate.sse)],["Minimum possible SSE", f(result.sse)],
+           ["Task","Adjust slope and intercept, then reveal the fit"]]);
       setCalculation(
         `For ${pairs.length} observations, the fitted line is ŷ = ${f(result.intercept)} + ${f(result.slope)}x. The residuals sum to ${f(
           result.residuals.reduce((s, x) => s + x, 0),
           8,
         )}, which is zero apart from rounding. Squaring the residuals and adding them gives SSE = ${f(result.sse)}. The total sum of squares is SST = ${f(result.sst)}. ${result.rSquared === null ? "SST is zero, so R² is undefined." : `R² = 1 − SSE/SST = ${f(result.rSquared, 4)}.`} The residual standard deviation uses n − 2 = ${result.df} degrees of freedom. These results describe the fitted sample. They do not establish causation or guarantee accurate predictions for new observations.`,
       );
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,pairs,result,manual,candidate,tryLine,reveal}}));
     };
   } else if (id === "anova-explorer") {
     const groupsChart = chart(
@@ -437,6 +491,11 @@ document.addEventListener("DOMContentLoaded", () => {
         pointRadius: 6,
         pointStyle: "rect",
       });
+      groupsChart.data.datasets.push({
+        ...lineDataset("Grand mean",[
+          xy(0.6,T.mean(groups.flat())),xy(groups.length+0.4,T.mean(groups.flat())),
+        ],chartPalette[4]),showLine:true,borderDash:[5,4],
+      });
       groupsChart.options.scales.x.ticks = { stepSize: 1, precision: 0 };
       groupsChart.update();
       table.replaceChildren();
@@ -470,6 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fChart.update();
         resultMetrics([["F statistic", "Undefined"]]);
         setCalculation(result.reason);
+        document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,groups,result}}));
         return;
       }
       const max = Math.max(
@@ -504,6 +564,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setCalculation(
         `The between-group sum of squares ${f(result.between)} plus the within-group sum of squares ${f(result.within)} gives the total ${f(result.total)}. Divide each by its degrees of freedom to get the mean squares ${f(result.msBetween)} and ${f(result.msWithin)}. Their ratio F = ${f(result.f)} has an upper-tail p-value of ${formatProbability(result.p)} under equal population means. The effect size η² = ${f(result.etaSquared, 4)} is the between-group sum of squares divided by the total. It describes the proportion of sample variation accounted for by differences between group means.`,
       );
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,groups,result}}));
     };
   } else if (id === "multiple-comparisons-explorer") {
     const family = initializeChart(el("familyChart").getContext("2d"), {
@@ -533,32 +594,39 @@ document.addEventListener("DOMContentLoaded", () => {
         reps = num("repetitions"),
         alpha = num("alpha"),
         method = value("correction"),
-        result = T.multipleComparisons(m, reps, alpha, method, num("seed"));
+        signals = Math.round(m*num("signalFraction")),
+        result = T.multipleComparisons(m, reps, alpha, method, num("seed"), {
+          signals, effect:num("signalEffect"), sampleSize:num("signalN"),
+        });
+      family.data.labels=["No adjustment: theoretical FWER","Chosen method: simulated FWER","Chosen method: simulated FDR"];
+      family.options.scales.y.title.text="Probability / expected false fraction";
       family.data.datasets = [
         {
-          label: "Family-wise error rate",
-          data: [result.unadjustedFWER, result.empiricalFWER],
-          backgroundColor: [chartPalette[0], chartPalette[1]],
+          label: "Error-rate estimates",
+          data: [result.unadjustedFWER, result.empiricalFWER, result.empiricalFDR],
+          backgroundColor: [chartPalette[0], chartPalette[1], chartPalette[2]],
           borderColor: chartPalette[0],
           borderWidth: 2,
         },
         {
           type: "line",
           label: "Nominal α",
-          data: [alpha, alpha],
+          data: [alpha, alpha, alpha],
           borderColor: chartPalette[3],
           borderDash: [5, 4],
           pointRadius: 0,
         },
       ];
       family.update();
-      const counts = Array(m + 1).fill(0);
+      const counts = Array(m + 1).fill(0), correctCounts=Array(m+1).fill(0);
       result.counts.forEach((c) => counts[c]++);
+      result.trueCounts.forEach((c) => correctCounts[c]++);
       discoveries.data.datasets = [
         bars(
-          "Simulated families",
+          "False discoveries per family",
           counts.map((y, x) => xy(x, y)),
         ),
+        bars("Correct discoveries per family",correctCounts.map((y,x)=>xy(x,y)),chartPalette[2]),
       ];
       discoveries.options.scales.x.ticks = { precision: 0 };
       discoveries.update();
@@ -567,10 +635,16 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Simulated FWER with chosen method", percent(result.empiricalFWER)],
         ["Families with false discoveries", `${result.families} / ${reps}`],
         ["Total false discoveries", result.discoveries],
+        ["Total correct discoveries", result.trueDiscoveries],
+        ["Simulated FDR", percent(result.empiricalFDR)],
+        ["True effects per family", signals + " / " + m],
+        ["Detection rate for real effects", result.empiricalPower===null ? "No real effects" : percent(result.empiricalPower)],
       ]);
       setCalculation(
-        `With ${m} independent tests and every null true, the chance of at least one false rejection without adjustment is 1 − (1 − ${alpha})^${m} = ${f(result.unadjustedFWER, 4)}. Your chosen method gave at least one false rejection in ${result.families} of ${reps} simulated families. Every rejection here is a false positive. Random variation can put a simulated error rate above α even when the method controls that rate in the long run.`,
+        `With ${m} independent tests, ${result.nulls} nulls are true and ${signals} effects are real. Without adjustment, the chance of at least one false rejection is 1 − (1 − ${alpha})^${result.nulls} = ${f(result.unadjustedFWER,4)}. The chosen method made false discoveries in ${result.families} of ${reps} families (FWER), and its mean false fraction across all families was ${f(result.empiricalFDR,4)} (FDR). Families with no discoveries contribute zero to that average. It made ${result.trueDiscoveries} correct and ${result.discoveries} false discoveries in total. ${signals===0 ? "With every null true, FDR and FWER coincide." : "With real effects, FDR and FWER can differ."} Random variation can put estimates above a controlled threshold in one simulation.`,
       );
+      el("familyChart-explanation").textContent="Compare unadjusted theoretical FWER, chosen-method simulated FWER, and chosen-method simulated FDR. With real effects these are different targets. α is a long-run target for FWER methods; for BH the threshold targets FDR.";
+      document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:id,m,reps,alpha,method,signals,result}}));
     };
   }
   if (!update) return;

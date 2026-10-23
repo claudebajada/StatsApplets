@@ -70,13 +70,17 @@
     integer(n, 1, 500);
     integer(repetitions, 10, 5000);
     const random = rng(seed);
-    const means = Array.from({ length: repetitions }, () =>
-      mean(Array.from({ length: n }, () => draw(kind, random))),
-    );
+    const firstSamples = [];
+    const means = Array.from({ length: repetitions }, (_, index) => {
+      const sample = Array.from({ length: n }, () => draw(kind, random));
+      if (index < 10) firstSamples.push(sample);
+      return mean(sample);
+    });
     // Separate seed stream prevents display samples from changing the sampling experiment.
     const displayRandom = rng((seed + 1) >>> 0);
     return {
       means,
+      firstSamples,
       population: Array.from({ length: 1000 }, () => draw(kind, displayRandom)),
       empiricalMean: mean(means),
       empiricalSD: Math.sqrt(variance(means)),
@@ -143,6 +147,8 @@
       return {
         ...interval,
         mean: m,
+        sampleSD: Math.sqrt(variance(sample)),
+        sample,
         covers: interval.low <= mu && interval.high >= mu,
       };
     });
@@ -173,7 +179,10 @@
       critical,
       shift,
       power: Math.max(0, Math.min(1, probability)),
-      beta: Math.max(0, 1 - probability),
+      nonRejection: Math.max(0, 1 - probability),
+      beta: d !== 0 && (direction === "twoSided" ||
+        (direction === "upper" && d > 0) || (direction === "lower" && d < 0))
+        ? Math.max(0, 1 - probability) : null,
     };
   }
   function parsePairs(text, min = 2, max = 100) {
@@ -415,28 +424,49 @@
     } else throw new RangeError("Unknown adjustment");
     return result;
   }
-  function multipleComparisons(m, repetitions, alpha, method, seed) {
+  function multipleComparisons(m, repetitions, alpha, method, seed, options = {}) {
     integer(m, 1, 100);
     integer(repetitions, 10, 5000);
     rate(alpha);
+    const signals = options.signals ?? 0, effect = options.effect ?? 0.8,
+      sampleSize = options.sampleSize ?? 30;
+    integer(signals, 0, m);
+    finite(effect);
+    integer(sampleSize, 2, 1000);
     const random = rng(seed);
-    let families = 0,
-      discoveries = 0;
-    const counts = [];
+    let families = 0, discoveries = 0, trueDiscoveries = 0, fdpSum = 0;
+    const counts = [], trueCounts = [];
+    let firstFamily;
     for (let i = 0; i < repetitions; i++) {
-      const ps = Array.from({ length: m }, () => random()),
-        adjusted = adjustPValues(ps, method),
-        count = adjusted.filter((p) => p <= alpha).length;
-      counts.push(count);
-      if (count) families++;
-      discoveries += count;
+      const ps = Array.from({ length: m }, (_, j) => j < signals
+        ? S.zTails(gaussian(random) + effect * Math.sqrt(sampleSize)).twoSided
+        : random());
+      const adjusted = adjustPValues(ps, method);
+      let falseCount = 0, trueCount = 0;
+      adjusted.forEach((p, j) => {
+        if (p <= alpha) {
+          if (j < signals) trueCount++;
+          else falseCount++;
+        }
+      });
+      if (i === 0) firstFamily = ps.map((p, j) => ({
+        p, adjusted: adjusted[j], isNull: j >= signals, rejected: adjusted[j] <= alpha,
+      }));
+      counts.push(falseCount);
+      trueCounts.push(trueCount);
+      if (falseCount) families++;
+      discoveries += falseCount;
+      trueDiscoveries += trueCount;
+      const total = falseCount + trueCount;
+      fdpSum += total ? falseCount / total : 0;
     }
     return {
-      families,
-      discoveries,
-      counts,
+      families, discoveries, trueDiscoveries, counts, trueCounts, firstFamily,
+      signals, nulls: m - signals,
       empiricalFWER: families / repetitions,
-      unadjustedFWER: 1 - (1 - alpha) ** m,
+      empiricalFDR: fdpSum / repetitions,
+      empiricalPower: signals ? trueDiscoveries / (signals * repetitions) : null,
+      unadjustedFWER: 1 - (1 - alpha) ** (m - signals),
     };
   }
   function histogram(values, bins = 25, density = false) {

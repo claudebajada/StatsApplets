@@ -47,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
       { x: critical, y: Math.max(...points.map((p) => p.y)) },
     ];
     const log = get("log-axis").checked;
+    chart.data.datasets[1].fill = log ? false : "origin";
+    chart.data.datasets[1].label = log ? "Upper tail (screen area is not probability)" : "Upper 5% rejection region";
     chart.options.scales.x.type = log ? "logarithmic" : "linear";
     chart.options.scales.x.min = log ? points[0].x : 0;
     chart.options.scales.x.max = max;
@@ -55,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : "F statistic";
     chart.update();
     get("plot-note").textContent =
-      `The plot extends to F = ${max.toFixed(2)}, at least the 99th percentile. The critical value ${critical.toFixed(3)} leaves 5% probability to its right, including the tail beyond the plot. With fewer than two numerator degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. Select a logarithmic axis to inspect the long tail.`;
+      `The plot extends to F = ${max.toFixed(2)}, at least the 99th percentile. The critical value ${critical.toFixed(3)} leaves 5% probability to its right, including the tail beyond the plot. With fewer than two numerator degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. Select a logarithmic axis to inspect the long tail. ${log ? "Logarithmic spacing changes screen areas, so the tail fill is removed: the visible area is not a probability." : "On this linear axis, probability corresponds to area under the density."}`;
   }
   ["df1-slider", "df2-slider"].forEach((id) => addSliderListener(id, update));
   get("log-axis").addEventListener("change", update);

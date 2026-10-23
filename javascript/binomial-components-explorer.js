@@ -81,6 +81,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateCharts() {
     const p = parseFloat(pSlider.value);
     const n = parseInt(nSlider.value);
+    const selectedControl = document.getElementById("k");
+    selectedControl.max = String(n);
+    const selected = Math.min(n, Number(selectedControl.value));
+    selectedControl.value = selected;
+    document.getElementById("k-value").textContent = selected;
 
     pValueDisplay.textContent = p.toFixed(2);
     nValueDisplay.textContent = n;
@@ -113,11 +118,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Update Full Distribution Chart
     fullDistChart.data.labels = kValues;
     fullDistChart.data.datasets[0].data = fullDistribution;
-    fullDistChart.update();
+    for (const chart of [coeffChart,probTermChart,fullDistChart]) {
+      chart.data.datasets[0].backgroundColor = kValues.map(k => k === selected ? chartPalette[3] : chartPalette[0]+"aa");
+      chart.update();
+    }
+    const result=LearningMath.binomialSelection(n,p,selected);
+    document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:"binomial-components-explorer",n,p,k:selected,result}}));
+    window.syncRangeNumbers?.();
   }
 
   pSlider.addEventListener("input", updateCharts);
   nSlider.addEventListener("input", updateCharts);
+  document.getElementById("k").addEventListener("input", updateCharts);
 
   document.addEventListener("applet:state", updateCharts);
   updateCharts();

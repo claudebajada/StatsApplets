@@ -31,17 +31,17 @@ Use Node.js 22 or newer, then open http://127.0.0.1:4173. Alternatively run `pyt
 | Sampling & uncertainty | [Confidence interval coverage](html/confidence-interval-explorer.html) | Repeated normal-population t/z intervals and empirical coverage                     |
 | Sampling & uncertainty | [Statistical power](html/power-explorer.html)                          | Exact known-σ one-sample z power, directional effects and sample-size curve         |
 
-Every page has a learning objective, equation, current-value explanation, assumptions, four presets and reset. Result formatting distinguishes small probabilities from floating-point underflow. The static catalogue groups applets by topic and supports text search.
+Every page has a learning objective, equation, current-value explanation, assumptions, at least four presets and reset. Result formatting distinguishes small probabilities from floating-point underflow. The static catalogue groups applets by topic and supports text search.
 
 ### Teaching distinctions
 
 - Mean-test sliders describe **sample statistics**, except the z test's known population σ. The independent test retains the original pooled, single-SD model; it is not Welch's test. Standardised differences are signed. Two plots connect the sample estimate in original units (with a ±1 SE bar) to the null distribution of z/t scores. The bar is explicitly not a confidence interval; individual measurements are not represented by a synthetic population curve.
 - Greater-than, less-than and different-from alternatives are available for the mean tests and power. GOF χ² and omnibus ANOVA F are upper-tailed by construction, so they do not offer mathematically inappropriate signed alternatives.
 - Binomial bars are point probabilities; the normal curve is a density. Continuity-corrected **areas**, rather than curve heights, approximate binomial probabilities. At n=0, p=0 or p=1, the exact distribution remains valid and the continuous normal curve is omitted.
-- GOF counts are deterministic examples. Clipped weights are normalised, then allocated to integers by largest remainders. Observed counts always sum to N; equal integer counts are impossible when N is not divisible by k. The effect is Cohen's w, not Cramér's V.
+- GOF counts are deterministic examples. Dimensionless category proportions are normalised, then allocated to integers by largest remainders. Changing N holds the underlying proportions fixed. Observed counts always sum to N; equal integer counts are impossible when N is not divisible by k. The effect is Cohen's w, not Cramér's V.
 - CLT populations all have theoretical μ=0 and σ=1; only the sampling distribution of means approaches normality. Confidence intervals sample a normal population and estimate s separately in each t interval. Coverage calculations use every repetition; the interval chart shows the first 80.
 - Power is for a **known-σ z test**, not t-test power or retrospective observed power. Regression is descriptive least squares with an intercept. ANOVA assumes independent normal errors with equal population variances for its exact F reference.
-- Multiple comparisons simulates independent Uniform(0,1) null p-values. Every discovery is false in this experiment. BH's FDR target differs from FWER in general; they coincide in the all-null case. This simulator does not establish performance under arbitrary dependence or mixed true/false nulls.
+- Multiple comparisons simulates independent Uniform(0,1) null p-values and optional real effects using two-sided known-SD z-test p-values. It counts correct and false discoveries separately and estimates FDR by averaging each family's false-discovery proportion, including zero-discovery families. BH's FDR target differs from FWER in general; they coincide in the all-null case. This simulator supports mixed truth under independence; it does not establish performance under arbitrary dependence.
 
 ## Shareable student examples
 
@@ -127,3 +127,20 @@ Upstream references: [Chart.js v4 migration](https://www.chartjs.org/docs/latest
 Copy `index.html`, `html/`, `javascript/`, `css/` and `lib/` to a static host, preserving paths. No Node/Python server, npm install or build command is required in production. Links are relative, so repository-subdirectory hosting works. The existing `Videos/` assets remain available and are optional.
 
 Do not deploy or merge without approval. BSD-3-Clause; see [LICENSE](LICENSE). Third-party notices are in `lib/`.
+
+
+## Guided learning experiments
+
+The starting route connects sampling and standard error to confidence intervals, t tests and power. Every applet includes a prediction experiment, related concepts and fictional medicine/cognitive-science examples. Shared URLs preserve canonical parameter values; exact-number partners edit the same sliders rather than adding duplicate parameters.
+
+- Mean tests default to two-sided alternatives, show the estimate, 95% interval and effect size, and offer fixed axes with an explicit fit action. A staged calculation connects the difference, SE, standardisation and null-tail interpretation.
+- CLT starts with one study mean. Its traced observations are the actual samples feeding the histogram. Students can add one or ten studies or reveal the full run. The mean axis can stay fixed as n changes.
+- Confidence interval inspection follows the original sample, estimated SD, critical value and endpoints. The plot states how many intervals it shows and how many the coverage calculation uses.
+- Selected binomial counts link highlighted factors, enumerated arrangements for small n, exact probability and continuity-corrected normal area. The approximation explorer supports n up to 1000, with stable log probabilities.
+- The t sampling experiment compares known-SD Z and estimated-SD t for each identical sample. Centred deviations and signed products introduce the existing geometric correlation walkthrough; nonlinear and outlier examples expose limitations.
+- Regression supports candidate lines, squared-error areas and a revealable least-squares solution. Curvature, unequal-spread and influential-observation examples support residual interpretation.
+- ANOVA inspection follows an observation to its group mean and the grand mean, showing both deviation components and the sample-size weighting of between-group SS.
+- Mixed-truth multiple-testing experiments expose FWER, FDR, correct discoveries and detection rate. The first family includes known truth, raw and adjusted p-values and decisions.
+- The logarithmic F view removes tail area fill because screen area is no longer proportional to probability. At a true null, the power explorer calls 1−α a non-rejection probability and marks Type II error inapplicable.
+
+Core scientific parameter state is shareable. Temporary inspection selections and walkthrough tabs are interface state. Simulation seeds remain explicit and reproducible, inside an optional disclosure.

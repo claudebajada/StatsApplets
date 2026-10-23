@@ -232,3 +232,36 @@ document.addEventListener("DOMContentLoaded", () =>
       );
   }),
 );
+
+/* Exact-value partners are views of canonical sliders, not additional URL parameters. */
+window.syncRangeNumbers = function() {
+  for (const number of document.querySelectorAll("[data-range]")) {
+    const slider = document.getElementById(number.dataset.range);
+    number.min = slider.min; number.max = slider.max; number.step = slider.step;
+    number.disabled = slider.disabled;
+    if (document.activeElement !== number) number.value = slider.value;
+  }
+};
+document.addEventListener("DOMContentLoaded", () => {
+  for (const number of document.querySelectorAll("[data-range]")) {
+    const slider = document.getElementById(number.dataset.range);
+    number.addEventListener("input", (event) => {
+      event.stopImmediatePropagation();
+      if (!number.checkValidity() || number.value === "") return;
+      slider.value = number.value;
+      slider.dispatchEvent(new Event("input", { bubbles:true }));
+    });
+    number.addEventListener("change", (event) => {
+      event.stopImmediatePropagation();
+      if (number.value !== "" && Number.isFinite(Number(number.value))) {
+        const lo = Number(slider.min), hi = Number(slider.max), step = Number(slider.step);
+        slider.value = Math.max(lo, Math.min(hi, lo + Math.round((Number(number.value)-lo)/step)*step));
+        slider.dispatchEvent(new Event("input", {bubbles:true}));
+      }
+      number.value = slider.value;
+    });
+    slider.addEventListener("input", () => { number.value = slider.value; });
+  }
+  window.syncRangeNumbers();
+});
+document.addEventListener("applet:state", window.syncRangeNumbers);

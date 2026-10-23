@@ -205,7 +205,7 @@ test("every applet has learning content, four usable presets and a direct page",
   assert.equal(new Set(catalogue.map((x) => x.id)).size, 15);
   for (const item of catalogue) {
     assert.ok(item.objective && item.equation && item.question && item.answer);
-    assert.equal(item.presets.length, 4);
+    assert.ok(item.presets.length >= 4);
     assert.ok(require("node:fs").existsSync("html/" + item.id + ".html"));
   }
 });

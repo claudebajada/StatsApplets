@@ -1098,3 +1098,58 @@ footer {
     min-height: 44px;
   }
 }
+
+/* Learning controls stay adjacent to the figures they explain. */
+.range-pair { display:flex; align-items:center; gap:8px; min-width:0; }
+.range-pair input[type="range"] { flex:1 1 0; min-width:0; }
+.range-pair .range-number { flex:0 0 72px; width:72px; min-width:0; padding:4px; font-size:14px; }
+.range-bounds { color:var(--muted); font-size:12px; line-height:1; }
+.learning-route { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px; font-size:14px; margin-bottom:16px; }
+.learning-route span { color:var(--muted); }
+.learning-orientation { max-width:90ch; color:var(--muted); margin:-8px 0 24px; font-size:15px; }
+.learning-orientation strong { color:var(--ink); }
+.context-status { margin-top:16px; line-height:1.45; }
+.context-controls p, .seed-details p { margin-top:8px; }
+.result-card .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:16px; }
+.result-card .metric { min-width:0; }
+.result-card .metric strong { font-size:24px; }
+#ci-value { font-size:20px; }
+#scale-note { margin:0 0 12px; max-width:90ch; }
+#scale-note:empty { display:none; }
+.prediction-panel fieldset { display:grid; gap:8px; margin:16px 0; }
+.prediction-choice { display:flex; gap:10px; align-items:center; min-height:44px; padding:6px; font-weight:400; }
+.prediction-choice input { flex:0 0 auto; }
+.prediction-panel button { margin:8px 8px 8px 0; }
+.prediction-panel [role="status"] { border-left:3px solid var(--accent); padding:8px 12px; margin-top:12px; }
+.guided-lab > div { padding:12px 0; max-width:950px; }
+.guided-lab label { display:block; margin:12px 0 4px; }
+.guided-lab select { max-width:500px; }
+.guided-lab p { max-width:80ch; }
+.guided-lab h3 { margin:12px 0; }
+.learning-svg { max-width:700px; width:100%; overflow:hidden; margin:12px 0; }
+.learning-svg svg { display:block; width:100%; height:auto; }
+.learning-svg text { font:14px var(--sans); fill:var(--ink); }
+.lab-actions, .step-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.lab-actions label { margin:0; }
+.step-tabs [aria-current="step"] { background:var(--accent); color:white; }
+.worked-number { font-variant-numeric:tabular-nums; color:var(--ink); }
+.arrangement-list { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.arrangement-list code { background:var(--panel); color:var(--ink); padding:8px 12px; letter-spacing:0.15em; }
+.sample-trace { border-top:1px solid var(--line); padding:16px 0; margin-bottom:16px; }
+.sample-trace h2 { font-size:18px; }
+.sample-trace .learning-svg { max-width:600px; }
+.learning-start { border-top:1px solid var(--line); padding-top:24px; margin:0 0 32px; }
+.learning-start h2 { font-family:var(--serif); font-size:24px; }
+.learning-start p { max-width:75ch; color:var(--muted); margin:8px 0; }
+.learning-start ol { display:flex; flex-wrap:wrap; gap:12px 28px; padding-left:24px; }
+@media(max-width:600px) {
+  .range-pair .range-number { flex-basis:60px; width:60px; }
+  .result-card .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .result-card .metric:nth-child(odd) { border-left:0; padding-left:0; }
+  .result-card .metric strong { font-size:21px; }
+  #ci-value { font-size:17px; }
+  .learning-orientation { margin-bottom:16px; font-size:14px; }
+  .learning-route { font-size:13px; }
+  .step-tabs button { flex:1 1 130px; }
+  .learning-start ol { display:grid; gap:10px; }
+}

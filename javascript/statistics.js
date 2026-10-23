@@ -106,7 +106,16 @@
     if (!Number.isInteger(k) || k < 0 || k > n) return 0;
     if (p === 0) return k === 0 ? 1 : 0;
     if (p === 1) return k === n ? 1 : 0;
-    return combinations(n, k) * p ** k * (1 - p) ** (n - k);
+    if (n <= 100) return combinations(n, k) * p ** k * (1 - p) ** (n - k);
+    // Log probabilities avoid overflowing C(n,k) in large-sample examples.
+    let logCoefficient = 0, compensation = 0;
+    for (let i = 1; i <= Math.min(k,n-k); i++) {
+      const term = Math.log((n-i+1)/i) - compensation;
+      const next = logCoefficient + term;
+      compensation = (next-logCoefficient)-term;
+      logCoefficient = next;
+    }
+    return Math.exp(logCoefficient + k * Math.log(p) + (n-k) * Math.log1p(-p));
   }
   function binomialApproximation(n, p) {
     binomialPMF(n, p, 0); // Validate parameters even at a boundary.
@@ -130,8 +139,11 @@
     )
       throw new RangeError("Invalid frequency parameters");
     const expected = Array(categories).fill(n / categories);
-    const weights = expected.map((e, i) =>
-      Math.max(0, e + skew * (i - (categories - 1) / 2)),
+    // Dimensionless departure fixes the category proportions as N changes.
+    // The original 0–10 slider now interpolates from uniform to a linear ramp.
+    const departure = Math.max(0, Math.min(1, skew / 10));
+    const weights = expected.map((_, i) =>
+      1 + departure * (2 * i / (categories - 1) - 1),
     );
     const sum = weights.reduce((a, b) => a + b, 0);
     const quotas = weights.map((w) => (w / sum) * n);

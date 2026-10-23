@@ -8,7 +8,7 @@
     ...document.querySelectorAll(
       "#controls input, #controls select, #controls textarea",
     ),
-  ];
+  ].filter((el) => !el.dataset.range);
   function authoredDefault(el) {
     // Firefox can restore live form values on reload. Reset must use the HTML defaults.
     if (el.type === "checkbox") return el.defaultChecked;
@@ -58,6 +58,9 @@
       ]),
     );
   function assign(state, notify = true) {
+    const countLimit = meta.id === "binomial-normal-explorer" ? state.N
+      : meta.id === "binomial-components-explorer" ? state.n : undefined;
+    if (countLimit !== undefined) document.getElementById("k").max = String(countLimit);
     for (const el of settings)
       if (Object.hasOwn(state, el.id)) {
         const value = AppletState.validate(String(state[el.id]), schema[el.id]);
@@ -90,6 +93,16 @@
       if (out) out.value = el.value;
       if (el.type === "range") el.setAttribute("aria-valuetext", el.value);
     });
+    window.syncRangeNumbers?.();
+    const names = {
+      "clt-explorer": "Rerun " + (read().repetitions || 1000) + " studies",
+      "confidence-interval-explorer": "Rerun " + (read().repetitions || 500) + " intervals",
+      "multiple-comparisons-explorer": "Rerun " + (read().repetitions || 1000) + " test families",
+      "regression-explorer": "Draw another study",
+      "anova-explorer": "Draw another set of groups",
+      correlation: "New pattern",
+    };
+    document.getElementById("resample").textContent = names[meta.id] || "New sample";
     history.replaceState(null, "", url());
   }
   function explain() {
@@ -98,7 +111,7 @@
     if (meta.id === "binomial-components-explorer") {
       const n = get("n"),
         p = get("p"),
-        k = Math.floor(n * p),
+        k = Math.min(n, get("k")),
         coefficient = StatsMath.combinations(n, k),
         term = p ** k * (1 - p) ** (n - k);
       out.textContent = `For k = ${k} successes, there are C(${n},${k}) = ${coefficient.toFixed(0)} arrangements. Each has probability pᵏ(1 − p)ⁿ⁻ᵏ = ${term.toPrecision(4)}. Multiply them to get P(X = ${k}) = ${StatsMath.binomialPMF(n, p, k).toPrecision(4)}. Changing p changes the probability of each arrangement. Changing n also changes how many arrangements are possible.`;

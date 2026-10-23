@@ -1356,7 +1356,12 @@ body:is(
   .page-header {
     margin-bottom: 16px;
   }
-  .formula-block {
+  body:is(
+      [data-applet="one-sample-t-test"],
+      [data-applet="one-sample-z-test"],
+      [data-applet="independent-samples-t-test"]
+    )
+    .formula-block {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(120px, 0.8fr);
     gap: 12px;

@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           label: "Exact binomial probability P(X = k)",
           data: [],
-          backgroundColor: "blue",
+          backgroundColor: chartPalette[0] + "cc",
         },
       ],
     },
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         y: {
           beginAtZero: true,
           suggestedMax: 1,
+          title: { display: true, text: "Probability" },
         },
         x: {
           type: "linear",
@@ -57,8 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           label: "Normal probability density",
           data: [],
-          backgroundColor: "rgba(0, 0, 255, 0.4)",
-          borderColor: "blue",
+          backgroundColor: chartPalette[0] + "33",
+          borderColor: chartPalette[0],
+          borderWidth: 2,
           fill: true,
         },
       ],
@@ -68,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         y: {
           beginAtZero: true,
           suggestedMax: 1,
+          title: { display: true, text: "Probability density" },
         },
         x: {
           type: "linear",
@@ -128,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
       min: Math.floor(xMin),
       max: Math.ceil(xMax),
       type: "linear",
+      title: { display: true, text: "Successes k" },
       ticks: {
         stepSize: 1,
         callback: function (val, index) {

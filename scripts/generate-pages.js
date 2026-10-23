@@ -96,7 +96,7 @@ const symbolKeys = {
 };
 const chart = (id, title, caption = captions[id]) => {
   if (!caption) throw Error("Missing chart explanation: " + id);
-  return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><p class="chart-explanation" id="${id}-explanation">${caption}</p><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div></figure>`;
+  return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div><p class="chart-explanation" id="${id}-explanation">${caption}</p></figure>`;
 };
 const metric = (label, id) =>
   `<div class="metric"><span>${label}</span><strong id="${id}">...</strong></div>`;
@@ -381,7 +381,7 @@ pages["anova-explorer"] = {
       "dataMode",
       "Data source",
       [
-        ["generated", "Simulated three-group samples"],
+        ["generated", "Simulated data"],
         ["manual", "Use the groups below"],
       ],
       "generated",
@@ -434,11 +434,11 @@ async function generate() {
     if (!p) throw Error("Missing page " + meta.id);
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">Stats<span>Applets</span></a><a href="../index.html">All explorers</a></nav>
-<main id="main"><header class="page-header"><p class="eyebrow">${meta.group}</p><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p><div class="equation">${math.equation(meta.id, meta.equation)}</div><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></header>
-<div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section>
-<section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div><p id="calculation" aria-live="polite"></p><p id="input-warning" class="notice" role="status" hidden></p>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}${p.extraResults || ""}</section>
-<section class="container" aria-label="Interactive plots">${p.charts}</section>${p.after || ""}<details class="info"><summary>Model, assumptions & interpretation</summary><p>${p.method}</p></details>
+<body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
+<main id="main"><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
+<div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
+<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section>
+<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<details class="info"><summary>Model, assumptions and interpretation</summary><p>${p.method}</p></details></div></div>
 </main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
 <script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}
 </body></html>\n`;

@@ -15,220 +15,258 @@
   <body class="applet" data-applet="independent-samples-t-test">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Hypothesis testing</p>
-        <h1>Independent t test</h1>
-        <p class="lede applet-introduction">
-          An independent-samples t test compares the population means of two
-          separate groups. This version assumes equal population variances and
-          uses the same sample standard deviation for both groups. Set a
-          difference between the sample means, then change each group's sample
-          size to see how precision changes.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
-            ><mrow
-              ><mi>t</mi><mo>=</mo
-              ><mfrac
-                ><mrow
-                  ><msub
-                    ><mover><mi>x</mi><mo>¯</mo></mover
-                    ><mn>1</mn></msub
-                  ><mo>−</mo
-                  ><msub
-                    ><mover><mi>x</mi><mo>¯</mo></mover
-                    ><mn>2</mn></msub
-                  ></mrow
-                ><mrow
-                  ><msub><mi>s</mi><mi>p</mi></msub
-                  ><msqrt
-                    ><mrow
-                      ><mfrac
-                        ><mn>1</mn><msub><mi>n</mi><mn>1</mn></msub></mfrac
-                      ><mo>+</mo
-                      ><mfrac
-                        ><mn>1</mn><msub><mi>n</mi><mn>2</mn></msub></mfrac
-                      ></mrow
-                    ></msqrt
-                  ></mrow
-                ></mfrac
-              ></mrow
-            ></math
-          >
+        <div class="title-block">
+          <h1>Independent t test</h1>
+          <p class="lede applet-introduction">
+            An independent-samples t test compares the population means of two
+            separate groups. This version assumes equal population variances and
+            uses the same sample standard deviation for both groups. Set a
+            difference between the sample means, then change each group's sample
+            size to see how precision changes.
+          </p>
         </div>
-        <p class="symbol-key">
-          x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
-          deviation. n₁ and n₂ are the sample sizes. The denominator estimates
-          the standard error of the mean difference.
-        </p>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
+              ><mrow
+                ><mi>t</mi><mo>=</mo
+                ><mfrac
+                  ><mrow
+                    ><msub
+                      ><mover><mi>x</mi><mo>¯</mo></mover
+                      ><mn>1</mn></msub
+                    ><mo>−</mo
+                    ><msub
+                      ><mover><mi>x</mi><mo>¯</mo></mover
+                      ><mn>2</mn></msub
+                    ></mrow
+                  ><mrow
+                    ><msub><mi>s</mi><mi>p</mi></msub
+                    ><msqrt
+                      ><mrow
+                        ><mfrac
+                          ><mn>1</mn><msub><mi>n</mi><mn>1</mn></msub></mfrac
+                        ><mo>+</mo
+                        ><mfrac
+                          ><mn>1</mn><msub><mi>n</mi><mn>2</mn></msub></mfrac
+                        ></mrow
+                      ></msqrt
+                    ></mrow
+                  ></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
+              deviation. n₁ and n₂ are the sample sizes. The denominator
+              estimates the standard error of the mean difference.
+            </p>
+          </details>
+        </div>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="mu1"
-            >Sample 1 mean x̄₁:
-            <output id="mu1-value" for="mu1">0</output></label
-          ><input
-            type="range"
-            id="mu1"
-            min="-10"
-            max="10"
-            step="0.1"
-            value="0"
-          />
-        </div>
-        <div class="control-field">
-          <label for="mu2"
-            >Sample 2 mean x̄₂:
-            <output id="mu2-value" for="mu2">0</output></label
-          ><input
-            type="range"
-            id="mu2"
-            min="-10"
-            max="10"
-            step="0.1"
-            value="0"
-          />
-        </div>
-        <div class="control-field">
-          <label for="sigma"
-            >Common sample SD s₁ = s₂ = s:
-            <output id="sigma-value" for="sigma">1</output></label
-          ><input
-            type="range"
-            id="sigma"
-            min="0.1"
-            max="5"
-            step="0.1"
-            value="1"
-          />
-        </div>
-        <div class="control-field">
-          <label for="N1"
-            >Sample size n₁: <output id="N1-value" for="N1">30</output></label
-          ><input type="range" id="N1" min="5" max="100" step="1" value="30" />
-        </div>
-        <div class="control-field">
-          <label for="N2"
-            >Sample size n₂: <output id="N2-value" for="N2">30</output></label
-          ><input type="range" id="N2" min="5" max="100" step="1" value="30" />
-        </div>
-        <div class="control-field">
-          <label for="alternative">H₁: μ₁ − μ₂ is … 0</label
-          ><select id="alternative">
-            <option value="upper" selected>greater than</option>
-            <option value="lower">less than</option>
-            <option value="twoSided">different from</option>
-          </select>
-        </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics">
-          <div class="metric">
-            <span>Selected p-value</span
-            ><strong id="p-value-selected">...</strong>
-          </div>
-          <div class="metric">
-            <span>t score</span><strong id="t-value">...</strong>
-          </div>
-          <div class="metric">
-            <span>Estimated standard error, SE</span
-            ><strong id="se-value">...</strong>
-          </div>
-        </div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-        <details class="info">
-          <summary>Effect size and other tail probabilities</summary>
-          <div class="metrics">
-            <div class="metric">
-              <span>Signed Cohen's d</span
-              ><strong id="cohen-d-value">...</strong>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="mu1"
+                >Sample 1 mean x̄₁:
+                <output id="mu1-value" for="mu1">0</output></label
+              ><input
+                type="range"
+                id="mu1"
+                min="-10"
+                max="10"
+                step="0.1"
+                value="0"
+              />
             </div>
-            <div class="metric">
-              <span>Degrees of freedom</span><strong id="df-value">...</strong>
+            <div class="control-field">
+              <label for="mu2"
+                >Sample 2 mean x̄₂:
+                <output id="mu2-value" for="mu2">0</output></label
+              ><input
+                type="range"
+                id="mu2"
+                min="-10"
+                max="10"
+                step="0.1"
+                value="0"
+              />
             </div>
-            <div class="metric">
-              <span>Lower-tail p</span><strong id="p-value-lower">...</strong>
+            <div class="control-field">
+              <label for="sigma"
+                >Common sample SD s₁ = s₂ = s:
+                <output id="sigma-value" for="sigma">1</output></label
+              ><input
+                type="range"
+                id="sigma"
+                min="0.1"
+                max="5"
+                step="0.1"
+                value="1"
+              />
             </div>
-            <div class="metric">
-              <span>Upper-tail p</span
-              ><strong id="one-tailed-p-value">...</strong>
+            <div class="control-field">
+              <label for="N1"
+                >Sample size n₁:
+                <output id="N1-value" for="N1">30</output></label
+              ><input
+                type="range"
+                id="N1"
+                min="5"
+                max="100"
+                step="1"
+                value="30"
+              />
             </div>
-            <div class="metric">
-              <span>Two-sided p</span
-              ><strong id="two-tailed-p-value">...</strong>
+            <div class="control-field">
+              <label for="N2"
+                >Sample size n₂:
+                <output id="N2-value" for="N2">30</output></label
+              ><input
+                type="range"
+                id="N2"
+                min="5"
+                max="100"
+                step="1"
+                value="30"
+              />
             </div>
-          </div>
-          <p>
-            The selected p-value above uses your chosen alternative hypothesis.
-            The other p-values use the alternatives shown here. Divide the
-            observed difference by the pooled sample standard deviation to get
-            the effect size. Its sign follows the order of subtraction.
-          </p>
-        </details>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            1 · Compare the sample estimate with the null value
-          </h2>
-          <p class="chart-explanation" id="meanEstimateChart-explanation">
-            The circle is the sample estimate. The diamond is the null value.
-            The horizontal bar extends one standard error on either side of the
-            estimate. The axis uses the original measurement units. The bar
-            shows one standard error, which is narrower than a 95% confidence
-            interval.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="meanEstimateChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="1 · Compare the sample estimate with the null value"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            2 · Read the p-value under the null hypothesis
-          </h2>
-          <p class="chart-explanation" id="tChart-explanation">
-            Imagine repeating the study when the null hypothesis is true. This
-            curve shows the distribution of the resulting t scores, not the
-            distribution of individual measurements. The vertical line marks
-            your t score. The shaded area is the p-value for your chosen
-            alternative.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="tChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="2 · Read the p-value under the null hypothesis"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          This is the pooled equal-variance test. The applet gives both groups
-          the same sample standard deviation, so the pooled value is also s. The
-          test has n₁ + n₂ − 2 degrees of freedom. Exact p-values assume
-          independent observations from normal populations with equal variances.
-          Plot 1 shows the observed mean difference and its estimated standard
-          error. Plot 2 shows the distribution of t when the population means
-          are equal. Choose the alternative before looking at the data.
-        </p>
-      </details>
+            <div class="control-field">
+              <label for="alternative">H₁: μ₁ − μ₂ is … 0</label
+              ><select id="alternative">
+                <option value="upper" selected>greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided">different from</option>
+              </select>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Selected p-value</span
+                ><strong id="p-value-selected">...</strong>
+              </div>
+              <div class="metric">
+                <span>t score</span><strong id="t-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Estimated standard error, SE</span
+                ><strong id="se-value">...</strong>
+              </div>
+            </div>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                1 · Compare the sample estimate with the null value
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="meanEstimateChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="1 · Compare the sample estimate with the null value"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="meanEstimateChart-explanation">
+                The circle is the sample estimate. The diamond is the null
+                value. The horizontal bar extends one standard error on either
+                side of the estimate. The axis uses the original measurement
+                units. The bar shows one standard error, which is narrower than
+                a 95% confidence interval.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                2 · Read the p-value under the null hypothesis
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="tChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="2 · Read the p-value under the null hypothesis"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="tChart-explanation">
+                Imagine repeating the study when the null hypothesis is true.
+                This curve shows the distribution of the resulting t scores, not
+                the distribution of individual measurements. The vertical line
+                marks your t score. The shaded area is the p-value for your
+                chosen alternative.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+            <details class="info">
+              <summary>Effect size and other tail probabilities</summary>
+              <div class="metrics">
+                <div class="metric">
+                  <span>Signed Cohen's d</span
+                  ><strong id="cohen-d-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Degrees of freedom</span
+                  ><strong id="df-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Lower-tail p</span
+                  ><strong id="p-value-lower">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Upper-tail p</span
+                  ><strong id="one-tailed-p-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Two-sided p</span
+                  ><strong id="two-tailed-p-value">...</strong>
+                </div>
+              </div>
+              <p>
+                The selected p-value above uses your chosen alternative
+                hypothesis. The other p-values use the alternatives shown here.
+                Divide the observed difference by the pooled sample standard
+                deviation to get the effect size. Its sign follows the order of
+                subtraction.
+              </p>
+            </details>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              This is the pooled equal-variance test. The applet gives both
+              groups the same sample standard deviation, so the pooled value is
+              also s. The test has n₁ + n₂ − 2 degrees of freedom. Exact
+              p-values assume independent observations from normal populations
+              with equal variances. Plot 1 shows the observed mean difference
+              and its estimated standard error. Plot 2 shows the distribution of
+              t when the population means are equal. Choose the alternative
+              before looking at the data.
+            </p>
+          </details>
+        </div>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

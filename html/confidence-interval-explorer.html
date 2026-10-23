@@ -15,179 +15,206 @@
   <body class="applet" data-applet="confidence-interval-explorer">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a
+        ><span>Sampling &amp; uncertainty</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Sampling & uncertainty</p>
-        <h1>Confidence interval coverage</h1>
-        <p class="lede applet-introduction">
-          A confidence interval estimates a population mean using a sample.
-          Repeating the study gives a different sample and interval each time.
-          Under its assumptions, a 95% procedure produces intervals that contain
-          the true mean in 95% of studies in the long run. Change the confidence
-          level to compare coverage and interval width.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="CI = x̄ ± critical × SE; t intervals use s and df = n − 1"
-            ><mrow
-              ><mover><mi>x</mi><mo>¯</mo></mover
-              ><mo>±</mo><mtext>critical value</mtext><mo>×</mo
-              ><mi>SE</mi></mrow
-            ></math
-          >
+        <div class="title-block">
+          <h1>Confidence interval coverage</h1>
+          <p class="lede applet-introduction">
+            A confidence interval estimates a population mean using a sample.
+            Repeating the study gives a different sample and interval each time.
+            Under its assumptions, a 95% procedure produces intervals that
+            contain the true mean in 95% of studies in the long run. Change the
+            confidence level to compare coverage and interval width.
+          </p>
         </div>
-        <p class="symbol-key">
-          x̄ is the sample mean and SE is its standard error. The t interval uses
-          the sample standard deviation s and a t critical value with n − 1
-          degrees of freedom. The z interval uses the known population standard
-          deviation σ and a normal critical value.
-        </p>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="CI = x̄ ± critical × SE; t intervals use s and df = n − 1"
+              ><mrow
+                ><mover><mi>x</mi><mo>¯</mo></mover
+                ><mo>±</mo><mtext>critical value</mtext><mo>×</mo
+                ><mi>SE</mi></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              x̄ is the sample mean and SE is its standard error. The t interval
+              uses the sample standard deviation s and a t critical value with n
+              − 1 degrees of freedom. The z interval uses the known population
+              standard deviation σ and a normal critical value.
+            </p>
+          </details>
+        </div>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="populationMean"
-            >Fixed population mean μ:
-            <output id="populationMean-value" for="populationMean"
-              >0</output
-            ></label
-          ><input
-            type="range"
-            id="populationMean"
-            min="-5"
-            max="5"
-            step="0.1"
-            value="0"
-          />
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="populationMean"
+                >Fixed population mean μ:
+                <output id="populationMean-value" for="populationMean"
+                  >0</output
+                ></label
+              ><input
+                type="range"
+                id="populationMean"
+                min="-5"
+                max="5"
+                step="0.1"
+                value="0"
+              />
+            </div>
+            <div class="control-field">
+              <label for="populationSD"
+                >Population SD σ:
+                <output id="populationSD-value" for="populationSD"
+                  >1</output
+                ></label
+              ><input
+                type="range"
+                id="populationSD"
+                min="0.1"
+                max="3"
+                step="0.1"
+                value="1"
+              />
+            </div>
+            <div class="control-field">
+              <label for="sampleSize"
+                >Sample size n:
+                <output id="sampleSize-value" for="sampleSize"
+                  >20</output
+                ></label
+              ><input
+                type="range"
+                id="sampleSize"
+                min="2"
+                max="100"
+                step="1"
+                value="20"
+              />
+            </div>
+            <div class="control-field">
+              <label for="repetitions"
+                >Repeated intervals:
+                <output id="repetitions-value" for="repetitions"
+                  >500</output
+                ></label
+              ><input
+                type="range"
+                id="repetitions"
+                min="100"
+                max="1000"
+                step="100"
+                value="500"
+              />
+            </div>
+            <div class="control-field">
+              <label for="level"
+                >Confidence level:
+                <output id="level-value" for="level">0.95</output></label
+              ><input
+                type="range"
+                id="level"
+                min="0.8"
+                max="0.99"
+                step="0.01"
+                value="0.95"
+              />
+            </div>
+            <div class="control-field">
+              <label for="method">Interval procedure</label
+              ><select id="method">
+                <option value="t" selected>t interval using sample SD</option>
+                <option value="z">z interval using known population SD</option>
+              </select>
+            </div>
+            <div class="control-field">
+              <label for="seed">Random seed</label
+              ><input
+                type="number"
+                id="seed"
+                min="0"
+                max="2147483647"
+                step="1"
+                value="42"
+              />
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">Repeated intervals around a fixed μ</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="intervalChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Repeated intervals around a fixed μ"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="intervalChart-explanation">
+                Each horizontal segment is a confidence interval from a
+                different sample. The vertical reference line is the fixed
+                population mean. Dashed, triangle-marked intervals miss that
+                mean.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Widths of the simulated intervals</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="widthChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Widths of the simulated intervals"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="widthChart-explanation">
+                These bars count the widths of the simulated intervals. Wider
+                intervals express less precise estimates.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The applet draws independent samples from a normal population.
+              Each t interval uses its sample's standard deviation and n − 1
+              degrees of freedom. Each z interval uses the known population
+              standard deviation. The population mean stays fixed. The plot
+              shows the first 80 intervals. The coverage and mean width
+              calculations use every simulated interval. Solid intervals with
+              circles contain μ. Dashed intervals with triangles miss it. The
+              confidence level describes the procedure over repeated studies. It
+              does not give a probability that the fixed mean lies inside one
+              calculated interval.
+            </p>
+          </details>
         </div>
-        <div class="control-field">
-          <label for="populationSD"
-            >Population SD σ:
-            <output id="populationSD-value" for="populationSD">1</output></label
-          ><input
-            type="range"
-            id="populationSD"
-            min="0.1"
-            max="3"
-            step="0.1"
-            value="1"
-          />
-        </div>
-        <div class="control-field">
-          <label for="sampleSize"
-            >Sample size n:
-            <output id="sampleSize-value" for="sampleSize">20</output></label
-          ><input
-            type="range"
-            id="sampleSize"
-            min="2"
-            max="100"
-            step="1"
-            value="20"
-          />
-        </div>
-        <div class="control-field">
-          <label for="repetitions"
-            >Repeated intervals:
-            <output id="repetitions-value" for="repetitions">500</output></label
-          ><input
-            type="range"
-            id="repetitions"
-            min="100"
-            max="1000"
-            step="100"
-            value="500"
-          />
-        </div>
-        <div class="control-field">
-          <label for="level"
-            >Confidence level:
-            <output id="level-value" for="level">0.95</output></label
-          ><input
-            type="range"
-            id="level"
-            min="0.8"
-            max="0.99"
-            step="0.01"
-            value="0.95"
-          />
-        </div>
-        <div class="control-field">
-          <label for="method">Interval procedure</label
-          ><select id="method">
-            <option value="t" selected>t interval using sample SD</option>
-            <option value="z">z interval using known population SD</option>
-          </select>
-        </div>
-        <div class="control-field">
-          <label for="seed">Random seed</label
-          ><input
-            type="number"
-            id="seed"
-            min="0"
-            max="2147483647"
-            step="1"
-            value="42"
-          />
-        </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics"></div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">Repeated intervals around a fixed μ</h2>
-          <p class="chart-explanation" id="intervalChart-explanation">
-            Each horizontal segment is a confidence interval from a different
-            sample. The vertical reference line is the fixed population mean.
-            Dashed, triangle-marked intervals miss that mean.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="intervalChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Repeated intervals around a fixed μ"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Widths of the simulated intervals</h2>
-          <p class="chart-explanation" id="widthChart-explanation">
-            These bars count the widths of the simulated intervals. Wider
-            intervals express less precise estimates.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="widthChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Widths of the simulated intervals"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          The applet draws independent samples from a normal population. Each t
-          interval uses its sample's standard deviation and n − 1 degrees of
-          freedom. Each z interval uses the known population standard deviation.
-          The population mean stays fixed. The plot shows the first 80
-          intervals. The coverage and mean width calculations use every
-          simulated interval. Solid intervals with circles contain μ. Dashed
-          intervals with triangles miss it. The confidence level describes the
-          procedure over repeated studies. It does not give a probability that
-          the fixed mean lies inside one calculated interval.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

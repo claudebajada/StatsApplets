@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           {
             label: "Observed integer counts",
-            backgroundColor: "#b24632",
+            backgroundColor: chartPalette[1],
             data: [],
           },
         ],
@@ -33,10 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
         datasets: [
           lineDataset("Null χ² distribution"),
           {
-            ...lineDataset("Upper-tail p-value", [], "#b24632"),
+            ...lineDataset("Upper-tail p-value", [], chartPalette[1]),
             fill: "origin",
           },
-          { ...lineDataset("Observed χ²", [], "#522d80"), borderDash: [6, 4] },
+          {
+            ...lineDataset("Observed χ²", [], chartPalette[3]),
+            borderDash: [6, 4],
+          },
         ],
       },
       options: chartOptions(

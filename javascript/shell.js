@@ -70,7 +70,7 @@
   const toolbar = document.getElementById("scenario-toolbar");
   toolbar.className = "toolbar";
   toolbar.innerHTML =
-    '<div class="preset-picker"><label for="preset">Example</label><select id="preset"><option value="">Custom settings</option></select></div><button id="reset" type="button">Reset</button><button id="share" type="button">Copy example link</button><button id="resample" type="button" hidden>New random sample</button><p id="share-status" role="status"></p>';
+    '<div class="preset-picker"><label for="preset">Example</label><select id="preset"><option value="">Custom settings</option></select></div><div class="experiment-actions"><button id="reset" type="button">Reset</button><button id="share" type="button">Copy link</button><button id="resample" type="button" hidden>New sample</button></div><p id="share-status" role="status"></p>';
   const preset = document.getElementById("preset");
   meta.presets.forEach(([label], index) => {
     const option = document.createElement("option");

@@ -239,9 +239,9 @@ test("landing catalogue groups and links all fifteen explorers", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".applet-card")).toHaveCount(15);
+  await expect(page.locator(".applet-entry")).toHaveCount(15);
   const links = await page
-    .locator(".applet-card")
+    .locator(".applet-entry")
     .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
   expect(new Set(links).size).toBe(15);
   for (const href of links) {
@@ -250,11 +250,11 @@ test("landing catalogue groups and links all fifteen explorers", async ({
   }
   await page.goto("/");
   await page.locator("#search").fill("correlation");
-  await expect(page.locator(".applet-card")).toHaveCount(1);
+  await expect(page.locator(".applet-entry")).toHaveCount(1);
   await expect(
     page.locator("#lecture-links, #lecturer, .hero-note"),
   ).toHaveCount(0);
-  await expect(page.locator(".applet-card")).toHaveAttribute(
+  await expect(page.locator(".applet-entry")).toHaveAttribute(
     "href",
     "html/correlation.html",
   );

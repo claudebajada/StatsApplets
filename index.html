@@ -13,19 +13,29 @@
   <body class="landing">
     <a class="skip-link" href="#main">Skip to explorers</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a class="brand" href="index.html">Stats<span>Applets</span></a
-      ><a href="#explorers">Browse explorers</a>
+      <a class="brand" href="index.html">StatsApplets</a
+      ><a href="#explorers">Browse applets</a>
     </nav>
     <main id="main">
       <header class="hero">
         <div>
-          <p class="eyebrow">Interactive statistics for students</p>
           <h1>Explore statistics</h1>
           <p class="lede">
             Use the controls to see how changing the data or assumptions affects
             a calculation. Each applet explains the results beside its plots.
           </p>
         </div>
+        <figure
+          class="catalogue-demonstration"
+          aria-labelledby="demonstration-title"
+        >
+          <h2 id="demonstration-title">Three samples, three correlations</h2>
+          <div class="demonstration-plots" id="demonstration-plots"></div>
+          <figcaption>
+            Constructed examples with 14 observations each.
+            <a href="html/correlation.html">Explore correlation</a>.
+          </figcaption>
+        </figure>
       </header>
       <section id="explorers" aria-label="Find an explorer">
         <div class="catalogue-tools">
@@ -41,12 +51,16 @@
       </section>
     </main>
     <footer>
-      StatsApplets · Claude J. Bajada ·
+      <span>StatsApplets by Claude J. Bajada</span>
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source code and documentation</a
       >
     </footer>
+    <script src="lib/jstat.min.js"></script>
+    <script src="javascript/statistics.js"></script>
+    <script src="javascript/teaching-statistics.js"></script>
     <script src="javascript/catalogue.js"></script>
+    <script src="javascript/previews.js"></script>
     <script src="javascript/index.js"></script>
   </body>
 </html>

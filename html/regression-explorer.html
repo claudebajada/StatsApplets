@@ -15,161 +15,187 @@
   <body class="applet" data-applet="regression-explorer">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Relationships</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Relationships</p>
-        <h1>Linear regression</h1>
-        <p class="lede applet-introduction">
-          Linear regression fits a straight line to predict y from x. Each
-          residual is the difference between an observed y value and the line's
-          prediction. Increase the noise to see how the points spread around the
-          line, then compare the fitted line with the slope used to generate the
-          data.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST"
-            ><mrow
-              ><mover><mi>y</mi><mo>^</mo></mover
-              ><mo>=</mo><msub><mi>b</mi><mn>0</mn></msub
-              ><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub
-              ><mi>x</mi></mrow
-            ></math
-          >
+        <div class="title-block">
+          <h1>Linear regression</h1>
+          <p class="lede applet-introduction">
+            Linear regression fits a straight line to predict y from x. Each
+            residual is the difference between an observed y value and the
+            line's prediction. Increase the noise to see how the points spread
+            around the line, then compare the fitted line with the slope used to
+            generate the data.
+          </p>
         </div>
-        <p class="symbol-key">
-          ŷ is the predicted y value. b₀ is the fitted intercept and b₁ is the
-          fitted slope. Each residual is the observed y minus ŷ.
-        </p>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST"
+              ><mrow
+                ><mover><mi>y</mi><mo>^</mo></mover
+                ><mo>=</mo><msub><mi>b</mi><mn>0</mn></msub
+                ><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub
+                ><mi>x</mi></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              ŷ is the predicted y value. b₀ is the fitted intercept and b₁ is
+              the fitted slope. Each residual is the observed y minus ŷ.
+            </p>
+          </details>
+        </div>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="dataMode">Data source</label
-          ><select id="dataMode">
-            <option value="generated" selected>Simulated data</option>
-            <option value="manual">Use the pairs below</option>
-          </select>
-        </div>
-        <div class="control-field">
-          <label for="sampleSize"
-            >Generated observations n:
-            <output id="sampleSize-value" for="sampleSize">30</output></label
-          ><input
-            type="range"
-            id="sampleSize"
-            min="3"
-            max="100"
-            step="1"
-            value="30"
-          />
-        </div>
-        <div class="control-field">
-          <label for="slope"
-            >Population slope for simulated data:
-            <output id="slope-value" for="slope">1</output></label
-          ><input
-            type="range"
-            id="slope"
-            min="-3"
-            max="3"
-            step="0.1"
-            value="1"
-          />
-        </div>
-        <div class="control-field">
-          <label for="noise"
-            >Noise SD for simulated data:
-            <output id="noise-value" for="noise">1</output></label
-          ><input
-            type="range"
-            id="noise"
-            min="0"
-            max="3"
-            step="0.1"
-            value="1"
-          />
-        </div>
-        <div class="control-field">
-          <label for="seed">Random seed</label
-          ><input
-            type="number"
-            id="seed"
-            min="0"
-            max="2147483647"
-            step="1"
-            value="42"
-          />
-        </div>
-        <div class="control-field wide">
-          <label for="pairs">Manual x, y pairs: one pair per line</label
-          ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="dataMode">Data source</label
+              ><select id="dataMode">
+                <option value="generated" selected>Simulated data</option>
+                <option value="manual">Use the pairs below</option>
+              </select>
+            </div>
+            <div class="control-field">
+              <label for="sampleSize"
+                >Generated observations n:
+                <output id="sampleSize-value" for="sampleSize"
+                  >30</output
+                ></label
+              ><input
+                type="range"
+                id="sampleSize"
+                min="3"
+                max="100"
+                step="1"
+                value="30"
+              />
+            </div>
+            <div class="control-field">
+              <label for="slope"
+                >Population slope for simulated data:
+                <output id="slope-value" for="slope">1</output></label
+              ><input
+                type="range"
+                id="slope"
+                min="-3"
+                max="3"
+                step="0.1"
+                value="1"
+              />
+            </div>
+            <div class="control-field">
+              <label for="noise"
+                >Noise SD for simulated data:
+                <output id="noise-value" for="noise">1</output></label
+              ><input
+                type="range"
+                id="noise"
+                min="0"
+                max="3"
+                step="0.1"
+                value="1"
+              />
+            </div>
+            <div class="control-field">
+              <label for="seed">Random seed</label
+              ><input
+                type="number"
+                id="seed"
+                min="0"
+                max="2147483647"
+                step="1"
+                value="42"
+              />
+            </div>
+            <div class="control-field wide">
+              <label for="pairs">Manual x, y pairs: one pair per line</label
+              ><textarea
+                id="pairs"
+                rows="6"
+                maxlength="12000"
+                spellcheck="false"
+              >
 1,1
 2,3
 3,2
 4,5
 5,4</textarea>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Observations, least-squares line & residual segments
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="fitChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Observations, least-squares line & residual segments"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="fitChart-explanation">
+                Each dot is one x, y observation. The fitted line predicts y
+                from x. Each vertical segment shows a residual, the observed y
+                minus the predicted y.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Residuals against fitted values</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="residualChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Residuals against fitted values"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="residualChart-explanation">
+                Each dot shows one fitted value and its residual. The horizontal
+                zero line separates over-predictions from under-predictions.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The simulated data use fixed x values and a population intercept
+              of 1. The errors are independent normal values with the chosen
+              standard deviation. The fitted line estimates the intercept and
+              slope from the sample. Least squares minimises the sum of squared
+              vertical residuals. This model includes an intercept. R² is
+              undefined if y is constant, and the slope is undefined if x is
+              constant. Fitting the line does not require normal errors. Tests
+              and confidence intervals for its coefficients need further
+              assumptions. The simulation controls have no effect on manual
+              data.
+            </p>
+          </details>
         </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics"></div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Observations, least-squares line & residual segments
-          </h2>
-          <p class="chart-explanation" id="fitChart-explanation">
-            Each dot is one x, y observation. The fitted line predicts y from x.
-            Each vertical segment shows a residual, the observed y minus the
-            predicted y.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="fitChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Observations, least-squares line & residual segments"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Residuals against fitted values</h2>
-          <p class="chart-explanation" id="residualChart-explanation">
-            Each dot shows one fitted value and its residual. The horizontal
-            zero line separates over-predictions from under-predictions.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="residualChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Residuals against fitted values"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          The simulated data use fixed x values and a population intercept of 1.
-          The errors are independent normal values with the chosen standard
-          deviation. The fitted line estimates the intercept and slope from the
-          sample. Least squares minimises the sum of squared vertical residuals.
-          This model includes an intercept. R² is undefined if y is constant,
-          and the slope is undefined if x is constant. Fitting the line does not
-          require normal errors. Tests and confidence intervals for its
-          coefficients need further assumptions. The simulation controls have no
-          effect on manual data.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

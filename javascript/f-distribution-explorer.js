@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
       datasets: [
         lineDataset("Null F distribution"),
         {
-          ...lineDataset("Upper 5% rejection region", [], "#b24632"),
+          ...lineDataset("Upper 5% rejection region", [], chartPalette[1]),
           fill: "origin",
         },
         {
-          ...lineDataset("Critical F at α = 0.05", [], "#522d80"),
+          ...lineDataset("Critical F at α = 0.05", [], chartPalette[3]),
           borderDash: [6, 4],
         },
       ],

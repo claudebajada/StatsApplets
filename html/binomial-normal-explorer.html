@@ -15,119 +15,149 @@
   <body class="applet" data-applet="binomial-normal-explorer">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Distributions</p>
-        <h1>Binomial & normal</h1>
-        <p class="lede applet-introduction">
-          The binomial distribution gives the probability of each possible count
-          of successes in a fixed number of independent trials. Each trial has
-          the same success probability. Change that probability or the number of
-          trials to see when a normal curve gives a useful approximation.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
-            ><mrow
-              ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
-              ><msup><mi>σ</mi><mn>2</mn></msup
-              ><mo>=</mo><mi>n</mi><mi>p</mi
+        <div class="title-block">
+          <h1>Binomial & normal</h1>
+          <p class="lede applet-introduction">
+            The binomial distribution gives the probability of each possible
+            count of successes in a fixed number of independent trials. Each
+            trial has the same success probability. Change that probability or
+            the number of trials to see when a normal curve gives a useful
+            approximation.
+          </p>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
               ><mrow
-                ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
-                ><mo>)</mo></mrow
-              ></mrow
-            ></math
-          >
+                ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
+                ><msup><mi>σ</mi><mn>2</mn></msup
+                ><mo>=</mo><mi>n</mi><mi>p</mi
+                ><mrow
+                  ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                  ><mo>)</mo></mrow
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              n is the number of trials. p is the success probability on each
+              trial. μ and σ² are the mean and variance of the count of
+              successes.
+            </p>
+          </details>
         </div>
-        <p class="symbol-key">
-          n is the number of trials. p is the success probability on each trial.
-          μ and σ² are the mean and variance of the count of successes.
-        </p>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="theta"
-            >Success probability p:
-            <output id="theta-value" for="theta">0.5</output></label
-          ><input
-            type="range"
-            id="theta"
-            min="0"
-            max="1"
-            step="0.01"
-            value="0.5"
-          />
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="theta"
+                >Success probability p:
+                <output id="theta-value" for="theta">0.5</output></label
+              ><input
+                type="range"
+                id="theta"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.5"
+              />
+            </div>
+            <div class="control-field">
+              <label for="N"
+                >Number of trials n:
+                <output id="N-value" for="N">15</output></label
+              ><input
+                type="range"
+                id="N"
+                min="0"
+                max="30"
+                step="1"
+                value="15"
+              />
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Population mean μ = np</span
+                ><strong id="mu-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Population SD σ</span
+                ><strong id="sigma-value">...</strong>
+              </div>
+            </div>
+            <p id="approximation-warning" class="notice" role="status"></p>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">Exact binomial probabilities</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="binomialChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Exact binomial probabilities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="binomialChart-explanation">
+                Each bar is the exact probability of a whole-number count of
+                successes. All bar probabilities add to 1.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Normal approximation</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="normalChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Normal approximation"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="normalChart-explanation">
+                Areas under this normal curve approximate binomial
+                probabilities. To approximate the probability of k successes,
+                take the area between k − 0.5 and k + 0.5.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              Each binomial bar gives the probability of one count. The normal
+              curve is a probability density. Approximate P(X = k) using the
+              area between k − 0.5 and k + 0.5. This is the continuity
+              correction. Trials must be independent and have the same success
+              probability. Having both np ≥ 5 and n(1 − p) ≥ 5 is a rough check
+              on whether the approximation is suitable. It does not guarantee
+              accuracy.
+            </p>
+          </details>
         </div>
-        <div class="control-field">
-          <label for="N"
-            >Number of trials n: <output id="N-value" for="N">15</output></label
-          ><input type="range" id="N" min="0" max="30" step="1" value="15" />
-        </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics">
-          <div class="metric">
-            <span>Population mean μ = np</span
-            ><strong id="mu-value">...</strong>
-          </div>
-          <div class="metric">
-            <span>Population SD σ</span><strong id="sigma-value">...</strong>
-          </div>
-        </div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-        <p id="approximation-warning" class="notice" role="status"></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">Exact binomial probabilities</h2>
-          <p class="chart-explanation" id="binomialChart-explanation">
-            Each bar is the exact probability of a whole-number count of
-            successes. All bar probabilities add to 1.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="binomialChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Exact binomial probabilities"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Normal approximation</h2>
-          <p class="chart-explanation" id="normalChart-explanation">
-            Areas under this normal curve approximate binomial probabilities. To
-            approximate the probability of k successes, take the area between k
-            − 0.5 and k + 0.5.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="normalChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Normal approximation"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          Each binomial bar gives the probability of one count. The normal curve
-          is a probability density. Approximate P(X = k) using the area between
-          k − 0.5 and k + 0.5. This is the continuity correction. Trials must be
-          independent and have the same success probability. Having both np ≥ 5
-          and n(1 − p) ≥ 5 is a rough check on whether the approximation is
-          suitable. It does not guarantee accuracy.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

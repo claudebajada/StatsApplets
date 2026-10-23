@@ -11,22 +11,33 @@ document.addEventListener("DOMContentLoaded", function () {
       labels: labels,
       datasets: [
         {
-          label: "Standard Normal Distribution",
-          backgroundColor: "rgba(0, 0, 255, 0.1)",
-          borderColor: "rgba(0, 0, 255, 1)",
+          label: "Standard normal",
+          backgroundColor: chartPalette[0] + "22",
+          borderColor: chartPalette[0],
+          borderWidth: 2,
           data: [],
         },
         {
-          label: "t Distribution",
-          backgroundColor: "rgba(255, 0, 0, 0.1)",
-          borderColor: "rgba(255, 0, 0, 1)",
+          label: "Student's t",
+          backgroundColor: chartPalette[1] + "22",
+          borderColor: chartPalette[1],
+          borderWidth: 2,
+          borderDash: [6, 4],
           data: [],
         },
       ],
     },
     options: chartOptions(
-      { type: "linear", min: -7, max: 7 },
-      { beginAtZero: true },
+      {
+        type: "linear",
+        min: -7,
+        max: 7,
+        title: { display: true, text: "Standardised score" },
+      },
+      {
+        beginAtZero: true,
+        title: { display: true, text: "Probability density" },
+      },
     ),
   });
 

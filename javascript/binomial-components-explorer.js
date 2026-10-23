@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           label: "Number of arrangements",
           data: [],
-          backgroundColor: "rgba(0, 123, 255, 0.7)",
+          backgroundColor: chartPalette[0] + "cc",
         },
       ],
     },
-    options: commonChartOptions(),
+    options: commonChartOptions("Arrangements"),
   });
 
   let probTermChart = initializeChart(probTermCtx, {
@@ -32,11 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           label: "Probability of one arrangement",
           data: [],
-          backgroundColor: "rgba(255, 193, 7, 0.7)",
+          backgroundColor: chartPalette[1] + "cc",
         },
       ],
     },
-    options: commonChartOptions(),
+    options: commonChartOptions("Probability"),
   });
 
   let fullDistChart = initializeChart(fullDistCtx, {
@@ -47,21 +47,23 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           label: "Binomial probability",
           data: [],
-          backgroundColor: "rgba(40, 167, 69, 0.7)",
+          backgroundColor: chartPalette[2] + "cc",
         },
       ],
     },
-    options: commonChartOptions(),
+    options: commonChartOptions("Probability"),
   });
 
-  function commonChartOptions() {
+  function commonChartOptions(yTitle) {
     return {
       scales: {
         y: {
           beginAtZero: true,
+          title: { display: true, text: yTitle },
         },
         x: {
           type: "linear",
+          title: { display: true, text: "Successes k" },
           ticks: {
             stepSize: 1,
             callback: function (val) {
@@ -72,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       responsive: true,
       maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
     };
   }
 

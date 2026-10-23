@@ -15,148 +15,172 @@
   <body class="applet" data-applet="clt-explorer">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a
+        ><span>Sampling &amp; uncertainty</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Sampling & uncertainty</p>
-        <h1>Central limit theorem</h1>
-        <p class="lede applet-introduction">
-          Sample means vary from sample to sample. For independent observations
-          with finite variance, the central limit theorem explains why their
-          distribution approaches a normal shape as sample size grows. Choose a
-          skewed population, then increase the observations per sample. Compare
-          individual values with sample means.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="E(x̄) = μ; SD(x̄) = σ/√n"
-            ><mrow
-              ><mi>SE</mi
+        <div class="title-block">
+          <h1>Central limit theorem</h1>
+          <p class="lede applet-introduction">
+            Sample means vary from sample to sample. For independent
+            observations with finite variance, the central limit theorem
+            explains why their distribution approaches a normal shape as sample
+            size grows. Choose a skewed population, then increase the
+            observations per sample. Compare individual values with sample
+            means.
+          </p>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="E(x̄) = μ; SD(x̄) = σ/√n"
               ><mrow
-                ><mo>(</mo><mover><mi>x</mi><mo>¯</mo></mover
-                ><mo>)</mo></mrow
-              ><mo>=</mo
-              ><mfrac
-                ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
-              ></mrow
-            ></math
-          >
+                ><mi>SE</mi
+                ><mrow
+                  ><mo>(</mo><mover><mi>x</mi><mo>¯</mo></mover
+                  ><mo>)</mo></mrow
+                ><mo>=</mo
+                ><mfrac
+                  ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              x̄ is the mean of n observations. σ is the population standard
+              deviation. The standard error, or SE, is the standard deviation of
+              sample means across repeated samples.
+            </p>
+          </details>
         </div>
-        <p class="symbol-key">
-          x̄ is the mean of n observations. σ is the population standard
-          deviation. The standard error, or SE, is the standard deviation of
-          sample means across repeated samples.
-        </p>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="population">Population shape</label
-          ><select id="population">
-            <option value="normal">Normal</option>
-            <option value="uniform">Uniform</option>
-            <option value="exponential" selected>
-              Right-skewed exponential
-            </option>
-            <option value="bernoulli">Rare binary event (p = 0.1)</option>
-          </select>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="population">Population shape</label
+              ><select id="population">
+                <option value="normal">Normal</option>
+                <option value="uniform">Uniform</option>
+                <option value="exponential" selected>
+                  Right-skewed exponential
+                </option>
+                <option value="bernoulli">Rare binary event (p = 0.1)</option>
+              </select>
+            </div>
+            <div class="control-field">
+              <label for="sampleSize"
+                >Observations per sample n:
+                <output id="sampleSize-value" for="sampleSize"
+                  >10</output
+                ></label
+              ><input
+                type="range"
+                id="sampleSize"
+                min="1"
+                max="100"
+                step="1"
+                value="10"
+              />
+            </div>
+            <div class="control-field">
+              <label for="repetitions"
+                >Repeated samples:
+                <output id="repetitions-value" for="repetitions"
+                  >1000</output
+                ></label
+              ><input
+                type="range"
+                id="repetitions"
+                min="100"
+                max="2000"
+                step="100"
+                value="1000"
+              />
+            </div>
+            <div class="control-field">
+              <label for="seed">Random seed</label
+              ><input
+                type="number"
+                id="seed"
+                min="0"
+                max="2147483647"
+                step="1"
+                value="42"
+              />
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Individual observations from the population
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="populationChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Individual observations from the population"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="populationChart-explanation">
+                These bars summarise individual values drawn from the selected
+                population. Compare their shape with the distribution of sample
+                means in the next plot.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Means from repeated samples</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="meansChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Means from repeated samples"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="meansChart-explanation">
+                Each sample contributes one mean to these bars. The comparison
+                curve is a normal distribution with the theoretical mean and
+                standard error. Its parameters come from the population and
+                sample size.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              All four populations have mean 0 and standard deviation 1. The
+              applet draws independent samples with replacement. Both histograms
+              summarise simulated values. The normal comparison curve has mean 0
+              and variance 1/n. Each population has finite variance, as required
+              by this form of the central limit theorem. Results vary between
+              simulations. The same random seed and settings reproduce the same
+              values.
+            </p>
+          </details>
         </div>
-        <div class="control-field">
-          <label for="sampleSize"
-            >Observations per sample n:
-            <output id="sampleSize-value" for="sampleSize">10</output></label
-          ><input
-            type="range"
-            id="sampleSize"
-            min="1"
-            max="100"
-            step="1"
-            value="10"
-          />
-        </div>
-        <div class="control-field">
-          <label for="repetitions"
-            >Repeated samples:
-            <output id="repetitions-value" for="repetitions"
-              >1000</output
-            ></label
-          ><input
-            type="range"
-            id="repetitions"
-            min="100"
-            max="2000"
-            step="100"
-            value="1000"
-          />
-        </div>
-        <div class="control-field">
-          <label for="seed">Random seed</label
-          ><input
-            type="number"
-            id="seed"
-            min="0"
-            max="2147483647"
-            step="1"
-            value="42"
-          />
-        </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics"></div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Individual observations from the population
-          </h2>
-          <p class="chart-explanation" id="populationChart-explanation">
-            These bars summarise individual values drawn from the selected
-            population. Compare their shape with the distribution of sample
-            means in the next plot.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="populationChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Individual observations from the population"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Means from repeated samples</h2>
-          <p class="chart-explanation" id="meansChart-explanation">
-            Each sample contributes one mean to these bars. The comparison curve
-            is a normal distribution with the theoretical mean and standard
-            error. Its parameters come from the population and sample size.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="meansChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Means from repeated samples"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          All four populations have mean 0 and standard deviation 1. The applet
-          draws independent samples with replacement. Both histograms summarise
-          simulated values. The normal comparison curve has mean 0 and variance
-          1/n. Each population has finite variance, as required by this form of
-          the central limit theorem. Results vary between simulations. The same
-          random seed and settings reproduce the same values.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

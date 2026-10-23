@@ -15,156 +15,177 @@
   <body class="applet" data-applet="chi-squared-explorer">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Hypothesis testing</p>
-        <h1>Chi-squared goodness of fit</h1>
-        <p class="lede applet-introduction">
-          A chi-squared goodness-of-fit test compares observed category counts
-          with the counts expected under a null hypothesis. Here, the null
-          assigns equal probabilities to all categories. Increase the departure
-          in count weights to see how larger discrepancies affect χ² and its
-          p-value.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)"
-            ><mrow
-              ><msup><mi>χ</mi><mn>2</mn></msup
-              ><mo>=</mo><mo>∑</mo
-              ><mfrac
-                ><msup
-                  ><mrow
-                    ><mo>(</mo
+        <div class="title-block">
+          <h1>Chi-squared goodness of fit</h1>
+          <p class="lede applet-introduction">
+            A chi-squared goodness-of-fit test compares observed category counts
+            with the counts expected under a null hypothesis. Here, the null
+            assigns equal probabilities to all categories. Increase the
+            departure in count weights to see how larger discrepancies affect χ²
+            and its p-value.
+          </p>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)"
+              ><mrow
+                ><msup><mi>χ</mi><mn>2</mn></msup
+                ><mo>=</mo><mo>∑</mo
+                ><mfrac
+                  ><msup
                     ><mrow
-                      ><msub><mi>O</mi><mi>i</mi></msub
-                      ><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow
-                    ><mo>)</mo></mrow
-                  ><mn>2</mn></msup
-                ><msub><mi>E</mi><mi>i</mi></msub></mfrac
-              ></mrow
-            ></math
-          >
+                      ><mo>(</mo
+                      ><mrow
+                        ><msub><mi>O</mi><mi>i</mi></msub
+                        ><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow
+                      ><mo>)</mo></mrow
+                    ><mn>2</mn></msup
+                  ><msub><mi>E</mi><mi>i</mi></msub></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              Oᵢ is the observed count in category i; Eᵢ is its expected count
+              under the null. Add the contributions across all categories.
+            </p>
+          </details>
         </div>
-        <p class="symbol-key">
-          Oᵢ is the observed count in category i; Eᵢ is its expected count under
-          the null. Add the contributions across all categories.
-        </p>
       </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="categories"
-            >Number of categories k:
-            <output id="categories-value" for="categories">5</output></label
-          ><input
-            type="range"
-            id="categories"
-            min="2"
-            max="10"
-            step="1"
-            value="5"
-          />
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="categories"
+                >Number of categories k:
+                <output id="categories-value" for="categories">5</output></label
+              ><input
+                type="range"
+                id="categories"
+                min="2"
+                max="10"
+                step="1"
+                value="5"
+              />
+            </div>
+            <div class="control-field">
+              <label for="total-observations"
+                >Total observations N:
+                <output id="total-observations-value" for="total-observations"
+                  >100</output
+                ></label
+              ><input
+                type="range"
+                id="total-observations"
+                min="10"
+                max="1000"
+                step="10"
+                value="100"
+              />
+            </div>
+            <div class="control-field">
+              <label for="skew"
+                >Departure in count weights:
+                <output id="skew-value" for="skew">5</output></label
+              ><input
+                type="range"
+                id="skew"
+                min="0"
+                max="10"
+                step="0.1"
+                value="5"
+              />
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Effect size, Cohen's w</span
+                ><strong id="effect-size-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>χ² statistic</span
+                ><strong id="chi-squared-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Upper-tail p</span><strong id="p-value">...</strong>
+              </div>
+            </div>
+            <p id="validity-warning" class="notice" role="status"></p>
+          </section>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Observed integer counts & uniform expected counts
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="frequencyChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Observed integer counts & uniform expected counts"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="frequencyChart-explanation">
+                Compare the observed count in each category with the count
+                predicted by a uniform null model. Both sets of counts add to
+                the selected N.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Null χ² sampling distribution</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="chiSquaredChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null χ² sampling distribution"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="chiSquaredChart-explanation">
+                This curve approximates the distribution of χ² from repeated
+                studies under the null model. The line marks this example's
+                statistic. The shaded area is the probability of a value at
+                least as large when the null is true.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The null gives each category the same probability. The test
+              estimates no parameters from the counts, so it has k − 1 degrees
+              of freedom. The applet constructs whole-number counts from the
+              slider settings. It does not draw random samples. If N is not
+              divisible by k, the observed counts cannot all be equal. Cohen's w
+              = √(χ²/N) measures departure from the null probabilities and can
+              exceed 1. Discrepancies in either direction increase χ², so the
+              p-value uses the upper tail.
+            </p>
+          </details>
         </div>
-        <div class="control-field">
-          <label for="total-observations"
-            >Total observations N:
-            <output id="total-observations-value" for="total-observations"
-              >100</output
-            ></label
-          ><input
-            type="range"
-            id="total-observations"
-            min="10"
-            max="1000"
-            step="10"
-            value="100"
-          />
-        </div>
-        <div class="control-field">
-          <label for="skew"
-            >Departure in count weights:
-            <output id="skew-value" for="skew">5</output></label
-          ><input
-            type="range"
-            id="skew"
-            min="0"
-            max="10"
-            step="0.1"
-            value="5"
-          />
-        </div>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics">
-          <div class="metric">
-            <span>Effect size, Cohen's w</span
-            ><strong id="effect-size-value">...</strong>
-          </div>
-          <div class="metric">
-            <span>χ² statistic</span><strong id="chi-squared-value">...</strong>
-          </div>
-          <div class="metric">
-            <span>Upper-tail p</span><strong id="p-value">...</strong>
-          </div>
-        </div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-        <p id="validity-warning" class="notice" role="status"></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Observed integer counts & uniform expected counts
-          </h2>
-          <p class="chart-explanation" id="frequencyChart-explanation">
-            Compare the observed count in each category with the count predicted
-            by a uniform null model. Both sets of counts add to the selected N.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="frequencyChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Observed integer counts & uniform expected counts"
-            ></canvas>
-          </div>
-        </figure>
-        <figure class="chart-container">
-          <h2 class="chart-title">Null χ² sampling distribution</h2>
-          <p class="chart-explanation" id="chiSquaredChart-explanation">
-            This curve approximates the distribution of χ² from repeated studies
-            under the null model. The line marks this example's statistic. The
-            shaded area is the probability of a value at least as large when the
-            null is true.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="chiSquaredChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Null χ² sampling distribution"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          The null gives each category the same probability. The test estimates
-          no parameters from the counts, so it has k − 1 degrees of freedom. The
-          applet constructs whole-number counts from the slider settings. It
-          does not draw random samples. If N is not divisible by k, the observed
-          counts cannot all be equal. Cohen's w = √(χ²/N) measures departure
-          from the null probabilities and can exceed 1. Discrepancies in either
-          direction increase χ², so the p-value uses the upper tail.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

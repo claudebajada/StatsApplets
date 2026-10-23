@@ -15,514 +15,532 @@
   <body class="applet" data-applet="correlation">
     <a class="skip-link" href="#main">Skip to applet</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">Stats<span>Applets</span></a
-      ><a href="../index.html">All explorers</a>
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Relationships</span>
+      </div>
     </nav>
     <main id="main">
       <header class="page-header">
-        <p class="eyebrow">Relationships</p>
-        <h1>Correlation</h1>
-        <p class="lede applet-introduction">
-          Pearson's r measures the direction and strength of a linear
-          relationship between two variables. Move the association slider to
-          compare positive and negative relationships. Open the calculation
-          walkthrough to see how the angle between two centred data vectors
-          gives r.
-        </p>
-        <div class="equation">
-          <math
-            xmlns="http://www.w3.org/1998/Math/MathML"
-            display="block"
-            aria-label="−1 ≤ r ≤ 1, when both variables vary"
-            ><mrow
-              ><mo>−</mo><mn>1</mn><mo>≤</mo><mi>r</mi><mo>≤</mo
-              ><mn>1</mn></mrow
-            ></math
-          >
-        </div>
-        <p class="symbol-key">
-          r measures the direction and strength of a straight-line association.
-          It has no units. It is undefined if either variable has no variation.
-        </p>
-      </header>
-      <div id="scenario-toolbar"></div>
-      <section class="controls-panel" id="controls" aria-label="Parameters">
-        <div class="control-field">
-          <label for="association"
-            >Linear association r:
-            <output id="association-value" for="association">0.6</output></label
-          ><input
-            type="range"
-            id="association"
-            min="-1"
-            max="1"
-            step="0.05"
-            value="0.6"
-          />
-        </div>
-        <div class="control-field">
-          <label for="observations"
-            >Number of observations:
-            <output id="observations-value" for="observations"
-              >12</output
-            ></label
-          ><input
-            type="range"
-            id="observations"
-            min="3"
-            max="30"
-            step="1"
-            value="12"
-          />
-        </div>
-        <details class="wide input-details">
-          <summary>Use your own paired observations</summary>
-          <p>
-            Choose manual data, then enter one x, y pair per line. The sliders
-            apply only to constructed examples.
+        <div class="title-block">
+          <h1>Correlation</h1>
+          <p class="lede applet-introduction">
+            Pearson's r measures the direction and strength of a linear
+            relationship between two variables. Move the association slider to
+            compare positive and negative relationships. Open the calculation
+            walkthrough to see how the angle between two centred data vectors
+            gives r.
           </p>
-          <div class="control-field">
-            <label for="dataMode">Data source</label
-            ><select id="dataMode">
-              <option value="generated" selected>Constructed example</option>
-              <option value="manual">My paired observations</option>
-            </select>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="−1 ≤ r ≤ 1, when both variables vary"
+              ><mrow
+                ><mo>−</mo><mn>1</mn><mo>≤</mo><mi>r</mi><mo>≤</mo
+                ><mn>1</mn></mrow
+              ></math
+            >
           </div>
-          <div class="control-field wide">
-            <label for="pairs">x, y pairs</label
-            ><textarea id="pairs" rows="6" maxlength="12000" spellcheck="false">
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              r measures the direction and strength of a straight-line
+              association. It has no units. It is undefined if either variable
+              has no variation.
+            </p>
+          </details>
+        </div>
+      </header>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="association"
+                >Linear association r:
+                <output id="association-value" for="association"
+                  >0.6</output
+                ></label
+              ><input
+                type="range"
+                id="association"
+                min="-1"
+                max="1"
+                step="0.05"
+                value="0.6"
+              />
+            </div>
+            <div class="control-field">
+              <label for="observations"
+                >Number of observations:
+                <output id="observations-value" for="observations"
+                  >12</output
+                ></label
+              ><input
+                type="range"
+                id="observations"
+                min="3"
+                max="30"
+                step="1"
+                value="12"
+              />
+            </div>
+            <details class="wide input-details">
+              <summary>Use your own paired observations</summary>
+              <p>
+                Choose manual data, then enter one x, y pair per line. The
+                sliders apply only to constructed examples.
+              </p>
+              <div class="control-field">
+                <label for="dataMode">Data source</label
+                ><select id="dataMode">
+                  <option value="generated" selected>
+                    Constructed example
+                  </option>
+                  <option value="manual">My paired observations</option>
+                </select>
+              </div>
+              <div class="control-field wide">
+                <label for="pairs">x, y pairs</label
+                ><textarea
+                  id="pairs"
+                  rows="6"
+                  maxlength="12000"
+                  spellcheck="false"
+                >
 1,1
 2,3
 3,2</textarea>
-          </div>
-          <div class="control-field">
-            <label for="seed">Random seed</label
-            ><input
-              type="number"
-              id="seed"
-              min="0"
-              max="2147483647"
-              step="1"
-              value="42"
-            />
-          </div>
-        </details>
-      </section>
-      <section class="result-card" aria-label="Current results">
-        <div class="metrics">
-          <div class="metric">
-            <span>Pearson correlation r</span
-            ><strong id="data-pearson-value">...</strong>
-          </div>
-          <div class="metric">
-            <span>Observations</span><strong id="pair-count">...</strong>
-          </div>
-        </div>
-        <p id="calculation" aria-live="polite"></p>
-        <p id="input-warning" class="notice" role="status" hidden></p>
-      </section>
-      <section class="container" aria-label="Interactive plots">
-        <figure class="chart-container">
-          <h2 class="chart-title">
-            Look for the direction and closeness of a straight-line pattern
-          </h2>
-          <p class="chart-explanation" id="pairsChart-explanation">
-            Each dot is one observation with an x value and a y value. An upward
-            linear pattern gives positive r. A downward linear pattern gives
-            negative r. Points closer to a straight line give r closer to +1 or
-            −1.
-          </p>
-          <div class="plot-frame">
-            <canvas
-              id="pairsChart"
-              class="chart-canvas"
-              role="img"
-              aria-label="Look for the direction and closeness of a straight-line pattern"
-            ></canvas>
-          </div>
-        </figure>
-      </section>
-      <details class="info" id="correlation-working">
-        <summary>
-          How is r calculated? Follow the vectors and their angle
-        </summary>
-        <p>
-          This walkthrough follows the observations in the scatterplot. Start
-          with a small example to see every number, then use the same steps with
-          any data.
-        </p>
-        <div class="walkthrough-experiments">
-          <button type="button" id="correlation-example">
-            Use a worked example with 3 observations</button
-          ><button type="button" id="correlation-shift">
-            Add 10 to every y</button
-          ><button type="button" id="correlation-stretch">
-            Multiply every y by 2
-          </button>
-        </div>
-        <p class="small" id="correlation-experiment-status" role="status">
-          These buttons change the actual paired observations above. Reset
-          restores the original example.
-        </p>
-        <nav aria-label="Correlation calculation steps">
-          <ol class="walkthrough-nav">
-            <li>
-              <button
-                type="button"
-                data-correlation-step="0"
-                aria-current="step"
-                aria-controls="correlation-step-0"
-              >
-                1. Vectors
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                data-correlation-step="1"
-                aria-controls="correlation-step-1"
-              >
-                2. Centre
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                data-correlation-step="2"
-                aria-controls="correlation-step-2"
-              >
-                3. Unit lengths
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                data-correlation-step="3"
-                aria-controls="correlation-step-3"
-              >
-                4. Angle & r
-              </button>
-            </li>
-          </ol>
-        </nav>
-        <div class="walkthrough-body">
-          <section
-            class="correlation-step"
-            id="correlation-step-0"
-            aria-labelledby="correlation-heading-0"
-          >
-            <h3 id="correlation-heading-0" tabindex="-1">
-              1 · Read each column as one vector
-            </h3>
-            <p>
-              Each dot in the scatterplot has an x value and a y value. Read
-              down the x column to make one ordered list, then do the same for
-              y. Each list is a vector. We can represent it as an arrow with one
-              component per observation. Keep the observations in the same order
-              in both lists.
-            </p>
-            <div class="equation" tabindex="0">
-              <math
-                xmlns="http://www.w3.org/1998/Math/MathML"
-                display="block"
-                aria-label="x and y are vectors containing the observations for each variable"
-                ><mrow
-                  ><mi>x</mi><mo>=</mo
-                  ><mrow
-                    ><mo>(</mo
-                    ><mrow
-                      ><msub><mi>x</mi><mn>1</mn></msub
-                      ><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub
-                      ><mo>,</mo><mo>…</mo><mo>,</mo
-                      ><msub><mi>x</mi><mi>n</mi></msub></mrow
-                    ><mo>)</mo></mrow
-                  ><mo>,</mo><mi>y</mi><mo>=</mo
-                  ><mrow
-                    ><mo>(</mo
-                    ><mrow
-                      ><msub><mi>y</mi><mn>1</mn></msub
-                      ><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub
-                      ><mo>,</mo><mo>…</mo><mo>,</mo
-                      ><msub><mi>y</mi><mi>n</mi></msub></mrow
-                    ><mo>)</mo></mrow
-                  ></mrow
-                ></math
-              >
-            </div>
-            <p class="vector-values" id="correlation-raw-values"></p>
-            <p>
-              Multiply matching components and add the products to get the
-              <strong>dot product</strong>. The dot product depends on both
-              vector lengths and the angle between them. The next steps remove
-              the effects of the means and lengths to calculate Pearson's r.
-            </p>
-            <p id="correlation-raw-dot"></p>
-            <p>
-              The diagram below represents the two whole lists as arrows. Each
-              arrow has one component per observation. Two arrows from the same
-              origin fit in a shared plane. Drawing them in that plane preserves
-              their angle, even when they have many components.
-            </p>
+              </div>
+              <div class="control-field">
+                <label for="seed">Random seed</label
+                ><input
+                  type="number"
+                  id="seed"
+                  min="0"
+                  max="2147483647"
+                  step="1"
+                  value="42"
+                />
+              </div>
+            </details>
           </section>
-          <section
-            class="correlation-step"
-            id="correlation-step-1"
-            hidden
-            aria-labelledby="correlation-heading-1"
-          >
-            <h3 id="correlation-heading-1" tabindex="-1">
-              2 · Measure deviations from each mean
-            </h3>
-            <p>
-              Subtract the x mean from every x value and the y mean from every y
-              value. Call the new vectors a and b. A positive component is above
-              that variable's mean. A negative component is below it.
-            </p>
-            <div class="equation" tabindex="0">
-              <math
-                xmlns="http://www.w3.org/1998/Math/MathML"
-                display="block"
-                aria-label="Subtract the x mean from each x and the y mean from each y"
-                ><mrow
-                  ><msub><mi>a</mi><mi>i</mi></msub
-                  ><mo>=</mo><msub><mi>x</mi><mi>i</mi></msub
-                  ><mo>−</mo><mover><mi>x</mi><mo>¯</mo></mover
-                  ><mo>,</mo><msub><mi>b</mi><mi>i</mi></msub
-                  ><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub
-                  ><mo>−</mo><mover><mi>y</mi><mo>¯</mo></mover></mrow
-                ></math
-              >
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Pearson correlation r</span
+                ><strong id="data-pearson-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Observations</span><strong id="pair-count">...</strong>
+              </div>
             </div>
-            <p id="correlation-centre-values"></p>
-            <p>
-              When both deviations have the same sign, their product is
-              positive. Opposite signs give a negative product. Their sum
-              measures whether the two variables tend to deviate together.
-            </p>
-            <div
-              class="table-scroll"
-              tabindex="0"
-              role="region"
-              aria-label="Centred values, scroll to inspect more observations"
-            >
-              <table>
-                <caption>
-                  Centred values for the first 30 observations
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">x</th>
-                    <th scope="col">y</th>
-                    <th scope="col">a = x − x̄</th>
-                    <th scope="col">b = y − ȳ</th>
-                    <th scope="col">a × b</th>
-                  </tr>
-                </thead>
-                <tbody id="correlation-rows"></tbody>
-              </table>
-            </div>
-            <p id="correlation-sums"></p>
-            <p>
-              <strong>Try adding 10 to every y.</strong> Its mean also increases
-              by 10, so its deviations stay the same. The angle between the raw
-              vectors can change. The angle between the centred vectors stays
-              the same.
-            </p>
           </section>
-          <section
-            class="correlation-step"
-            id="correlation-step-2"
-            hidden
-            aria-labelledby="correlation-heading-2"
-          >
-            <h3 id="correlation-heading-2" tabindex="-1">
-              3 · Keep direction and set each length to 1
-            </h3>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Look for the direction and closeness of a straight-line pattern
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="pairsChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Look for the direction and closeness of a straight-line pattern"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="pairsChart-explanation">
+                Each dot is one observation with an x value and a y value. An
+                upward linear pattern gives positive r. A downward linear
+                pattern gives negative r. Points closer to a straight line give
+                r closer to +1 or −1.
+              </p>
+            </figure>
+          </section>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info" id="correlation-working">
+            <summary>
+              How is r calculated? Follow the vectors and their angle
+            </summary>
             <p>
-              To find each centred vector's length, square its components, add
-              the squares, then take the square root.
+              This walkthrough follows the observations in the scatterplot.
+              Start with a small example to see every number, then use the same
+              steps with any data.
             </p>
-            <div class="equation" tabindex="0">
-              <math
-                xmlns="http://www.w3.org/1998/Math/MathML"
-                display="block"
-                aria-label="Each centred vector length is the square root of the sum of its squared components"
-                ><mrow
-                  ><msub><mi>L</mi><mi>x</mi></msub
-                  ><mo>=</mo
-                  ><msqrt
+            <div class="walkthrough-experiments">
+              <button type="button" id="correlation-example">
+                Use a worked example with 3 observations</button
+              ><button type="button" id="correlation-shift">
+                Add 10 to every y</button
+              ><button type="button" id="correlation-stretch">
+                Multiply every y by 2
+              </button>
+            </div>
+            <p class="small" id="correlation-experiment-status" role="status">
+              These buttons change the actual paired observations above. Reset
+              restores the original example.
+            </p>
+            <nav aria-label="Correlation calculation steps">
+              <ol class="walkthrough-nav">
+                <li>
+                  <button
+                    type="button"
+                    data-correlation-step="0"
+                    aria-current="step"
+                    aria-controls="correlation-step-0"
+                  >
+                    1. Vectors
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    data-correlation-step="1"
+                    aria-controls="correlation-step-1"
+                  >
+                    2. Centre
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    data-correlation-step="2"
+                    aria-controls="correlation-step-2"
+                  >
+                    3. Unit lengths
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    data-correlation-step="3"
+                    aria-controls="correlation-step-3"
+                  >
+                    4. Angle & r
+                  </button>
+                </li>
+              </ol>
+            </nav>
+            <div class="walkthrough-body">
+              <section
+                class="correlation-step"
+                id="correlation-step-0"
+                aria-labelledby="correlation-heading-0"
+              >
+                <h3 id="correlation-heading-0" tabindex="-1">
+                  1 · Read each column as one vector
+                </h3>
+                <p>
+                  Each dot in the scatterplot has an x value and a y value. Read
+                  down the x column to make one ordered list, then do the same
+                  for y. Each list is a vector. We can represent it as an arrow
+                  with one component per observation. Keep the observations in
+                  the same order in both lists.
+                </p>
+                <div class="equation" tabindex="0">
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    display="block"
+                    aria-label="x and y are vectors containing the observations for each variable"
                     ><mrow
-                      ><mo>∑</mo
-                      ><msup
-                        ><msub><mi>a</mi><mi>i</mi></msub
-                        ><mn>2</mn></msup
+                      ><mi>x</mi><mo>=</mo
+                      ><mrow
+                        ><mo>(</mo
+                        ><mrow
+                          ><msub><mi>x</mi><mn>1</mn></msub
+                          ><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub
+                          ><mo>,</mo><mo>…</mo><mo>,</mo
+                          ><msub><mi>x</mi><mi>n</mi></msub></mrow
+                        ><mo>)</mo></mrow
+                      ><mo>,</mo><mi>y</mi><mo>=</mo
+                      ><mrow
+                        ><mo>(</mo
+                        ><mrow
+                          ><msub><mi>y</mi><mn>1</mn></msub
+                          ><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub
+                          ><mo>,</mo><mo>…</mo><mo>,</mo
+                          ><msub><mi>y</mi><mi>n</mi></msub></mrow
+                        ><mo>)</mo></mrow
                       ></mrow
-                    ></msqrt
-                  ><mo>,</mo><msub><mi>L</mi><mi>y</mi></msub
-                  ><mo>=</mo
-                  ><msqrt
+                    ></math
+                  >
+                </div>
+                <p class="vector-values" id="correlation-raw-values"></p>
+                <p>
+                  Multiply matching components and add the products to get the
+                  <strong>dot product</strong>. The dot product depends on both
+                  vector lengths and the angle between them. The next steps
+                  remove the effects of the means and lengths to calculate
+                  Pearson's r.
+                </p>
+                <p id="correlation-raw-dot"></p>
+                <p>
+                  The diagram below represents the two whole lists as arrows.
+                  Each arrow has one component per observation. Two arrows from
+                  the same origin fit in a shared plane. Drawing them in that
+                  plane preserves their angle, even when they have many
+                  components.
+                </p>
+              </section>
+              <section
+                class="correlation-step"
+                id="correlation-step-1"
+                hidden
+                aria-labelledby="correlation-heading-1"
+              >
+                <h3 id="correlation-heading-1" tabindex="-1">
+                  2 · Measure deviations from each mean
+                </h3>
+                <p>
+                  Subtract the x mean from every x value and the y mean from
+                  every y value. Call the new vectors a and b. A positive
+                  component is above that variable's mean. A negative component
+                  is below it.
+                </p>
+                <div class="equation" tabindex="0">
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    display="block"
+                    aria-label="Subtract the x mean from each x and the y mean from each y"
                     ><mrow
-                      ><mo>∑</mo
-                      ><msup
-                        ><msub><mi>b</mi><mi>i</mi></msub
-                        ><mn>2</mn></msup
-                      ></mrow
-                    ></msqrt
-                  ></mrow
-                ></math
+                      ><msub><mi>a</mi><mi>i</mi></msub
+                      ><mo>=</mo><msub><mi>x</mi><mi>i</mi></msub
+                      ><mo>−</mo><mover><mi>x</mi><mo>¯</mo></mover
+                      ><mo>,</mo><msub><mi>b</mi><mi>i</mi></msub
+                      ><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub
+                      ><mo>−</mo><mover><mi>y</mi><mo>¯</mo></mover></mrow
+                    ></math
+                  >
+                </div>
+                <p id="correlation-centre-values"></p>
+                <p>
+                  When both deviations have the same sign, their product is
+                  positive. Opposite signs give a negative product. Their sum
+                  measures whether the two variables tend to deviate together.
+                </p>
+                <div
+                  class="table-scroll"
+                  tabindex="0"
+                  role="region"
+                  aria-label="Centred values, scroll to inspect more observations"
+                >
+                  <table>
+                    <caption>
+                      Centred values for the first 30 observations
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">x</th>
+                        <th scope="col">y</th>
+                        <th scope="col">a = x − x̄</th>
+                        <th scope="col">b = y − ȳ</th>
+                        <th scope="col">a × b</th>
+                      </tr>
+                    </thead>
+                    <tbody id="correlation-rows"></tbody>
+                  </table>
+                </div>
+                <p id="correlation-sums"></p>
+                <p>
+                  <strong>Try adding 10 to every y.</strong> Its mean also
+                  increases by 10, so its deviations stay the same. The angle
+                  between the raw vectors can change. The angle between the
+                  centred vectors stays the same.
+                </p>
+              </section>
+              <section
+                class="correlation-step"
+                id="correlation-step-2"
+                hidden
+                aria-labelledby="correlation-heading-2"
               >
-            </div>
-            <p id="correlation-length-values"></p>
-            <p>
-              Divide every component by its own vector's length. The resulting
-              unit vectors u and v have length 1. They keep the directions of a
-              and b, so the angle stays the same.
-            </p>
-            <div class="equation" tabindex="0">
-              <math
-                xmlns="http://www.w3.org/1998/Math/MathML"
-                display="block"
-                aria-label="Divide each component by its vector length to obtain unit vectors u and v"
-                ><mrow
-                  ><msub><mi>u</mi><mi>i</mi></msub
-                  ><mo>=</mo
-                  ><mfrac
-                    ><msub><mi>a</mi><mi>i</mi></msub
-                    ><msub><mi>L</mi><mi>x</mi></msub></mfrac
-                  ><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub
-                  ><mo>=</mo
-                  ><mfrac
-                    ><msub><mi>b</mi><mi>i</mi></msub
-                    ><msub><mi>L</mi><mi>y</mi></msub></mfrac
-                  ></mrow
-                ></math
-              >
-            </div>
-            <p class="vector-values" id="correlation-unit-values"></p>
-            <p>
-              Unit length means the squared components add to 1. It differs from
-              setting the sample standard deviation to 1.
-            </p>
-            <p>
-              <strong>Try multiplying every y by 2.</strong> Its centred vector
-              doubles in length. Dividing by that new length returns the same
-              unit vector.
-            </p>
-          </section>
-          <section
-            class="correlation-step"
-            id="correlation-step-3"
-            hidden
-            aria-labelledby="correlation-heading-3"
-          >
-            <h3 id="correlation-heading-3" tabindex="-1">
-              4 · Calculate r from the angle
-            </h3>
-            <p>
-              The dot product of two arrows equals the product of their lengths
-              times the cosine of their angle. When both lengths are 1, the dot
-              product equals the cosine of the angle. For the centred vectors,
-              this is Pearson's r.
-            </p>
-            <div class="equation" tabindex="0">
-              <math
-                xmlns="http://www.w3.org/1998/Math/MathML"
-                display="block"
-                aria-label="Pearson r is the centred dot product divided by the two centred lengths, equal to the unit vector dot product and the cosine of their angle"
-                ><mrow
-                  ><mi>r</mi><mo>=</mo
-                  ><mfrac
-                    ><mrow><mi>a</mi><mo>·</mo><mi>b</mi></mrow
+                <h3 id="correlation-heading-2" tabindex="-1">
+                  3 · Keep direction and set each length to 1
+                </h3>
+                <p>
+                  To find each centred vector's length, square its components,
+                  add the squares, then take the square root.
+                </p>
+                <div class="equation" tabindex="0">
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    display="block"
+                    aria-label="Each centred vector length is the square root of the sum of its squared components"
                     ><mrow
                       ><msub><mi>L</mi><mi>x</mi></msub
-                      ><msub><mi>L</mi><mi>y</mi></msub></mrow
-                    ></mfrac
-                  ><mo>=</mo><mi>u</mi><mo>·</mo><mi>v</mi><mo>=</mo><mi>cos</mi
-                  ><mi>θ</mi></mrow
-                ></math
-              >
-            </div>
-            <p id="correlation-angle-result" aria-live="polite"></p>
-            <p id="correlation-unit-dot"></p>
-            <p>
-              The dotted line projects v onto the direction of u. The green
-              segment shows that projection. Its signed length is r. A
-              projection in the direction of u is positive. A projection in the
-              opposite direction is negative.
-            </p>
-            <table class="angle-reference">
-              <caption>
-                Reference angles between centred vectors
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Angle</th>
-                  <th scope="col">r = cos θ</th>
-                  <th scope="col">Directions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>0°</td>
-                  <td>+1</td>
-                  <td>Same</td>
-                </tr>
-                <tr>
-                  <td>60°</td>
-                  <td>+0.5</td>
-                  <td>Partly aligned</td>
-                </tr>
-                <tr>
-                  <td>90°</td>
-                  <td>0</td>
-                  <td>Perpendicular</td>
-                </tr>
-                <tr>
-                  <td>120°</td>
-                  <td>−0.5</td>
-                  <td>Partly opposed</td>
-                </tr>
-                <tr>
-                  <td>180°</td>
-                  <td>−1</td>
-                  <td>Opposite</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Adding a constant or multiplying by a positive number preserves r.
-              Multiplying one variable by a negative number reverses its
-              direction and flips the sign of r.
-            </p>
-            <details class="formula-details">
-              <summary>Connect this to the familiar Pearson formula</summary>
-              <div class="equation" tabindex="0" id="correlation-final-formula">
-                <math
-                  xmlns="http://www.w3.org/1998/Math/MathML"
-                  display="block"
-                  aria-label="Pearson r equals the sum of centred cross products divided by the square root of the product of the centred sums of squares"
-                  ><mrow
-                    ><mi>r</mi><mo>=</mo
-                    ><mfrac
-                      ><mrow
-                        ><mo>∑</mo
-                        ><mrow
-                          ><mo>(</mo
-                          ><mrow
-                            ><msub><mi>x</mi><mi>i</mi></msub
-                            ><mo>−</mo><mover><mi>x</mi><mo>¯</mo></mover></mrow
-                          ><mo>)</mo></mrow
-                        ><mrow
-                          ><mo>(</mo
-                          ><mrow
-                            ><msub><mi>y</mi><mi>i</mi></msub
-                            ><mo>−</mo><mover><mi>y</mi><mo>¯</mo></mover></mrow
-                          ><mo>)</mo></mrow
-                        ></mrow
+                      ><mo>=</mo
                       ><msqrt
                         ><mrow
                           ><mo>∑</mo
                           ><msup
+                            ><msub><mi>a</mi><mi>i</mi></msub
+                            ><mn>2</mn></msup
+                          ></mrow
+                        ></msqrt
+                      ><mo>,</mo><msub><mi>L</mi><mi>y</mi></msub
+                      ><mo>=</mo
+                      ><msqrt
+                        ><mrow
+                          ><mo>∑</mo
+                          ><msup
+                            ><msub><mi>b</mi><mi>i</mi></msub
+                            ><mn>2</mn></msup
+                          ></mrow
+                        ></msqrt
+                      ></mrow
+                    ></math
+                  >
+                </div>
+                <p id="correlation-length-values"></p>
+                <p>
+                  Divide every component by its own vector's length. The
+                  resulting unit vectors u and v have length 1. They keep the
+                  directions of a and b, so the angle stays the same.
+                </p>
+                <div class="equation" tabindex="0">
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    display="block"
+                    aria-label="Divide each component by its vector length to obtain unit vectors u and v"
+                    ><mrow
+                      ><msub><mi>u</mi><mi>i</mi></msub
+                      ><mo>=</mo
+                      ><mfrac
+                        ><msub><mi>a</mi><mi>i</mi></msub
+                        ><msub><mi>L</mi><mi>x</mi></msub></mfrac
+                      ><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub
+                      ><mo>=</mo
+                      ><mfrac
+                        ><msub><mi>b</mi><mi>i</mi></msub
+                        ><msub><mi>L</mi><mi>y</mi></msub></mfrac
+                      ></mrow
+                    ></math
+                  >
+                </div>
+                <p class="vector-values" id="correlation-unit-values"></p>
+                <p>
+                  Unit length means the squared components add to 1. It differs
+                  from setting the sample standard deviation to 1.
+                </p>
+                <p>
+                  <strong>Try multiplying every y by 2.</strong> Its centred
+                  vector doubles in length. Dividing by that new length returns
+                  the same unit vector.
+                </p>
+              </section>
+              <section
+                class="correlation-step"
+                id="correlation-step-3"
+                hidden
+                aria-labelledby="correlation-heading-3"
+              >
+                <h3 id="correlation-heading-3" tabindex="-1">
+                  4 · Calculate r from the angle
+                </h3>
+                <p>
+                  The dot product of two arrows equals the product of their
+                  lengths times the cosine of their angle. When both lengths are
+                  1, the dot product equals the cosine of the angle. For the
+                  centred vectors, this is Pearson's r.
+                </p>
+                <div class="equation" tabindex="0">
+                  <math
+                    xmlns="http://www.w3.org/1998/Math/MathML"
+                    display="block"
+                    aria-label="Pearson r is the centred dot product divided by the two centred lengths, equal to the unit vector dot product and the cosine of their angle"
+                    ><mrow
+                      ><mi>r</mi><mo>=</mo
+                      ><mfrac
+                        ><mrow><mi>a</mi><mo>·</mo><mi>b</mi></mrow
+                        ><mrow
+                          ><msub><mi>L</mi><mi>x</mi></msub
+                          ><msub><mi>L</mi><mi>y</mi></msub></mrow
+                        ></mfrac
+                      ><mo>=</mo><mi>u</mi><mo>·</mo><mi>v</mi><mo>=</mo
+                      ><mi>cos</mi><mi>θ</mi></mrow
+                    ></math
+                  >
+                </div>
+                <p id="correlation-angle-result" aria-live="polite"></p>
+                <p id="correlation-unit-dot"></p>
+                <p>
+                  The dotted line projects v onto the direction of u. The green
+                  segment shows that projection. Its signed length is r. A
+                  projection in the direction of u is positive. A projection in
+                  the opposite direction is negative.
+                </p>
+                <table class="angle-reference">
+                  <caption>
+                    Reference angles between centred vectors
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Angle</th>
+                      <th scope="col">r = cos θ</th>
+                      <th scope="col">Directions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>0°</td>
+                      <td>+1</td>
+                      <td>Same</td>
+                    </tr>
+                    <tr>
+                      <td>60°</td>
+                      <td>+0.5</td>
+                      <td>Partly aligned</td>
+                    </tr>
+                    <tr>
+                      <td>90°</td>
+                      <td>0</td>
+                      <td>Perpendicular</td>
+                    </tr>
+                    <tr>
+                      <td>120°</td>
+                      <td>−0.5</td>
+                      <td>Partly opposed</td>
+                    </tr>
+                    <tr>
+                      <td>180°</td>
+                      <td>−1</td>
+                      <td>Opposite</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p>
+                  Adding a constant or multiplying by a positive number
+                  preserves r. Multiplying one variable by a negative number
+                  reverses its direction and flips the sign of r.
+                </p>
+                <details class="formula-details">
+                  <summary>
+                    Connect this to the familiar Pearson formula
+                  </summary>
+                  <div
+                    class="equation"
+                    tabindex="0"
+                    id="correlation-final-formula"
+                  >
+                    <math
+                      xmlns="http://www.w3.org/1998/Math/MathML"
+                      display="block"
+                      aria-label="Pearson r equals the sum of centred cross products divided by the square root of the product of the centred sums of squares"
+                      ><mrow
+                        ><mi>r</mi><mo>=</mo
+                        ><mfrac
+                          ><mrow
+                            ><mo>∑</mo
                             ><mrow
                               ><mo>(</mo
                               ><mrow
@@ -530,9 +548,6 @@
                                 ><mo>−</mo
                                 ><mover><mi>x</mi><mo>¯</mo></mover></mrow
                               ><mo>)</mo></mrow
-                            ><mn>2</mn></msup
-                          ><mo>⋅</mo><mo>∑</mo
-                          ><msup
                             ><mrow
                               ><mo>(</mo
                               ><mrow
@@ -540,184 +555,209 @@
                                 ><mo>−</mo
                                 ><mover><mi>y</mi><mo>¯</mo></mover></mrow
                               ><mo>)</mo></mrow
-                            ><mn>2</mn></msup
-                          ></mrow
-                        ></msqrt
-                      ></mfrac
-                    ></mrow
-                  ></math
-                >
-              </div>
-              <p>
-                The numerator is the centred dot product. The denominator is the
-                product of the two centred vector lengths. The formula using
-                sample covariance and sample standard deviations gives the same
-                result. Its n − 1 factors cancel.
-              </p>
-            </details>
-          </section>
-          <figure
-            class="angle-figure"
-            aria-labelledby="correlation-diagram-heading"
-          >
-            <h3 id="correlation-diagram-heading">
-              The two vectors in their shared plane
-            </h3>
-            <p id="correlation-diagram-description">
-              We turn the view so the first vector points right. This preserves
-              lengths and the angle between the vectors. The axes here describe
-              vector directions. The scatterplot axes describe measurements. We
-              resize each view to fit, so use the printed lengths to compare
-              steps.
-            </p>
-            <svg
-              id="correlation-angle-diagram"
-              viewBox="60 20 300 330"
-              role="img"
-              aria-labelledby="correlation-svg-title correlation-svg-description"
-            >
-              <title id="correlation-svg-title">
-                Angle between the current vectors
-              </title>
-              <desc id="correlation-svg-description"></desc>
-              <defs>
-                <marker
-                  id="correlation-arrow-x"
-                  viewBox="0 0 10 10"
-                  refX="9"
-                  refY="5"
-                  markerWidth="7"
-                  markerHeight="7"
-                  orient="auto-start-reverse"
-                >
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#2456a6" />
-                </marker>
-                <marker
-                  id="correlation-arrow-y"
-                  viewBox="0 0 10 10"
-                  refX="9"
-                  refY="5"
-                  markerWidth="7"
-                  markerHeight="7"
-                  orient="auto-start-reverse"
-                >
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#a64922" />
-                </marker>
-              </defs>
-              <g id="correlation-vector-drawing">
-                <circle
-                  id="correlation-unit-circle"
-                  cx="210"
-                  cy="215"
-                  r="120"
-                  fill="none"
-                  stroke="#9baeb5"
-                  stroke-dasharray="3 5"
-                />
-                <line
-                  id="correlation-projection"
-                  stroke="#006b69"
-                  stroke-width="2"
-                  stroke-dasharray="2 5"
-                />
-                <line
-                  id="correlation-vector-x"
-                  x1="210"
-                  y1="215"
-                  stroke="#2456a6"
-                  stroke-width="3"
-                  marker-end="url(#correlation-arrow-x)"
-                />
-                <line
-                  id="correlation-vector-y"
-                  x1="210"
-                  y1="215"
-                  stroke="#a64922"
-                  stroke-width="3"
-                  stroke-dasharray="7 4"
-                  marker-end="url(#correlation-arrow-y)"
-                />
-                <path
-                  id="correlation-angle-arc"
-                  fill="none"
-                  stroke="#172b39"
-                  stroke-width="2"
-                />
-                <text id="correlation-label-x" fill="#2456a6"></text>
-                <text id="correlation-label-y" fill="#a64922"></text>
-                <line
-                  id="correlation-projection-segment"
-                  x1="210"
-                  y1="215"
-                  y2="215"
-                  stroke="#006b69"
-                  stroke-width="5"
-                />
-                <circle
-                  id="correlation-projection-foot"
-                  cy="215"
-                  r="4"
-                  stroke="#006b69"
-                  fill="white"
-                />
-                <text
-                  id="correlation-projection-label"
-                  y="270"
-                  text-anchor="middle"
-                  fill="#006b69"
-                ></text>
-                <circle cx="210" cy="215" r="4" fill="#172b39" />
-                <text
-                  id="correlation-theta-label"
-                  x="210"
-                  y="60"
-                  text-anchor="middle"
-                  fill="#172b39"
-                ></text>
-              </g>
-              <text
-                id="correlation-no-angle"
-                x="210"
-                y="140"
-                text-anchor="middle"
-                fill="#172b39"
+                            ></mrow
+                          ><msqrt
+                            ><mrow
+                              ><mo>∑</mo
+                              ><msup
+                                ><mrow
+                                  ><mo>(</mo
+                                  ><mrow
+                                    ><msub><mi>x</mi><mi>i</mi></msub
+                                    ><mo>−</mo
+                                    ><mover><mi>x</mi><mo>¯</mo></mover></mrow
+                                  ><mo>)</mo></mrow
+                                ><mn>2</mn></msup
+                              ><mo>⋅</mo><mo>∑</mo
+                              ><msup
+                                ><mrow
+                                  ><mo>(</mo
+                                  ><mrow
+                                    ><msub><mi>y</mi><mi>i</mi></msub
+                                    ><mo>−</mo
+                                    ><mover><mi>y</mi><mo>¯</mo></mover></mrow
+                                  ><mo>)</mo></mrow
+                                ><mn>2</mn></msup
+                              ></mrow
+                            ></msqrt
+                          ></mfrac
+                        ></mrow
+                      ></math
+                    >
+                  </div>
+                  <p>
+                    The numerator is the centred dot product. The denominator is
+                    the product of the two centred vector lengths. The formula
+                    using sample covariance and sample standard deviations gives
+                    the same result. Its n − 1 factors cancel.
+                  </p>
+                </details>
+              </section>
+              <figure
+                class="angle-figure"
+                aria-labelledby="correlation-diagram-heading"
               >
-                No angle is defined.
-              </text>
-            </svg>
-            <figcaption
-              id="correlation-diagram-summary"
-              aria-live="polite"
-            ></figcaption>
-          </figure>
+                <h3 id="correlation-diagram-heading">
+                  The two vectors in their shared plane
+                </h3>
+                <p id="correlation-diagram-description">
+                  We turn the view so the first vector points right. This
+                  preserves lengths and the angle between the vectors. The axes
+                  here describe vector directions. The scatterplot axes describe
+                  measurements. We resize each view to fit, so use the printed
+                  lengths to compare steps.
+                </p>
+                <svg
+                  id="correlation-angle-diagram"
+                  viewBox="60 20 300 330"
+                  role="img"
+                  aria-labelledby="correlation-svg-title correlation-svg-description"
+                >
+                  <title id="correlation-svg-title">
+                    Angle between the current vectors
+                  </title>
+                  <desc id="correlation-svg-description"></desc>
+                  <defs>
+                    <marker
+                      id="correlation-arrow-x"
+                      viewBox="0 0 10 10"
+                      refX="9"
+                      refY="5"
+                      markerWidth="7"
+                      markerHeight="7"
+                      orient="auto-start-reverse"
+                    >
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2456a6" />
+                    </marker>
+                    <marker
+                      id="correlation-arrow-y"
+                      viewBox="0 0 10 10"
+                      refX="9"
+                      refY="5"
+                      markerWidth="7"
+                      markerHeight="7"
+                      orient="auto-start-reverse"
+                    >
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a64922" />
+                    </marker>
+                  </defs>
+                  <g id="correlation-vector-drawing">
+                    <circle
+                      id="correlation-unit-circle"
+                      cx="210"
+                      cy="215"
+                      r="120"
+                      fill="none"
+                      stroke="#9baeb5"
+                      stroke-dasharray="3 5"
+                    />
+                    <line
+                      id="correlation-projection"
+                      stroke="#006b69"
+                      stroke-width="2"
+                      stroke-dasharray="2 5"
+                    />
+                    <line
+                      id="correlation-vector-x"
+                      x1="210"
+                      y1="215"
+                      stroke="#2456a6"
+                      stroke-width="3"
+                      marker-end="url(#correlation-arrow-x)"
+                    />
+                    <line
+                      id="correlation-vector-y"
+                      x1="210"
+                      y1="215"
+                      stroke="#a64922"
+                      stroke-width="3"
+                      stroke-dasharray="7 4"
+                      marker-end="url(#correlation-arrow-y)"
+                    />
+                    <path
+                      id="correlation-angle-arc"
+                      fill="none"
+                      stroke="#172b39"
+                      stroke-width="2"
+                    />
+                    <text id="correlation-label-x" fill="#2456a6"></text>
+                    <text id="correlation-label-y" fill="#a64922"></text>
+                    <line
+                      id="correlation-projection-segment"
+                      x1="210"
+                      y1="215"
+                      y2="215"
+                      stroke="#006b69"
+                      stroke-width="5"
+                    />
+                    <circle
+                      id="correlation-projection-foot"
+                      cy="215"
+                      r="4"
+                      stroke="#006b69"
+                      fill="white"
+                    />
+                    <text
+                      id="correlation-projection-label"
+                      y="270"
+                      text-anchor="middle"
+                      fill="#006b69"
+                    ></text>
+                    <circle cx="210" cy="215" r="4" fill="#172b39" />
+                    <text
+                      id="correlation-theta-label"
+                      x="210"
+                      y="60"
+                      text-anchor="middle"
+                      fill="#172b39"
+                    ></text>
+                  </g>
+                  <text
+                    id="correlation-no-angle"
+                    x="210"
+                    y="140"
+                    text-anchor="middle"
+                    fill="#172b39"
+                  >
+                    No angle is defined.
+                  </text>
+                </svg>
+                <figcaption
+                  id="correlation-diagram-summary"
+                  aria-live="polite"
+                ></figcaption>
+              </figure>
+            </div>
+            <div class="walkthrough-pager">
+              <button type="button" id="correlation-previous" disabled>
+                Previous step</button
+              ><span id="correlation-step-status" role="status"
+                >Step 1 of 4</span
+              ><button type="button" id="correlation-next">Next step</button>
+            </div>
+            <p class="small">
+              This explanation was inspired by
+              <a
+                href="https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html"
+                >Brendan O'Connor's 2012 article, "Cosine similarity, Pearson
+                correlation, and OLS coefficients"</a
+              >.
+            </p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The slider constructs points with the selected sample correlation.
+              It does not draw a random sample from a population with that
+              correlation. New pattern changes the points while keeping r fixed.
+              Manual input calculates r from your paired observations. A value
+              of zero means no linear association. A curved relationship may
+              still exist. Outliers can change r substantially. Correlation
+              alone cannot establish causation.
+            </p>
+          </details>
         </div>
-        <div class="walkthrough-pager">
-          <button type="button" id="correlation-previous" disabled>
-            Previous step</button
-          ><span id="correlation-step-status" role="status">Step 1 of 4</span
-          ><button type="button" id="correlation-next">Next step</button>
-        </div>
-        <p class="small">
-          This explanation was inspired by
-          <a
-            href="https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html"
-            >Brendan O'Connor's 2012 article, "Cosine similarity, Pearson
-            correlation, and OLS coefficients"</a
-          >.
-        </p>
-      </details>
-      <details class="info">
-        <summary>Model, assumptions & interpretation</summary>
-        <p>
-          The slider constructs points with the selected sample correlation. It
-          does not draw a random sample from a population with that correlation.
-          New pattern changes the points while keeping r fixed. Manual input
-          calculates r from your paired observations. A value of zero means no
-          linear association. A curved relationship may still exist. Outliers
-          can change r substantially. Correlation alone cannot establish
-          causation.
-        </p>
-      </details>
+      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"

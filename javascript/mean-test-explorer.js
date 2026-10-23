@@ -11,7 +11,7 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
         type: "line",
         data: {
           datasets: labels.map((label, i) =>
-            lineDataset(label, [], i ? "#b24632" : "#2456a6"),
+            lineDataset(label, [], i ? chartPalette[1] : "#2456a6"),
           ),
         },
         options: chartOptions(
@@ -83,8 +83,8 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
       "Observed statistic",
     ]);
     nullChart.data.datasets[1].fill = "origin";
-    nullChart.data.datasets[1].backgroundColor = "#b2463266";
-    nullChart.data.datasets[2].borderColor = "#522d80";
+    nullChart.data.datasets[1].backgroundColor = chartPalette[1] + "66";
+    nullChart.data.datasets[2].borderColor = chartPalette[3];
     nullChart.data.datasets[2].borderDash = [6, 4];
     function update() {
       const sd = number("sigma"),

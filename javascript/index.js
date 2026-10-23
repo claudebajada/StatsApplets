@@ -27,26 +27,42 @@ function renderCatalogue() {
     heading.append(h2, number);
     section.append(heading);
     const grid = document.createElement("div");
-    grid.className = "applet-grid";
+    grid.className = "applet-list";
     for (const entry of entries) {
       const a = document.createElement("a");
-      a.className = "applet-card";
+      a.className = "applet-entry";
       a.href = `html/${entry.id}.html`;
       const h3 = document.createElement("h3");
       h3.textContent = entry.title;
       const p = document.createElement("p");
       p.textContent = entry.objective;
-      const next = document.createElement("span");
-      next.className = "card-link";
-      next.textContent = "Open applet";
-      a.append(h3, p, next);
+      const text = document.createElement("div");
+      text.append(h3, p);
+      a.append(AppletPreviews.plot(entry.id), text);
       grid.append(a);
     }
     section.append(grid);
     root.append(section);
+  }
+  if (!count) {
+    const empty = document.createElement("p");
+    empty.className = "catalogue-empty";
+    empty.textContent =
+      "No applets match this search. Try a topic such as correlation or clear the search to see every applet.";
+    root.append(empty);
   }
   document.getElementById("catalogue-count").textContent =
     `${count} of ${AppletCatalogue.length} explorers`;
 }
 document.getElementById("search").addEventListener("input", renderCatalogue);
 renderCatalogue();
+
+const demonstration = document.getElementById("demonstration-plots");
+for (const r of [-0.8, 0, 0.8]) {
+  const example = document.createElement("div");
+  example.append(AppletPreviews.plot("correlation", 180, 112, r));
+  const label = document.createElement("p");
+  label.textContent = "r = " + String(r).replace("-", "−");
+  example.append(label);
+  demonstration.append(example);
+}

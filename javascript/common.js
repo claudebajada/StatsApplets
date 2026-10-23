@@ -6,11 +6,22 @@ function normalDensity(x, mean, sd) {
   return StatsMath.normalDensity(x, mean, sd);
 }
 const chartPalette = ["#2456a6", "#a64922", "#006b69", "#793d91", "#6b5910"];
-Chart.defaults.color = "#40535e";
-Chart.defaults.font.family = "system-ui, sans-serif";
-Chart.defaults.font.size = 12;
+Chart.defaults.color = "#485c70";
+Chart.defaults.font.family = '"Source Sans 3", sans-serif';
+Chart.defaults.font.size = 13;
 Chart.defaults.animation = false;
 Chart.defaults.elements.point.radius = 0;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.boxWidth = 12;
+Chart.defaults.plugins.legend.labels.boxHeight = 8;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.tooltip.backgroundColor = "#172e47";
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 3;
+Chart.defaults.scale.grid.color = "#e3e9ef";
+Chart.defaults.scale.border.color = "#a8b8c8";
+Chart.defaults.scale.title.color = "#334c65";
+Chart.defaults.scale.title.font = { size: 13, weight: "600" };
 function initializeChart(ctx, config) {
   return new Chart(ctx, config);
 }
@@ -21,7 +32,7 @@ function chartOptions(x = {}, y = {}) {
     maintainAspectRatio: false,
     scales: { x: { ...x }, y: { ...y } },
     plugins: {
-      legend: { labels: { boxWidth: 20, padding: 12 } },
+      legend: { labels: { boxWidth: 12, padding: 14 } },
       tooltip: {
         callbacks: {
           label(context) {
@@ -206,6 +217,10 @@ const accessibleCharts = {
   },
 };
 Chart.register(accessibleCharts);
+// Canvas text does not automatically repaint when a web font finishes loading.
+document.fonts.ready.then(() => {
+  for (const chart of Object.values(Chart.instances)) chart.update("none");
+});
 document.addEventListener("DOMContentLoaded", () =>
   document.querySelectorAll("canvas").forEach((canvas) => {
     canvas.setAttribute("role", "img");

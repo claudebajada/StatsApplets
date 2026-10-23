@@ -6,6 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const el = (id) => document.getElementById(id),
     num = (id) => Number(el(id).value),
     value = (id) => el(id).value;
+  function showDataControls(manualInput, simulationInputs) {
+    const manual = value("dataMode") === "manual";
+    el(manualInput).closest(".control-field").hidden = !manual;
+    for (const input of simulationInputs)
+      el(input).closest(".control-field").hidden = manual;
+    el("resample").hidden = manual;
+    return manual;
+  }
   const f = (x, digits = 3) =>
     Number.isFinite(x) ? x.toFixed(digits) : "Undefined";
   const percent = (x) => (100 * x).toFixed(1) + "%";
@@ -274,15 +282,20 @@ document.addEventListener("DOMContentLoaded", () => {
       "scatter",
     );
     update = () => {
-      const pairs =
-        value("dataMode") === "manual"
-          ? T.parsePairs(value("pairs"), 3)
-          : T.regressionSample(
-              num("sampleSize"),
-              num("slope"),
-              num("noise"),
-              num("seed"),
-            );
+      const manual = showDataControls("pairs", [
+        "sampleSize",
+        "slope",
+        "noise",
+        "seed",
+      ]);
+      const pairs = manual
+        ? T.parsePairs(value("pairs"), 3)
+        : T.regressionSample(
+            num("sampleSize"),
+            num("slope"),
+            num("noise"),
+            num("seed"),
+          );
       const result = T.regression(pairs),
         xs = pairs.map((p) => p[0]),
         min = Math.min(...xs),
@@ -307,17 +320,21 @@ document.addEventListener("DOMContentLoaded", () => {
         xy(x, null),
       ]);
       fit.data.datasets.push(
-        lineDataset(
-          "Least-squares fit",
-          [
-            xy(min, result.intercept + result.slope * min),
-            xy(max, result.intercept + result.slope * max),
-          ],
-          chartPalette[1],
-        ),
+        {
+          ...lineDataset(
+            "Least-squares fit",
+            [
+              xy(min, result.intercept + result.slope * min),
+              xy(max, result.intercept + result.slope * max),
+            ],
+            chartPalette[1],
+          ),
+          showLine: true,
+        },
         {
           ...lineDataset("Vertical residuals", segments, chartPalette[2]),
           borderDash: [2, 3],
+          showLine: true,
         },
       );
       fit.update();
@@ -335,6 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
             chartPalette[1],
           ),
           borderDash: [6, 4],
+          showLine: true,
         },
       ];
       residual.update();
@@ -374,10 +392,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const table = document.createElement("div");
     table.id = "anova-table";
     table.className = "table-scroll";
-    document.querySelector(".result-card").append(table);
+    document.querySelector(".calculation-details").append(table);
     update = () => {
+      const manual = showDataControls("groups", [
+        "sampleSize",
+        "separation",
+        "withinSD",
+        "seed",
+      ]);
       let groups;
-      if (value("dataMode") === "manual") {
+      if (manual) {
         groups = value("groups")
           .trim()
           .split(/\n/)

@@ -78,7 +78,7 @@ test("catalogue accessibility and search are usable", async ({ page }) => {
     .analyze();
   expect(result.violations.map((v) => v.id)).toEqual([]);
   await page.locator("#search").fill("not-a-statistical-topic");
-  await expect(page.locator(".applet-card")).toHaveCount(0);
+  await expect(page.locator(".applet-entry")).toHaveCount(0);
   await expect(page.locator("#catalogue-count")).toContainText("0 of 15");
 });
 test("seeded new samples change the experiment, reset restores it", async ({

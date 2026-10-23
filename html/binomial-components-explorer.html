@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Distributions</p>
         <h1>Building the binomial</h1>
-        <p class="lede">
-          See why a probability term must be multiplied by the number of
-          arrangements.
+        <p class="lede applet-introduction">
+          Several arrangements can give the same count of successes. With two
+          trials, success followed by failure and failure followed by success
+          both give one success. The binomial formula multiplies the probability
+          of one arrangement by the number of possible arrangements. Change p
+          and compare the three plots.
         </p>
         <div class="equation">
           <math
@@ -51,8 +54,8 @@
           >
         </div>
         <p class="symbol-key">
-          k is a count of successes out of n trials. The bracketed coefficient
-          counts arrangements; p is the success probability on each trial.
+          k is the count of successes in n trials. The bracketed coefficient
+          counts arrangements. p is the success probability on each trial.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -107,7 +110,7 @@
           </div>
         </figure>
         <figure class="chart-container">
-          <h2 class="chart-title">3 · Product: binomial probabilities</h2>
+          <h2 class="chart-title">3 · Binomial probabilities</h2>
           <p class="chart-explanation" id="fullDistChart-explanation">
             Multiply each arrangement count by its probability. The resulting
             bars give the exact probability of each possible count of successes.
@@ -117,7 +120,7 @@
               id="fullDistChart"
               class="chart-canvas"
               role="img"
-              aria-label="3 · Product: binomial probabilities"
+              aria-label="3 · Binomial probabilities"
             ></canvas>
           </div>
         </figure>
@@ -125,18 +128,16 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          The coefficient counts how many arrangements give k successes. The
-          probability factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each
-          arrangement. Their product is P(X = k); only this final distribution
-          must sum to 1. The first two panels are factors, not probability
-          distributions.
+          The coefficient counts the arrangements with k successes. The factor
+          pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each arrangement. Their product
+          is P(X = k). The probabilities in the final plot add to 1. The first
+          two plots show the separate factors used in that multiplication.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

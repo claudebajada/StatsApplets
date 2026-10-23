@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Distinguish a population from the empirical sampling distribution of its mean."
+      content="Compare individual observations with means from repeated samples."
     />
     <title>Central limit theorem · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Sampling & uncertainty</p>
         <h1>Central limit theorem</h1>
-        <p class="lede">
-          Distinguish a population from the empirical sampling distribution of
-          its mean.
+        <p class="lede applet-introduction">
+          Sample means vary from sample to sample. For independent observations
+          with finite variance, the central limit theorem explains why their
+          distribution approaches a normal shape as sample size grows. Choose a
+          skewed population, then increase the observations per sample. Compare
+          individual values with sample means.
         </p>
         <div class="equation">
           <math
@@ -44,14 +47,15 @@
           >
         </div>
         <p class="symbol-key">
-          x̄ is the mean of n observations. σ is the population SD; SE is the
-          standard deviation of sample means across repeated samples.
+          x̄ is the mean of n observations. σ is the population standard
+          deviation. The standard error, or SE, is the standard deviation of
+          sample means across repeated samples.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
       <section class="controls-panel" id="controls" aria-label="Parameters">
         <div class="control-field">
-          <label for="population">Standardised population</label
+          <label for="population">Population shape</label
           ><select id="population">
             <option value="normal">Normal</option>
             <option value="uniform">Uniform</option>
@@ -109,7 +113,7 @@
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
           <h2 class="chart-title">
-            Empirical population sample: individual observations
+            Individual observations from the population
           </h2>
           <p class="chart-explanation" id="populationChart-explanation">
             These bars summarise individual values drawn from the selected
@@ -121,23 +125,23 @@
               id="populationChart"
               class="chart-canvas"
               role="img"
-              aria-label="Empirical population sample: individual observations"
+              aria-label="Individual observations from the population"
             ></canvas>
           </div>
         </figure>
         <figure class="chart-container">
-          <h2 class="chart-title">Empirical sampling distribution of x̄</h2>
+          <h2 class="chart-title">Means from repeated samples</h2>
           <p class="chart-explanation" id="meansChart-explanation">
-            Each sample contributes one mean to these bars. The normal curve has
-            the theoretical mean and standard error of the sample mean; it is a
-            comparison, not a fitted curve.
+            Each sample contributes one mean to these bars. The comparison curve
+            is a normal distribution with the theoretical mean and standard
+            error. Its parameters come from the population and sample size.
           </p>
           <div class="plot-frame">
             <canvas
               id="meansChart"
               class="chart-canvas"
               role="img"
-              aria-label="Empirical sampling distribution of x̄"
+              aria-label="Means from repeated samples"
             ></canvas>
           </div>
         </figure>
@@ -145,20 +149,18 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          All four populations are standardised to μ = 0 and σ = 1. Sampling is
-          independent and with replacement. Bars are empirical densities, not
-          the exact population densities; the mean histogram uses repeated
-          independent samples. The normal overlay is N(0, 1/n). Each population
-          has finite variance, as required by the classical CLT. Repeated
-          simulations have Monte Carlo variation; a seed makes the current
-          example reproducible.
+          All four populations have mean 0 and standard deviation 1. The applet
+          draws independent samples with replacement. Both histograms summarise
+          simulated values. The normal comparison curve has mean 0 and variance
+          1/n. Each population has finite variance, as required by this form of
+          the central limit theorem. Results vary between simulations. The same
+          random seed and settings reproduce the same values.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

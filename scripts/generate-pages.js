@@ -22,17 +22,17 @@ const directions = [
 ];
 const captions = {
   meanEstimateChart:
-    "The circle is the sample estimate; the diamond is the value claimed by the null hypothesis. The horizontal bar extends one standard error either side of the estimate. Read the horizontal axis in the original measurement units. This bar is not a confidence interval.",
+    "The circle is the sample estimate. The diamond is the null value. The horizontal bar extends one standard error on either side of the estimate. The axis uses the original measurement units. The bar shows one standard error, which is narrower than a 95% confidence interval.",
   zChart:
     "Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting z scores, not the distribution of individual measurements. The vertical line marks your z score. The shaded area is the p-value for your chosen alternative.",
   tChart:
     "Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting t scores, not the distribution of individual measurements. The vertical line marks your t score. The shaded area is the p-value for your chosen alternative.",
   pairsChart:
-    "Each dot is one observation with an x value and a y value. An upward pattern gives positive r; a downward pattern gives negative r. A tighter straight-line pattern puts r closer to +1 or −1.",
+    "Each dot is one observation with an x value and a y value. An upward linear pattern gives positive r. A downward linear pattern gives negative r. Points closer to a straight line give r closer to +1 or −1.",
   binomialChart:
     "Each bar is the exact probability of a whole-number count of successes. All bar probabilities add to 1.",
   normalChart:
-    "This smooth curve approximates the binomial probabilities. Probabilities are areas under the curve; a curve height is not a probability.",
+    "Areas under this normal curve approximate binomial probabilities. To approximate the probability of k successes, take the area between k − 0.5 and k + 0.5.",
   coeffChart:
     "For each possible count k, the bar counts the arrangements of successes and failures. These counts are not probabilities.",
   probTermChart:
@@ -42,55 +42,55 @@ const captions = {
   frequencyChart:
     "Compare the observed count in each category with the count predicted by a uniform null model. Both sets of counts add to the selected N.",
   chiSquaredChart:
-    "Under the null model, repeated studies produce these χ² statistics approximately. The line marks this example’s statistic; the shaded area is the chance of a value at least as large under the null.",
+    "This curve approximates the distribution of χ² from repeated studies under the null model. The line marks this example's statistic. The shaded area is the probability of a value at least as large when the null is true.",
   distributionChart:
-    "The horizontal axis gives a possible value of the random variable. Probability is area under a density curve, not its height.",
+    "The horizontal axis gives possible values of the random variable. The area under the curve between two values gives the probability of falling between them.",
   populationChart:
     "These bars summarise individual values drawn from the selected population. Compare their shape with the distribution of sample means in the next plot.",
   meansChart:
-    "Each sample contributes one mean to these bars. The normal curve has the theoretical mean and standard error of the sample mean; it is a comparison, not a fitted curve.",
+    "Each sample contributes one mean to these bars. The comparison curve is a normal distribution with the theoretical mean and standard error. Its parameters come from the population and sample size.",
   intervalChart:
     "Each horizontal segment is a confidence interval from a different sample. The vertical reference line is the fixed population mean. Dashed, triangle-marked intervals miss that mean.",
   widthChart:
     "These bars count the widths of the simulated intervals. Wider intervals express less precise estimates.",
   powerChart:
-    "The null curve describes z scores when the null is true. The other curve describes z scores for the chosen true effect. The shaded area under the latter is power: the chance of rejecting the null for that effect.",
+    "The null curve describes z scores when the null is true. The other curve describes z scores for the chosen true effect. The shaded area under that second curve is power. It is the probability of rejecting the null for that effect.",
   powerCurveChart:
     "Each point gives the chance of rejecting the null at that sample size, holding the true effect, significance level and alternative fixed.",
   fitChart:
-    "Each dot is one x, y observation. The fitted line predicts y from x. Vertical segments are residuals: observed y minus predicted y.",
+    "Each dot is one x, y observation. The fitted line predicts y from x. Each vertical segment shows a residual, the observed y minus the predicted y.",
   residualChart:
     "Each dot shows one fitted value and its residual. The horizontal zero line separates over-predictions from under-predictions.",
   groupsChart:
-    "Dots show individual observations in each group; the separate mean markers summarise those groups. Compare separation between groups with variation inside groups.",
+    "Dots show individual observations in each group. Squares mark the sample means. Compare the separation between means with the variation within groups.",
   anovaChart:
-    "This curve describes F statistics from repeated studies with equal population means. The vertical line is the observed F; the shaded upper tail is its p-value.",
+    "This curve describes F statistics from repeated studies with equal population means. The vertical line marks the observed F. The shaded upper tail is its p-value.",
   familyChart:
-    "Compare the theoretical chance of at least one false rejection without adjustment with the simulated proportion for your chosen procedure. The vertical axis is a probability, not a number of tests.",
+    "The first bar gives the calculated probability of at least one false rejection without adjustment. The second gives the proportion of simulated families with a false rejection under your chosen method. The vertical axis runs from 0 to 1.",
   discoveryChart:
     "Each bar counts simulated families with that many false rejections. Every null hypothesis is true in this simulation, so every rejection is a false positive.",
 };
 const symbolKeys = {
   "binomial-normal-explorer":
-    "n is the number of trials; p is the success probability. μ and σ² are the mean and variance of the binomial count.",
+    "n is the number of trials. p is the success probability on each trial. μ and σ² are the mean and variance of the count of successes.",
   "binomial-components-explorer":
-    "k is a count of successes out of n trials. The bracketed coefficient counts arrangements; p is the success probability on each trial.",
+    "k is the count of successes in n trials. The bracketed coefficient counts arrangements. p is the success probability on each trial.",
   "t-distribution-explorer":
-    "x̄ is a sample mean; μ₀ is the null mean; s is the sample SD; n is the sample size. A one-sample t statistic has n − 1 degrees of freedom.",
+    "x̄ is the sample mean and μ₀ is the null mean. s is the sample standard deviation and n is the sample size. The one-sample t statistic has n − 1 degrees of freedom.",
   "f-distribution-explorer":
     "U and V are independent chi-squared variables, with df₁ and df₂ degrees of freedom. F is the ratio after dividing each by its own degrees of freedom.",
   "chi-squared-explorer":
     "Oᵢ is the observed count in category i; Eᵢ is its expected count under the null. Add the contributions across all categories.",
   "clt-explorer":
-    "x̄ is the mean of n observations. σ is the population SD; SE is the standard deviation of sample means across repeated samples.",
+    "x̄ is the mean of n observations. σ is the population standard deviation. The standard error, or SE, is the standard deviation of sample means across repeated samples.",
   "confidence-interval-explorer":
-    "x̄ is the sample mean. The t procedure uses SE = s/√n and a t critical value with n − 1 degrees of freedom. The z procedure uses known σ/√n and a normal critical value.",
+    "x̄ is the sample mean and SE is its standard error. The t interval uses the sample standard deviation s and a t critical value with n − 1 degrees of freedom. The z interval uses the known population standard deviation σ and a normal critical value.",
   "power-explorer":
-    "H₀ is the null hypothesis. μ₁ is the specified true population mean. Power is the chance of rejecting H₀ when this true mean applies.",
+    "H₀ is the null hypothesis. d is the true difference between the population mean and the null mean, divided by the population standard deviation. Power is the probability of rejecting H₀ for that effect.",
   "regression-explorer":
-    "ŷ is the predicted y value; b₀ is the fitted intercept; b₁ is the fitted slope. Each residual is the observed y minus ŷ.",
+    "ŷ is the predicted y value. b₀ is the fitted intercept and b₁ is the fitted slope. Each residual is the observed y minus ŷ.",
   "anova-explorer":
-    "SS measures sums of squared deviations; k is the number of groups and N is the total sample size. Divide each SS by its degrees of freedom to form the two mean squares.",
+    "SS means sum of squares. k is the number of groups and N is the total sample size. Divide each sum of squares by its degrees of freedom to get a mean square. F is the between-group mean square divided by the within-group mean square.",
   "multiple-comparisons-explorer":
     "For m independent tests of true null hypotheses, each at significance level α, FWER is the chance of at least one false rejection without adjustment.",
 };
@@ -99,7 +99,7 @@ const chart = (id, title, caption = captions[id]) => {
   return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><p class="chart-explanation" id="${id}-explanation">${caption}</p><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div></figure>`;
 };
 const metric = (label, id) =>
-  `<div class="metric"><span>${label}</span><strong id="${id}">—</strong></div>`;
+  `<div class="metric"><span>${label}</span><strong id="${id}">...</strong></div>`;
 const pages = {};
 for (const id of [
   "one-sample-z-test",
@@ -141,12 +141,12 @@ for (const id of [
       metric("Selected p-value", "p-value-selected") +
       metric(z ? "z score" : "t score", z ? "z-value" : "t-value") +
       metric(
-        z ? "Standard error (SE)" : "Estimated standard error (SE)",
+        z ? "Standard error, SE" : "Estimated standard error, SE",
         "se-value",
       ),
     extraResults: `<details class="info"><summary>Effect size and other tail probabilities</summary><div class="metrics">${
       metric(
-        z ? "Signed standardised difference (σ)" : "Signed Cohen’s d",
+        z ? "Signed standardised difference (σ)" : "Signed Cohen's d",
         "cohen-d-value",
       ) +
       (z ? "" : metric("Degrees of freedom", "df-value")) +
@@ -159,7 +159,7 @@ for (const id of [
         "Two-sided p",
         independent ? "two-tailed-p-value" : "p-value-two-sided",
       )
-    }</div><p>The selected p-value above corresponds to your alternative hypothesis. These other probabilities answer different directional questions. The signed effect size divides the observed difference by ${z ? "the known population SD" : "the sample SD"}; its sign follows the order of subtraction.</p></details>`,
+    }</div><p>The selected p-value above uses your chosen alternative hypothesis. The other p-values use the alternatives shown here. Divide the observed difference by ${z ? "the known population standard deviation" : independent ? "the pooled sample standard deviation" : "the sample standard deviation"} to get the effect size. Its sign follows the order of subtraction.</p></details>`,
     charts:
       chart(
         "meanEstimateChart",
@@ -170,15 +170,15 @@ for (const id of [
         "2 · Read the p-value under the null hypothesis",
       ),
     symbolKey: z
-      ? "x̄ is your sample mean; μ₀ is the null population mean; σ is the known population SD; n is the sample size. The denominator is the standard error (SE)."
+      ? "x̄ is the sample mean and μ₀ is the null population mean. σ is the known population standard deviation and n is the sample size. The denominator is the standard error, or SE."
       : independent
-        ? "x̄₁ and x̄₂ are sample means; sₚ is the pooled sample SD; n₁ and n₂ are the sample sizes. The denominator estimates the standard error of the mean difference."
-        : "x̄ is your sample mean; μ₀ is the null population mean; s is the sample SD; n is the sample size. The denominator estimates the standard error (SE).",
+        ? "x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard deviation. n₁ and n₂ are the sample sizes. The denominator estimates the standard error of the mean difference."
+        : "x̄ is the sample mean and μ₀ is the null population mean. s is the sample standard deviation and n is the sample size. The denominator estimates the standard error, or SE.",
     method: z
-      ? "Independent observations and a normal sampling distribution of the mean are assumed. The standard error σ/√n describes how sample means vary across repeated studies. The z score expresses the observed difference from μ₀ in standard-error units. Choose the alternative before looking at the data."
+      ? "The test assumes independent observations and a normal sampling distribution of the mean. The standard error σ/√n describes how sample means vary across repeated studies. The z score gives the observed difference from μ₀ in standard errors. Choose the alternative before looking at the data."
       : independent
-        ? "This is the pooled equal-variance test with s₁ = s₂ = s, so sₚ = s. Degrees of freedom are n₁ + n₂ − 2. Groups and observations must be independent; exact inference assumes normal populations with equal variances. The first chart displays the observed mean difference and its estimated standard error. The second chart is the null reference distribution of t scores."
-        : "The sliders specify sample statistics. Exact t inference assumes independent normal observations and uses n − 1 degrees of freedom. Small samples are sensitive to skewness and outliers. The first chart displays your sample mean and its estimated standard error. The second chart is the null reference distribution of t scores. Choose the alternative before looking at the data.",
+        ? "This is the pooled equal-variance test. The applet gives both groups the same sample standard deviation, so the pooled value is also s. The test has n₁ + n₂ − 2 degrees of freedom. Exact p-values assume independent observations from normal populations with equal variances. Plot 1 shows the observed mean difference and its estimated standard error. Plot 2 shows the distribution of t when the population means are equal. Choose the alternative before looking at the data."
+        : "The sliders set sample statistics. Exact t-test p-values assume independent observations from a normal population. The test uses n − 1 degrees of freedom. With small samples, skewness and outliers can make its p-values unreliable. Plot 1 shows the sample mean and its estimated standard error. Plot 2 shows the distribution of t when the null is true. Choose the alternative before looking at the data.",
     scripts: ["mean-test-explorer", id],
   };
 }
@@ -191,10 +191,10 @@ pages["binomial-normal-explorer"] = {
     metric("Population SD σ", "sigma-value"),
   charts:
     chart("binomialChart", "Exact binomial probabilities") +
-    chart("normalChart", "Normal approximation: probability density"),
+    chart("normalChart", "Normal approximation"),
   notice: "approximation-warning",
   method:
-    "Binomial bars are point probabilities; the normal curve is a density. Approximate P(X = k) by the normal area from k − 0.5 to k + 0.5 (continuity correction), not by the curve height. Trials must be independent with a common success probability. The rule np ≥ 5 and n(1 − p) ≥ 5 is a rough approximation check, not a guarantee.",
+    "Each binomial bar gives the probability of one count. The normal curve is a probability density. Approximate P(X = k) using the area between k − 0.5 and k + 0.5. This is the continuity correction. Trials must be independent and have the same success probability. Having both np ≥ 5 and n(1 − p) ≥ 5 is a rough check on whether the approximation is suitable. It does not guarantee accuracy.",
   scripts: ["binomial-normal-explorer"],
 };
 pages["binomial-components-explorer"] = {
@@ -205,9 +205,9 @@ pages["binomial-components-explorer"] = {
   charts:
     chart("coeffChart", "1 · Number of arrangements C(n,k)") +
     chart("probTermChart", "2 · Probability of each arrangement") +
-    chart("fullDistChart", "3 · Product: binomial probabilities"),
+    chart("fullDistChart", "3 · Binomial probabilities"),
   method:
-    "The coefficient counts how many arrangements give k successes. The probability factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each arrangement. Their product is P(X = k); only this final distribution must sum to 1. The first two panels are factors, not probability distributions.",
+    "The coefficient counts the arrangements with k successes. The factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each arrangement. Their product is P(X = k). The probabilities in the final plot add to 1. The first two plots show the separate factors used in that multiplication.",
   scripts: ["binomial-components-explorer"],
 };
 pages["chi-squared-explorer"] = {
@@ -216,7 +216,7 @@ pages["chi-squared-explorer"] = {
     range("total-observations", "Total observations N", 10, 1000, 10, 100) +
     range("skew", "Departure in count weights", 0, 10, 0.1, 5),
   metrics:
-    metric("Effect size (Cohen's w)", "effect-size-value") +
+    metric("Effect size, Cohen's w", "effect-size-value") +
     metric("χ² statistic", "chi-squared-value") +
     metric("Upper-tail p", "p-value"),
   charts:
@@ -226,7 +226,7 @@ pages["chi-squared-explorer"] = {
     ) + chart("chiSquaredChart", "Null χ² sampling distribution"),
   notice: "validity-warning",
   method:
-    "The null category probabilities are uniform; no parameters are estimated from the data, so df = k − 1. Counts are deterministic teaching examples, allocated by clipping weights, normalising and assigning largest remainders. They are not simulated random samples. When N is not divisible by k, a perfectly uniform integer allocation is impossible. Cohen’s w = √(χ²/N) measures departure from the null probabilities and need not be ≤ 1. This goodness-of-fit test is upper-tailed: large non-negative χ² values indicate any departure.",
+    "The null gives each category the same probability. The test estimates no parameters from the counts, so it has k − 1 degrees of freedom. The applet constructs whole-number counts from the slider settings. It does not draw random samples. If N is not divisible by k, the observed counts cannot all be equal. Cohen's w = √(χ²/N) measures departure from the null probabilities and can exceed 1. Discrepancies in either direction increase χ², so the p-value uses the upper tail.",
   scripts: ["chi-squared-explorer"],
 };
 pages["t-distribution-explorer"] = {
@@ -234,11 +234,11 @@ pages["t-distribution-explorer"] = {
   metrics: "",
   charts: chart(
     "distributionChart",
-    "Standard normal & Student’s t densities",
-    "Both curves describe possible standardised scores. Compare their tail areas: a t curve assigns more probability to extreme scores at small degrees of freedom. As df increases, it approaches the normal reference.",
+    "Standard normal & Student's t densities",
+    "Both curves describe possible standardised scores. At small degrees of freedom, the t curve assigns more probability to extreme scores. As the degrees of freedom increase, it approaches the standard normal curve.",
   ),
   method:
-    "Both curves are probability densities centred at zero; neither is an observed sample histogram. The t curve is the null reference for (x̄ − μ₀)/(s/√n) under independent normal sampling. The plotted range is finite; t with df = 1 has no finite mean or variance. With df = 2 its variance is also not finite.",
+    "Both curves are probability densities centred at zero. The t curve gives the distribution of the one-sample t statistic under the null for independent observations from a normal population. Both distributions extend beyond the plotted range. With one degree of freedom, t has no defined mean or finite variance. With two degrees of freedom, its variance is still not finite.",
   scripts: ["t-distribution-explorer"],
 };
 pages["f-distribution-explorer"] = {
@@ -250,11 +250,11 @@ pages["f-distribution-explorer"] = {
   charts: chart(
     "distributionChart",
     "Null F density & rejection region",
-    "The curve shows possible F values under the null hypothesis. The dashed line is the upper 5% critical value, not an observed statistic. Values to its right form the rejection region; the plot extends far enough to show that threshold.",
+    "The curve shows possible F values under the null hypothesis. The dashed line marks the upper 5% critical value. Values to its right make up the rejection region. This explorer shows a critical value rather than a statistic calculated from observed data.",
   ),
   notice: "plot-note",
   method:
-    "F is non-negative and extends to infinity. Large F values reject an upper-tail variance-ratio or ANOVA null. For df₁ < 2 its density diverges at zero, so that endpoint is omitted from the curve. Shading is truncated at the plot edge, while critical values refer to the full distribution. A log axis changes spacing, not the probabilities.",
+    "F is non-negative and has no upper limit. For an upper-tail variance-ratio test or ANOVA, values above the critical value lead to rejection of the null. When the numerator has fewer than two degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. The shaded area ends at the plot edge, but the critical value uses the full distribution. A logarithmic axis changes the spacing of F values. Their probabilities stay the same.",
   scripts: ["f-distribution-explorer"],
 };
 pages.correlation = {
@@ -281,14 +281,14 @@ pages.correlation = {
   symbolKey:
     "r measures the direction and strength of a straight-line association. It has no units. It is undefined if either variable has no variation.",
   method:
-    "The slider constructs a set of points with the selected Pearson r; it does not simulate a population correlation or a hypothesis test. New pattern rearranges the constructed points while keeping r fixed. Manual input calculates r from your own paired observations. A value of zero means no linear association, but other relationships can still exist. Outliers can strongly affect r, and correlation does not imply causation.",
+    "The slider constructs points with the selected sample correlation. It does not draw a random sample from a population with that correlation. New pattern changes the points while keeping r fixed. Manual input calculates r from your paired observations. A value of zero means no linear association. A curved relationship may still exist. Outliers can change r substantially. Correlation alone cannot establish causation.",
   scripts: ["correlation-walkthrough", "correlation"],
 };
 pages["clt-explorer"] = {
   controls:
     select(
       "population",
-      "Standardised population",
+      "Population shape",
       [
         ["normal", "Normal"],
         ["uniform", "Uniform"],
@@ -302,12 +302,10 @@ pages["clt-explorer"] = {
     seed,
   metrics: "",
   charts:
-    chart(
-      "populationChart",
-      "Empirical population sample: individual observations",
-    ) + chart("meansChart", "Empirical sampling distribution of x̄"),
+    chart("populationChart", "Individual observations from the population") +
+    chart("meansChart", "Means from repeated samples"),
   method:
-    "All four populations are standardised to μ = 0 and σ = 1. Sampling is independent and with replacement. Bars are empirical densities, not the exact population densities; the mean histogram uses repeated independent samples. The normal overlay is N(0, 1/n). Each population has finite variance, as required by the classical CLT. Repeated simulations have Monte Carlo variation; a seed makes the current example reproducible.",
+    "All four populations have mean 0 and standard deviation 1. The applet draws independent samples with replacement. Both histograms summarise simulated values. The normal comparison curve has mean 0 and variance 1/n. Each population has finite variance, as required by this form of the central limit theorem. Results vary between simulations. The same random seed and settings reproduce the same values.",
   scripts: ["extensions"],
 };
 pages["confidence-interval-explorer"] = {
@@ -316,13 +314,13 @@ pages["confidence-interval-explorer"] = {
     range("populationSD", "Population SD σ", 0.1, 3, 0.1, 1) +
     range("sampleSize", "Sample size n", 2, 100, 1, 20) +
     range("repetitions", "Repeated intervals", 100, 1000, 100, 500) +
-    range("level", "Nominal coverage", 0.8, 0.99, 0.01, 0.95) +
+    range("level", "Confidence level", 0.8, 0.99, 0.01, 0.95) +
     select(
       "method",
       "Interval procedure",
       [
-        ["t", "t interval (estimate s)"],
-        ["z", "z interval (known σ)"],
+        ["t", "t interval using sample SD"],
+        ["z", "z interval using known population SD"],
       ],
       "t",
     ) +
@@ -330,9 +328,9 @@ pages["confidence-interval-explorer"] = {
   metrics: "",
   charts:
     chart("intervalChart", "Repeated intervals around a fixed μ") +
-    chart("widthChart", "Empirical distribution of interval widths"),
+    chart("widthChart", "Widths of the simulated intervals"),
   method:
-    "Independent samples come from a normal population. The t procedure estimates s separately for each sample and uses df = n − 1; the z procedure uses known σ. The population mean stays fixed. The chart displays the first 80 intervals, whereas coverage and mean width use every simulated interval. Circle-marked solid intervals cover μ; triangle-marked dashed intervals miss it. The procedure’s long-run coverage is a property of repeated sampling, not a posterior probability that μ lies inside one realised interval.",
+    "The applet draws independent samples from a normal population. Each t interval uses its sample's standard deviation and n − 1 degrees of freedom. Each z interval uses the known population standard deviation. The population mean stays fixed. The plot shows the first 80 intervals. The coverage and mean width calculations use every simulated interval. Solid intervals with circles contain μ. Dashed intervals with triangles miss it. The confidence level describes the procedure over repeated studies. It does not give a probability that the fixed mean lies inside one calculated interval.",
   scripts: ["extensions"],
 };
 pages["power-explorer"] = {
@@ -346,7 +344,7 @@ pages["power-explorer"] = {
     chart("powerChart", "Null & specified alternative sampling densities") +
     chart("powerCurveChart", "Power as sample size changes"),
   method:
-    "This explorer uses an exact one-sample z test with known population σ and independent normal observations. d = (μ − μ₀)/σ is the specified population effect, not an estimated sample effect. The sampling SD of Z is 1; its mean under the specified alternative is d√n. Rejection regions are determined under H₀ before power is calculated under H₁. These calculations are not t-test power; a directional alternative can have power below α when the true effect points the other way.",
+    "The calculation assumes a one-sample z test with a known population standard deviation and independent normal observations. The effect d = (μ − μ₀)/σ describes the population. The z statistic has standard deviation 1 and mean d√n under that effect. The null distribution determines the rejection region. Power is the area of the alternative distribution inside that region. A one-sided test can have power below α when the true effect points in the opposite direction. These calculations apply to z tests. A t test needs a different power calculation.",
   scripts: ["extensions"],
 };
 pages["regression-explorer"] = {
@@ -355,14 +353,14 @@ pages["regression-explorer"] = {
       "dataMode",
       "Data source",
       [
-        ["generated", "Seeded illustrative data"],
+        ["generated", "Simulated data"],
         ["manual", "Use the pairs below"],
       ],
       "generated",
     ) +
     range("sampleSize", "Generated observations n", 3, 100, 1, 30) +
-    range("slope", "Generating population slope", -3, 3, 0.1, 1) +
-    range("noise", "Generating noise SD", 0, 3, 0.1, 1) +
+    range("slope", "Population slope for simulated data", -3, 3, 0.1, 1) +
+    range("noise", "Noise SD for simulated data", 0, 3, 0.1, 1) +
     seed +
     text(
       "pairs",
@@ -374,7 +372,7 @@ pages["regression-explorer"] = {
     chart("fitChart", "Observations, least-squares line & residual segments") +
     chart("residualChart", "Residuals against fitted values"),
   method:
-    "Generated data use fixed x values, population intercept 1 and independent normal errors with the chosen SD. The fitted line estimates intercept and slope from the displayed sample. Least squares minimises the sum of squared vertical residuals. R² uses a model with an intercept and is undefined for constant y. Slope is undefined for constant x. Descriptive fitting itself needs no normality assumption; the familiar normal-theory inference would require additional assumptions. Generating controls have no effect when manual data are selected.",
+    "The simulated data use fixed x values and a population intercept of 1. The errors are independent normal values with the chosen standard deviation. The fitted line estimates the intercept and slope from the sample. Least squares minimises the sum of squared vertical residuals. This model includes an intercept. R² is undefined if y is constant, and the slope is undefined if x is constant. Fitting the line does not require normal errors. Tests and confidence intervals for its coefficients need further assumptions. The simulation controls have no effect on manual data.",
   scripts: ["extensions"],
 };
 pages["anova-explorer"] = {
@@ -383,7 +381,7 @@ pages["anova-explorer"] = {
       "dataMode",
       "Data source",
       [
-        ["generated", "Seeded three-group samples"],
+        ["generated", "Simulated three-group samples"],
         ["manual", "Use the groups below"],
       ],
       "generated",
@@ -402,7 +400,7 @@ pages["anova-explorer"] = {
     chart("groupsChart", "Individual observations & sample group means") +
     chart("anovaChart", "Null F density & observed F"),
   method:
-    "Generated groups have population means −spacing, 0 and +spacing, a common population SD, and independent normal observations. ANOVA partitions the observed total sum of squares into between-group and within-group parts. Its exact F reference assumes independent observations, normally distributed errors and equal population variances. A zero population spacing need not give an observed F of zero. A significant omnibus F does not identify particular pairs. Manual input supports unequal group sizes; at least two observations per group are required.",
+    "The simulated groups have population means of −spacing, 0 and +spacing. They share a population standard deviation, and observations are independent normal values. ANOVA divides the total sum of squares into between-group and within-group parts. Exact F-test p-values assume independent observations, normal errors and equal population variances. Even with equal population means, random samples usually give different sample means and an F above zero. A significant result does not identify which groups differ. Manual input allows unequal group sizes. Enter at least two observations per group.",
   scripts: ["extensions"],
 };
 pages["multiple-comparisons-explorer"] = {
@@ -415,9 +413,9 @@ pages["multiple-comparisons-explorer"] = {
       "Adjustment",
       [
         ["none", "None"],
-        ["bonferroni", "Bonferroni (FWER)"],
-        ["holm", "Holm (FWER)"],
-        ["bh", "Benjamini–Hochberg (FDR)"],
+        ["bonferroni", "Bonferroni, controls FWER"],
+        ["holm", "Holm, controls FWER"],
+        ["bh", "Benjamini-Hochberg, controls FDR"],
       ],
       "none",
     ) +
@@ -427,7 +425,7 @@ pages["multiple-comparisons-explorer"] = {
     chart("familyChart", "Families with at least one false discovery") +
     chart("discoveryChart", "False discoveries in each simulated family"),
   method:
-    "Every null hypothesis is true. Each test is represented by an independent Uniform(0,1) p-value, which is exact for a continuous correctly calibrated null test. The unadjusted theoretical FWER is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER without requiring independent tests. BH controls FDR under independence or suitable positive dependence; arbitrary dependence is outside this simulation. Because every discovery here is false, FDR equals FWER in this all-null experiment. This does not demonstrate the mixed-null power trade-off.",
+    "Every null hypothesis in this simulation is true. The applet draws independent p-values uniformly between 0 and 1. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. Here, every rejection is false, so FDR equals FWER. This simulation cannot show what happens when some null hypotheses are false.",
   scripts: ["extensions"],
 };
 async function generate() {
@@ -437,11 +435,11 @@ async function generate() {
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">Stats<span>Applets</span></a><a href="../index.html">All explorers</a></nav>
-<main id="main"><header class="page-header"><p class="eyebrow">${meta.group}</p><h1>${meta.title}</h1><p class="lede">${meta.objective}</p><div class="equation">${math.equation(meta.id, meta.equation)}</div><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></header>
+<main id="main"><header class="page-header"><p class="eyebrow">${meta.group}</p><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p><div class="equation">${math.equation(meta.id, meta.equation)}</div><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></header>
 <div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section>
 <section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div><p id="calculation" aria-live="polite"></p><p id="input-warning" class="notice" role="status" hidden></p>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}${p.extraResults || ""}</section>
 <section class="container" aria-label="Interactive plots">${p.charts}</section>${p.after || ""}<details class="info"><summary>Model, assumptions & interpretation</summary><p>${p.method}</p></details>
-</main><footer>Explore, compare and learn. <a href="https://github.com/claudebajada/StatsApplets">Source & documentation</a></footer>
+</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
 <script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}
 </body></html>\n`;
     const formatted = await require("prettier").format(html, {

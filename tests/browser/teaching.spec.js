@@ -196,7 +196,7 @@ test("mean-test estimate bars represent the sample estimate and one SE in origin
     expect(data[2][0].x).toBeCloseTo(estimate - se, 12);
     expect(data[2][1].x).toBeCloseTo(estimate + se, 12);
     await expect(page.locator(".chart-explanation").first()).toContainText(
-      "not a confidence interval",
+      "one standard error",
     );
     // Browser layout must stack a fraction, rather than printing slash notation.
     const fraction = page.locator(".page-header math > mrow > mfrac");

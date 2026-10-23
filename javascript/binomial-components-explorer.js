@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       labels: [],
       datasets: [
         {
-          label: "Binomial Coefficient",
+          label: "Number of arrangements",
           data: [],
           backgroundColor: "rgba(0, 123, 255, 0.7)",
         },
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
       labels: [],
       datasets: [
         {
-          label: "Probability Term",
+          label: "Probability of one arrangement",
           data: [],
           backgroundColor: "rgba(255, 193, 7, 0.7)",
         },
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
       labels: [],
       datasets: [
         {
-          label: "Binomial Distribution",
+          label: "Binomial probability",
           data: [],
           backgroundColor: "rgba(40, 167, 69, 0.7)",
         },

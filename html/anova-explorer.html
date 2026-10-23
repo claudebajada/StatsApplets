@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Partition total variability into within-group and between-group sums of squares."
+      content="Compare variation between group means with variation within groups."
     />
     <title>One-way ANOVA · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Hypothesis testing</p>
         <h1>One-way ANOVA</h1>
-        <p class="lede">
-          Partition total variability into within-group and between-group sums
-          of squares.
+        <p class="lede applet-introduction">
+          One-way analysis of variance, or ANOVA, tests whether groups have
+          equal population means. It compares variation between group means with
+          variation within groups. Increase the spacing between population means
+          to see how the F statistic responds. The test alone does not identify
+          which groups differ.
         </p>
         <div class="equation">
           <math
@@ -46,9 +49,10 @@
           >
         </div>
         <p class="symbol-key">
-          SS measures sums of squared deviations; k is the number of groups and
-          N is the total sample size. Divide each SS by its degrees of freedom
-          to form the two mean squares.
+          SS means sum of squares. k is the number of groups and N is the total
+          sample size. Divide each sum of squares by its degrees of freedom to
+          get a mean square. F is the between-group mean square divided by the
+          within-group mean square.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -57,7 +61,7 @@
           <label for="dataMode">Data source</label
           ><select id="dataMode">
             <option value="generated" selected>
-              Seeded three-group samples
+              Simulated three-group samples
             </option>
             <option value="manual">Use the groups below</option>
           </select>
@@ -133,9 +137,9 @@
             Individual observations & sample group means
           </h2>
           <p class="chart-explanation" id="groupsChart-explanation">
-            Dots show individual observations in each group; the separate mean
-            markers summarise those groups. Compare separation between groups
-            with variation inside groups.
+            Dots show individual observations in each group. Squares mark the
+            sample means. Compare the separation between means with the
+            variation within groups.
           </p>
           <div class="plot-frame">
             <canvas
@@ -150,7 +154,7 @@
           <h2 class="chart-title">Null F density & observed F</h2>
           <p class="chart-explanation" id="anovaChart-explanation">
             This curve describes F statistics from repeated studies with equal
-            population means. The vertical line is the observed F; the shaded
+            population means. The vertical line marks the observed F. The shaded
             upper tail is its p-value.
           </p>
           <div class="plot-frame">
@@ -166,22 +170,21 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Generated groups have population means −spacing, 0 and +spacing, a
-          common population SD, and independent normal observations. ANOVA
-          partitions the observed total sum of squares into between-group and
-          within-group parts. Its exact F reference assumes independent
-          observations, normally distributed errors and equal population
-          variances. A zero population spacing need not give an observed F of
-          zero. A significant omnibus F does not identify particular pairs.
-          Manual input supports unequal group sizes; at least two observations
-          per group are required.
+          The simulated groups have population means of −spacing, 0 and
+          +spacing. They share a population standard deviation, and observations
+          are independent normal values. ANOVA divides the total sum of squares
+          into between-group and within-group parts. Exact F-test p-values
+          assume independent observations, normal errors and equal population
+          variances. Even with equal population means, random samples usually
+          give different sample means and an F above zero. A significant result
+          does not identify which groups differ. Manual input allows unequal
+          group sizes. Enter at least two observations per group.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

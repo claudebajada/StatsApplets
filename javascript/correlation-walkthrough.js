@@ -45,8 +45,8 @@ function createCorrelationWalkthrough() {
       : "";
     get("correlation-no-angle").style.display = undefinedAngle ? "" : "none";
     const summary = undefinedAngle
-      ? "At least one vector has length zero, so it has no direction. Its angle and cosine are undefined. After centring, this means at least one variable has no variation: Pearson’s r is undefined."
-      : `${step === 0 ? "Before centring" : step === 1 ? "After centring" : "After setting both lengths to 1"}: ${names[0]} length = ${format(g.lengthX)}, ${names[1]} length = ${format(g.lengthY)}; angle = ${g.angleDegrees.toFixed(1)}°; ${step === 0 ? "raw cosine similarity" : "r"} = ${format(g.cosine)}. ${step === 0 ? "The raw cosine need not equal Pearson’s r." : step === 3 ? `The signed projection of v onto u is ${format(g.cosine)}.` : "Centring determines the angle used by Pearson’s r."}`;
+      ? "At least one vector has length zero, so it has no direction. Its angle and cosine are undefined. After centring, this means at least one variable has no variation. Pearson's r is undefined."
+      : `${step === 0 ? "Before centring" : step === 1 ? "After centring" : "After setting both lengths to 1"}: ${names[0]} length = ${format(g.lengthX)}, ${names[1]} length = ${format(g.lengthY)}; angle = ${g.angleDegrees.toFixed(1)}°; ${step === 0 ? "raw cosine similarity" : "r"} = ${format(g.cosine)}. ${step === 0 ? "The raw cosine need not equal Pearson's r." : step === 3 ? `The signed projection of v onto u is ${format(g.cosine)}.` : "Centring determines the angle used by Pearson's r."}`;
     set("correlation-diagram-summary", summary);
     set(
       "correlation-svg-description",
@@ -125,7 +125,7 @@ function createCorrelationWalkthrough() {
     );
     set(
       "correlation-sums",
-      `Sum of centred products a · b = ${format(c.dot)}; centred sums of squares = ${format(c.lengthX ** 2)} and ${format(c.lengthY ** 2)}. ${c.cosine === null ? "A centred length is zero, so r is undefined." : `After normalising, r = ${format(c.cosine)}.`}`,
+      `The centred dot product is a · b = ${format(c.dot)}. The centred sums of squares are ${format(c.lengthX ** 2)} and ${format(c.lengthY ** 2)}. ${c.cosine === null ? "A centred length is zero, so r is undefined." : `After setting both lengths to 1, r = ${format(c.cosine)}.`}`,
     );
     set(
       "correlation-length-values",
@@ -133,19 +133,19 @@ function createCorrelationWalkthrough() {
     );
     set(
       "correlation-unit-values",
-      `u = ${c.lengthX === 0 ? "undefined (zero length)" : vector(unit.x)}; v = ${c.lengthY === 0 ? "undefined (zero length)" : vector(unit.y)}.`,
+      `u = ${c.lengthX === 0 ? "undefined because a has length zero" : vector(unit.x)}. v = ${c.lengthY === 0 ? "undefined because b has length zero" : vector(unit.y)}.`,
     );
     set(
       "correlation-angle-result",
       c.cosine === null
-        ? "A constant variable becomes a zero vector when centred. There is no direction to normalise, so neither the angle nor Pearson’s r is defined."
-        : `For these observations, θ = ${c.angleDegrees.toFixed(1)}° and r = cos(θ) = ${format(c.cosine)}. ${Math.abs(c.cosine) < 1e-10 ? "The centred directions are perpendicular: their deviations have zero net linear alignment." : c.cosine > 0 ? "The angle is less than 90°: the deviations tend to point together." : "The angle is greater than 90°: the deviations tend to point in opposite directions."}`,
+        ? "A constant variable becomes a zero vector when centred. There is no direction to normalise, so neither the angle nor Pearson's r is defined."
+        : `For these observations, θ = ${c.angleDegrees.toFixed(1)}° and r = cos(θ) = ${format(c.cosine)}. ${Math.abs(c.cosine) < 1e-10 ? "The centred vectors are perpendicular. Their dot product is zero." : c.cosine > 0 ? "The angle is less than 90°. The centred dot product is positive." : "The angle is greater than 90°. The centred dot product is negative."}`,
     );
     set(
       "correlation-unit-dot",
       c.cosine === null
         ? "Division by a zero vector length is undefined."
-        : `u · v = ${dotTerms(unit.x, unit.y)} = ${format(unit.dot)}. Calculations use full precision; the displayed components and angles are rounded.`,
+        : `u · v = ${dotTerms(unit.x, unit.y)} = ${format(unit.dot)}. Calculations use full precision. The displayed components and angles are rounded.`,
     );
     const rows = get("correlation-rows");
     rows.replaceChildren();

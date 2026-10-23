@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Compare exact probabilities with a continuous approximation and recognise its limits."
+      content="Compare binomial probabilities with a normal approximation."
     />
     <title>Binomial &amp; normal · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,11 @@
       <header class="page-header">
         <p class="eyebrow">Distributions</p>
         <h1>Binomial & normal</h1>
-        <p class="lede">
-          Compare exact probabilities with a continuous approximation and
-          recognise its limits.
+        <p class="lede applet-introduction">
+          The binomial distribution gives the probability of each possible count
+          of successes in a fixed number of independent trials. Each trial has
+          the same success probability. Change that probability or the number of
+          trials to see when a normal curve gives a useful approximation.
         </p>
         <div class="equation">
           <math
@@ -43,8 +45,8 @@
           >
         </div>
         <p class="symbol-key">
-          n is the number of trials; p is the success probability. μ and σ² are
-          the mean and variance of the binomial count.
+          n is the number of trials. p is the success probability on each trial.
+          μ and σ² are the mean and variance of the count of successes.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -71,10 +73,11 @@
       <section class="result-card" aria-label="Current results">
         <div class="metrics">
           <div class="metric">
-            <span>Population mean μ = np</span><strong id="mu-value">—</strong>
+            <span>Population mean μ = np</span
+            ><strong id="mu-value">...</strong>
           </div>
           <div class="metric">
-            <span>Population SD σ</span><strong id="sigma-value">—</strong>
+            <span>Population SD σ</span><strong id="sigma-value">...</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
@@ -98,18 +101,18 @@
           </div>
         </figure>
         <figure class="chart-container">
-          <h2 class="chart-title">Normal approximation: probability density</h2>
+          <h2 class="chart-title">Normal approximation</h2>
           <p class="chart-explanation" id="normalChart-explanation">
-            This smooth curve approximates the binomial probabilities.
-            Probabilities are areas under the curve; a curve height is not a
-            probability.
+            Areas under this normal curve approximate binomial probabilities. To
+            approximate the probability of k successes, take the area between k
+            − 0.5 and k + 0.5.
           </p>
           <div class="plot-frame">
             <canvas
               id="normalChart"
               class="chart-canvas"
               role="img"
-              aria-label="Normal approximation: probability density"
+              aria-label="Normal approximation"
             ></canvas>
           </div>
         </figure>
@@ -117,18 +120,18 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Binomial bars are point probabilities; the normal curve is a density.
-          Approximate P(X = k) by the normal area from k − 0.5 to k + 0.5
-          (continuity correction), not by the curve height. Trials must be
-          independent with a common success probability. The rule np ≥ 5 and n(1
-          − p) ≥ 5 is a rough approximation check, not a guarantee.
+          Each binomial bar gives the probability of one count. The normal curve
+          is a probability density. Approximate P(X = k) using the area between
+          k − 0.5 and k + 0.5. This is the continuity correction. Trials must be
+          independent and have the same success probability. Having both np ≥ 5
+          and n(1 − p) ≥ 5 is a rough check on whether the approximation is
+          suitable. It does not guarantee accuracy.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

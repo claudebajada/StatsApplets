@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
           fill: "origin",
         },
         {
-          ...lineDataset("Critical F (α = 0.05)", [], "#522d80"),
+          ...lineDataset("Critical F at α = 0.05", [], "#522d80"),
           borderDash: [6, 4],
         },
       ],
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         min: 0,
         title: {
           display: true,
-          text: "F statistic (logarithmic spacing can be selected below)",
+          text: "F statistic",
         },
       },
       {
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     chart.options.scales.x.min = log ? points[0].x : 0;
     chart.options.scales.x.max = max;
     chart.options.scales.x.title.text = log
-      ? "F statistic (log scale)"
+      ? "F statistic, logarithmic scale"
       : "F statistic";
     chart.update();
     get("plot-note").textContent =
-      `The plot extends to F = ${max.toFixed(2)} (at least the 99th percentile). The critical value ${critical.toFixed(3)} leaves 5% probability to its right, including the tail beyond the plot. For df₁ < 2 the density diverges at zero; that endpoint is omitted. A log x-axis helps inspect long tails.`;
+      `The plot extends to F = ${max.toFixed(2)}, at least the 99th percentile. The critical value ${critical.toFixed(3)} leaves 5% probability to its right, including the tail beyond the plot. With fewer than two numerator degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. Select a logarithmic axis to inspect the long tail.`;
   }
   ["df1-slider", "df2-slider"].forEach((id) => addSliderListener(id, update));
   get("log-axis").addEventListener("change", update);

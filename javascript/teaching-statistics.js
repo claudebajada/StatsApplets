@@ -194,7 +194,7 @@
         )
       )
         throw new RangeError(
-          "Use one finite x, y pair per line (absolute values ≤ 1,000,000).",
+          "Enter one numeric x, y pair per line. Each value must be between −1,000,000 and 1,000,000.",
         );
       return parts.map(Number);
     });
@@ -344,7 +344,7 @@
       return {
         defined: false,
         reason:
-          "Within-group variance is zero; the usual finite F statistic is undefined.",
+          "The within-group variance is zero. Dividing by it cannot give a finite F statistic.",
         between,
         within,
         total,

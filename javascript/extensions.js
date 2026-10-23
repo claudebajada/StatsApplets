@@ -56,14 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
       "populationChart",
       "Population histogram",
       "Individual observation",
-      "Empirical density",
+      "Density",
       "bar",
     );
     const means = chart(
       "meansChart",
       "Means histogram",
       "Sample mean x̄",
-      "Empirical density",
+      "Density",
     );
     update = () => {
       const n = num("sampleSize"),
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
       means.data.datasets = [
         bars("Repeated sample means", data),
         lineDataset(
-          "Normal CLT reference",
+          "Normal approximation",
           curvePoints(-extent, extent, (x) =>
             S.normalDensity(x, 0, result.theoreticalSE),
           ),
@@ -93,11 +93,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Population μ", 0],
         ["Population σ", 1],
         ["Theoretical SE", f(result.theoreticalSE)],
-        ["Empirical mean of x̄", f(result.empiricalMean)],
-        ["Empirical SD of x̄", f(result.empiricalSD)],
+        ["Mean of simulated sample means", f(result.empiricalMean)],
+        ["SD of simulated sample means", f(result.empiricalSD)],
       ]);
       setCalculation(
-        `${reps} independent samples of size ${n} were drawn from the ${value("population")} population. SD(x̄) = 1/√${n} = ${f(result.theoreticalSE)}; the observed SD across repeated means is ${f(result.empiricalSD)}. The population does not change when n changes. The normal overlay is a reference, not a fit to the simulated means. Seed ${num("seed")} reproduces the experiment.`,
+        `The applet drew ${reps} independent samples of ${n} observations from the chosen population. The theoretical standard error is 1/√${n} = ${f(result.theoreticalSE)}. The standard deviation of the simulated sample means is ${f(result.empiricalSD)}. Changing n affects the sample means, while the population stays the same. The comparison curve uses the theoretical standard error. Random seed ${num("seed")} reproduces these samples with the same settings.`,
       );
     };
   } else if (id === "confidence-interval-explorer") {
@@ -135,12 +135,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       intervals.data.datasets = [
         {
-          ...lineDataset("Covers μ: solid / circles", covered),
+          ...lineDataset("Contains μ, solid with circles", covered),
           pointRadius: 2,
         },
         {
           ...lineDataset(
-            "Misses μ: dashed / triangles",
+            "Misses μ, dashed with triangles",
             missed,
             chartPalette[1],
           ),
@@ -169,14 +169,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ];
       widths.update();
       resultMetrics([
-        ["Nominal coverage", percent(level)],
+        ["Confidence level", percent(level)],
         ["Observed coverage", percent(result.covered / reps)],
         ["Intervals covering μ", `${result.covered} / ${reps}`],
         ["Average width", f(result.averageWidth)],
       ]);
       const first = result.intervals[0];
       setCalculation(
-        `For the first sample, x̄ = ${f(first.mean)}, ${method === "t" ? "estimated s/√n" : "known σ/√n"} = ${f(first.se)} and critical = ${f(first.critical)}. Its interval is [${f(first.low)}, ${f(first.high)}] and ${first.covers ? "covers" : "misses"} the fixed μ = ${f(mu)}. Across ${reps} intervals, ${result.covered} cover μ. Monte Carlo SE of a coverage estimate near the nominal level is about ${f(Math.sqrt((level * (1 - level)) / reps))}; empirical coverage need not equal the nominal rate exactly.`,
+        `The first sample has mean ${f(first.mean)} and ${method === "t" ? "an estimated" : "a known"} standard error of ${f(first.se)}. Its critical value is ${f(first.critical)}. The interval is [${f(first.low)}, ${f(first.high)}], which ${first.covers ? "contains" : "misses"} the population mean μ = ${f(mu)}. In total, ${result.covered} of ${reps} intervals contain μ. Random sampling makes this proportion vary. Near the chosen confidence level, its standard error across simulations is about ${f(Math.sqrt((level * (1 - level)) / reps))}.`,
       );
     };
   } else if (id === "power-explorer") {
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ["H₁ mean of Z", f(result.shift)],
       ]);
       setCalculation(
-        `At n = ${n}, the true effect d = ${f(d)} shifts Z by d√n = ${f(result.shift)}. The ${direction === "twoSided" ? "two-sided" : direction === "upper" ? "greater-than" : "less-than"} rejection boundary is ${direction === "twoSided" ? "±" : direction === "lower" ? "−" : ""}${f(result.critical)}. Integrating the specified alternative density in the rejection region gives power ${f(result.power, 4)} and β = ${f(result.beta, 4)}. For d = 0 the rejection probability is α. The observed-statistic marker used in the test applets is deliberately absent: this is a prospective probability calculation.`,
+        `At n = ${n}, the true effect d = ${f(d)} gives the alternative z distribution a mean of d√n = ${f(result.shift)}. The ${direction === "twoSided" ? "two-sided" : direction === "upper" ? "greater-than" : "less-than"} rejection boundary is ${direction === "twoSided" ? "±" : direction === "lower" ? "−" : ""}${f(result.critical)}. The area under the alternative curve inside the rejection region gives power = ${f(result.power, 4)}. The remaining area is β = ${f(result.beta, 4)}, the probability of failing to reject the null for this effect. When d = 0, the rejection probability equals α.`,
       );
     };
   } else if (id === "regression-explorer") {
@@ -344,17 +344,17 @@ document.addEventListener("DOMContentLoaded", () => {
         [
           "R²",
           result.rSquared === null
-            ? "Undefined (constant y)"
+            ? "Undefined, y is constant"
             : f(result.rSquared, 4),
         ],
         ["Residual SD", f(result.residualSD)],
         ["SSE", f(result.sse)],
       ]);
       setCalculation(
-        `For ${pairs.length} observations, ŷ = ${f(result.intercept)} + ${f(result.slope)}x. The least-squares residual sum is ${f(
+        `For ${pairs.length} observations, the fitted line is ŷ = ${f(result.intercept)} + ${f(result.slope)}x. The residuals sum to ${f(
           result.residuals.reduce((s, x) => s + x, 0),
           8,
-        )} (rounding aside); SSE = ${f(result.sse)} and SST = ${f(result.sst)}. ${result.rSquared === null ? "SST is zero, so R² is undefined." : `R² = 1 − SSE/SST = ${f(result.rSquared, 4)}.`} Residual SD uses n − 2 = ${result.df} degrees of freedom. This is an illustrative in-sample fit, not a causal conclusion.`,
+        )}, which is zero apart from rounding. Squaring the residuals and adding them gives SSE = ${f(result.sse)}. The total sum of squares is SST = ${f(result.sst)}. ${result.rSquared === null ? "SST is zero, so R² is undefined." : `R² = 1 − SSE/SST = ${f(result.rSquared, 4)}.`} The residual standard deviation uses n − 2 = ${result.df} degrees of freedom. These results describe the fitted sample. They do not establish causation or guarantee accurate predictions for new observations.`,
       );
     };
   } else if (id === "anova-explorer") {
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
       table.replaceChildren();
       const t = document.createElement("table");
       t.innerHTML =
-        '<caption>ANOVA partition of observed variability</caption><thead><tr><th scope="col">Source</th><th scope="col">SS</th><th scope="col">df</th><th scope="col">MS</th></tr></thead>';
+        '<caption>ANOVA sums of squares and mean squares</caption><thead><tr><th scope="col">Source</th><th scope="col">Sum of squares</th><th scope="col">Degrees of freedom</th><th scope="col">Mean square</th></tr></thead>';
       const body = document.createElement("tbody");
       for (const row of [
         ["Between groups", result.between, result.dfBetween, result.msBetween],
@@ -431,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!i) td.scope = "row";
           td.textContent =
             v === null
-              ? "—"
+              ? "Not applicable"
               : typeof v === "number"
                 ? f(v)
                 : (v ?? "Undefined");
@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Within-group df", result.dfWithin],
       ]);
       setCalculation(
-        `SSbetween ${f(result.between)} + SSwithin ${f(result.within)} = SStotal ${f(result.total)}. Dividing by df gives MSbetween = ${f(result.msBetween)} and MSwithin = ${f(result.msWithin)}; their ratio F = ${f(result.f)} has an upper-tail p-value of ${formatProbability(result.p)} under equal population means. η² = SSbetween/SStotal = ${f(result.etaSquared, 4)} describes the observed proportion of variability attributed to group membership.`,
+        `The between-group sum of squares ${f(result.between)} plus the within-group sum of squares ${f(result.within)} gives the total ${f(result.total)}. Divide each by its degrees of freedom to get the mean squares ${f(result.msBetween)} and ${f(result.msWithin)}. Their ratio F = ${f(result.f)} has an upper-tail p-value of ${formatProbability(result.p)} under equal population means. The effect size η² = ${f(result.etaSquared, 4)} is the between-group sum of squares divided by the total. It describes the proportion of sample variation accounted for by differences between group means.`,
       );
     };
   } else if (id === "multiple-comparisons-explorer") {
@@ -539,13 +539,13 @@ document.addEventListener("DOMContentLoaded", () => {
       discoveries.options.scales.x.ticks = { precision: 0 };
       discoveries.update();
       resultMetrics([
-        ["Theoretical unadjusted FWER", percent(result.unadjustedFWER)],
-        ["Empirical selected FWER", percent(result.empiricalFWER)],
+        ["Calculated FWER without adjustment", percent(result.unadjustedFWER)],
+        ["Simulated FWER with chosen method", percent(result.empiricalFWER)],
         ["Families with false discoveries", `${result.families} / ${reps}`],
         ["Total false discoveries", result.discoveries],
       ]);
       setCalculation(
-        `With ${m} independent true nulls, unadjusted FWER = 1 − (1 − ${alpha})^${m} = ${f(result.unadjustedFWER, 4)}. The selected ${method} procedure produced at least one false discovery in ${result.families} of ${reps} simulated families. All discoveries in this experiment are false. The empirical rate varies with the random seed; this is not evidence that a nominally controlled procedure is invalid when one simulation lies slightly above α.`,
+        `With ${m} independent tests and every null true, the chance of at least one false rejection without adjustment is 1 − (1 − ${alpha})^${m} = ${f(result.unadjustedFWER, 4)}. Your chosen method gave at least one false rejection in ${result.families} of ${reps} simulated families. Every rejection here is a false positive. Random variation can put a simulated error rate above α even when the method controls that rate in the long run.`,
       );
     };
   }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Explore the pooled equal-variance test with different group sample sizes."
+      content="Compare two independent group means under an equal-variance model."
     />
     <title>Independent t test · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Hypothesis testing</p>
         <h1>Independent t test</h1>
-        <p class="lede">
-          Explore the pooled equal-variance test with different group sample
-          sizes.
+        <p class="lede applet-introduction">
+          An independent-samples t test compares the population means of two
+          separate groups. This version assumes equal population variances and
+          uses the same sample standard deviation for both groups. Set a
+          difference between the sample means, then change each group's sample
+          size to see how precision changes.
         </p>
         <div class="equation">
           <math
@@ -61,9 +64,9 @@
           >
         </div>
         <p class="symbol-key">
-          x̄₁ and x̄₂ are sample means; sₚ is the pooled sample SD; n₁ and n₂ are
-          the sample sizes. The denominator estimates the standard error of the
-          mean difference.
+          x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
+          deviation. n₁ and n₂ are the sample sizes. The denominator estimates
+          the standard error of the mean difference.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -130,14 +133,14 @@
         <div class="metrics">
           <div class="metric">
             <span>Selected p-value</span
-            ><strong id="p-value-selected">—</strong>
+            ><strong id="p-value-selected">...</strong>
           </div>
           <div class="metric">
-            <span>t score</span><strong id="t-value">—</strong>
+            <span>t score</span><strong id="t-value">...</strong>
           </div>
           <div class="metric">
-            <span>Estimated standard error (SE)</span
-            ><strong id="se-value">—</strong>
+            <span>Estimated standard error, SE</span
+            ><strong id="se-value">...</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
@@ -146,27 +149,29 @@
           <summary>Effect size and other tail probabilities</summary>
           <div class="metrics">
             <div class="metric">
-              <span>Signed Cohen’s d</span><strong id="cohen-d-value">—</strong>
+              <span>Signed Cohen's d</span
+              ><strong id="cohen-d-value">...</strong>
             </div>
             <div class="metric">
-              <span>Degrees of freedom</span><strong id="df-value">—</strong>
+              <span>Degrees of freedom</span><strong id="df-value">...</strong>
             </div>
             <div class="metric">
-              <span>Lower-tail p</span><strong id="p-value-lower">—</strong>
+              <span>Lower-tail p</span><strong id="p-value-lower">...</strong>
             </div>
             <div class="metric">
               <span>Upper-tail p</span
-              ><strong id="one-tailed-p-value">—</strong>
+              ><strong id="one-tailed-p-value">...</strong>
             </div>
             <div class="metric">
-              <span>Two-sided p</span><strong id="two-tailed-p-value">—</strong>
+              <span>Two-sided p</span
+              ><strong id="two-tailed-p-value">...</strong>
             </div>
           </div>
           <p>
-            The selected p-value above corresponds to your alternative
-            hypothesis. These other probabilities answer different directional
-            questions. The signed effect size divides the observed difference by
-            the sample SD; its sign follows the order of subtraction.
+            The selected p-value above uses your chosen alternative hypothesis.
+            The other p-values use the alternatives shown here. Divide the
+            observed difference by the pooled sample standard deviation to get
+            the effect size. Its sign follows the order of subtraction.
           </p>
         </details>
       </section>
@@ -176,10 +181,11 @@
             1 · Compare the sample estimate with the null value
           </h2>
           <p class="chart-explanation" id="meanEstimateChart-explanation">
-            The circle is the sample estimate; the diamond is the value claimed
-            by the null hypothesis. The horizontal bar extends one standard
-            error either side of the estimate. Read the horizontal axis in the
-            original measurement units. This bar is not a confidence interval.
+            The circle is the sample estimate. The diamond is the null value.
+            The horizontal bar extends one standard error on either side of the
+            estimate. The axis uses the original measurement units. The bar
+            shows one standard error, which is narrower than a 95% confidence
+            interval.
           </p>
           <div class="plot-frame">
             <canvas
@@ -214,19 +220,19 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          This is the pooled equal-variance test with s₁ = s₂ = s, so sₚ = s.
-          Degrees of freedom are n₁ + n₂ − 2. Groups and observations must be
-          independent; exact inference assumes normal populations with equal
-          variances. The first chart displays the observed mean difference and
-          its estimated standard error. The second chart is the null reference
-          distribution of t scores.
+          This is the pooled equal-variance test. The applet gives both groups
+          the same sample standard deviation, so the pooled value is also s. The
+          test has n₁ + n₂ − 2 degrees of freedom. Exact p-values assume
+          independent observations from normal populations with equal variances.
+          Plot 1 shows the observed mean difference and its estimated standard
+          error. Plot 2 shows the distribution of t when the population means
+          are equal. Choose the alternative before looking at the data.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

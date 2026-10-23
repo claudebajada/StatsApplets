@@ -101,18 +101,18 @@
         k = Math.floor(n * p),
         coefficient = StatsMath.combinations(n, k),
         term = p ** k * (1 - p) ** (n - k);
-      out.textContent = `At k = ${k}, C(${n},${k}) = ${coefficient.toFixed(0)} and pᵏ(1 − p)ⁿ⁻ᵏ = ${term.toPrecision(4)}. Their product P(X = ${k}) = ${StatsMath.binomialPMF(n, p, k).toPrecision(4)}. Moving p changes the probability factors; moving n also changes the number of arrangements.`;
+      out.textContent = `For k = ${k} successes, there are C(${n},${k}) = ${coefficient.toFixed(0)} arrangements. Each has probability pᵏ(1 − p)ⁿ⁻ᵏ = ${term.toPrecision(4)}. Multiply them to get P(X = ${k}) = ${StatsMath.binomialPMF(n, p, k).toPrecision(4)}. Changing p changes the probability of each arrangement. Changing n also changes how many arrangements are possible.`;
     } else if (meta.id === "binomial-normal-explorer") {
       const n = get("N"),
         p = get("theta");
-      out.textContent = `n = ${n}, p = ${p.toFixed(2)}: mean np = ${(n * p).toFixed(2)}, variance np(1 − p) = ${(n * p * (1 - p)).toFixed(3)}. Increasing n spreads individual counts over a wider range while usually improving the relative normal approximation away from p = 0 and 1.`;
+      out.textContent = `With n = ${n} and p = ${p.toFixed(2)}, the mean count is np = ${(n * p).toFixed(2)}. Its variance is np(1 − p) = ${(n * p * (1 - p)).toFixed(3)}. Compare the exact probabilities with the normal curve. The approximation usually improves with more trials when p is away from 0 and 1.`;
     } else if (meta.id === "t-distribution-explorer") {
       const df = get("df-slider");
-      out.textContent = `At df = ${df}, the two-sided 5% critical values are ±${jStat.studentt.inv(0.975, df).toFixed(3)}, compared with ±1.960 for Z. ${df <= 2 ? "The t variance is not finite at these degrees of freedom." : "The t variance is df/(df − 2) = " + (df / (df - 2)).toFixed(3) + "."} Increasing df reduces tail heaviness; the central normal reference stays fixed.`;
+      out.textContent = `With ${df} degrees of freedom, the two-sided 5% critical values are ±${jStat.studentt.inv(0.975, df).toFixed(3)}. The standard normal values are ±1.960. ${df <= 2 ? "The t distribution has no finite variance at these degrees of freedom." : "The t variance is df/(df − 2) = " + (df / (df - 2)).toFixed(3) + "."} Increasing the degrees of freedom brings the t curve closer to the standard normal curve.`;
     } else if (meta.id === "f-distribution-explorer")
-      out.textContent = `df₁ = ${get("df1-slider")}, df₂ = ${get("df2-slider")}; P(F > Fcritical | H₀) = 0.05. The dashed vertical line is a critical value, not an observed F statistic. Changing df changes both the shape and the critical threshold.`;
+      out.textContent = `The numerator has ${get("df1-slider")} degrees of freedom and the denominator has ${get("df2-slider")}. The dashed line marks the critical value with 5% of the null distribution to its right. Changing either set of degrees of freedom changes the curve and that threshold.`;
     else if (meta.id === "chi-squared-explorer")
-      out.textContent = `N = ${get("total-observations")}, k = ${get("categories")}; each null expected count is ${(get("total-observations") / get("categories")).toFixed(2)} and df = ${get("categories") - 1}. χ² = ${document.getElementById("chi-squared-value").textContent}, w = ${document.getElementById("effect-size-value").textContent}. The shaded upper tail includes departures in either direction among categories; χ² itself has no signed lower-tail alternative.`;
+      out.textContent = `With ${get("total-observations")} observations in ${get("categories")} categories, each expected count under the null is ${(get("total-observations") / get("categories")).toFixed(2)}. The test has ${get("categories") - 1} degrees of freedom. χ² = ${document.getElementById("chi-squared-value").textContent} and Cohen's w = ${document.getElementById("effect-size-value").textContent}. Counts above or below their expected values both increase χ². The shaded upper tail gives the p-value.`;
   }
   function afterChange() {
     preset.value = "";

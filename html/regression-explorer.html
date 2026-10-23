@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Inspect fitted values and residuals and see how least squares determines a line."
+      content="Fit a straight line and inspect the differences between observed and predicted values."
     />
     <title>Linear regression · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Relationships</p>
         <h1>Linear regression</h1>
-        <p class="lede">
-          Inspect fitted values and residuals and see how least squares
-          determines a line.
+        <p class="lede applet-introduction">
+          Linear regression fits a straight line to predict y from x. Each
+          residual is the difference between an observed y value and the line's
+          prediction. Increase the noise to see how the points spread around the
+          line, then compare the fitted line with the slope used to generate the
+          data.
         </p>
         <div class="equation">
           <math
@@ -40,7 +43,7 @@
           >
         </div>
         <p class="symbol-key">
-          ŷ is the predicted y value; b₀ is the fitted intercept; b₁ is the
+          ŷ is the predicted y value. b₀ is the fitted intercept and b₁ is the
           fitted slope. Each residual is the observed y minus ŷ.
         </p>
       </header>
@@ -49,7 +52,7 @@
         <div class="control-field">
           <label for="dataMode">Data source</label
           ><select id="dataMode">
-            <option value="generated" selected>Seeded illustrative data</option>
+            <option value="generated" selected>Simulated data</option>
             <option value="manual">Use the pairs below</option>
           </select>
         </div>
@@ -68,7 +71,7 @@
         </div>
         <div class="control-field">
           <label for="slope"
-            >Generating population slope:
+            >Population slope for simulated data:
             <output id="slope-value" for="slope">1</output></label
           ><input
             type="range"
@@ -81,7 +84,7 @@
         </div>
         <div class="control-field">
           <label for="noise"
-            >Generating noise SD:
+            >Noise SD for simulated data:
             <output id="noise-value" for="noise">1</output></label
           ><input
             type="range"
@@ -125,7 +128,8 @@
           </h2>
           <p class="chart-explanation" id="fitChart-explanation">
             Each dot is one x, y observation. The fitted line predicts y from x.
-            Vertical segments are residuals: observed y minus predicted y.
+            Each vertical segment shows a residual, the observed y minus the
+            predicted y.
           </p>
           <div class="plot-frame">
             <canvas
@@ -155,22 +159,21 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Generated data use fixed x values, population intercept 1 and
-          independent normal errors with the chosen SD. The fitted line
-          estimates intercept and slope from the displayed sample. Least squares
-          minimises the sum of squared vertical residuals. R² uses a model with
-          an intercept and is undefined for constant y. Slope is undefined for
-          constant x. Descriptive fitting itself needs no normality assumption;
-          the familiar normal-theory inference would require additional
-          assumptions. Generating controls have no effect when manual data are
-          selected.
+          The simulated data use fixed x values and a population intercept of 1.
+          The errors are independent normal values with the chosen standard
+          deviation. The fitted line estimates the intercept and slope from the
+          sample. Least squares minimises the sum of squared vertical residuals.
+          This model includes an intercept. R² is undefined if y is constant,
+          and the slope is undefined if x is constant. Fitting the line does not
+          require normal errors. Tests and confidence intervals for its
+          coefficients need further assumptions. The simulation controls have no
+          effect on manual data.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

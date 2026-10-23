@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
       labels: [],
       datasets: [
         {
-          label: "Normal probability density (not point probability)",
+          label: "Normal probability density",
           data: [],
           backgroundColor: "rgba(0, 0, 255, 0.4)",
           borderColor: "blue",

@@ -38,7 +38,7 @@ function renderCatalogue() {
       p.textContent = entry.objective;
       const next = document.createElement("span");
       next.className = "card-link";
-      next.textContent = "Open explorer →";
+      next.textContent = "Open applet";
       a.append(h3, p, next);
       grid.append(a);
     }

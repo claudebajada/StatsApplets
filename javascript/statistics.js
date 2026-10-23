@@ -116,8 +116,8 @@
       sd === 0
         ? `All probability is at X = ${mean}. Variance is zero, so there is no continuous normal approximation.`
         : Math.min(n * p, n * (1 - p)) < 5
-          ? "Normal approximation may be poor: np and n(1 − p) should both be at least 5 (a rule of thumb)."
-          : "Both np and n(1 − p) are at least 5. The normal curve is an approximation; binomial bars are exact probabilities.";
+          ? "The normal approximation may be poor. A common rule of thumb requires both np and n(1 − p) to be at least 5."
+          : "Both np and n(1 − p) are at least 5. The normal curve gives an approximation. The binomial bars give exact probabilities.";
     return { mean, sd, warning };
   }
   function generateFrequencies(categories, n, skew) {

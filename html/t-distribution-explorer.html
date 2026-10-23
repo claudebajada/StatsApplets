@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Explore how uncertainty in an estimated SD changes the reference distribution."
+      content="Compare the t and normal distributions as degrees of freedom change."
     />
-    <title>Student’s t · StatsApplets</title>
+    <title>Student's t · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
     <script src="../lib/chart.min.js"></script>
     <script src="../lib/jstat.min.js"></script>
@@ -21,10 +21,12 @@
     <main id="main">
       <header class="page-header">
         <p class="eyebrow">Distributions</p>
-        <h1>Student’s t</h1>
-        <p class="lede">
-          Explore how uncertainty in an estimated SD changes the reference
-          distribution.
+        <h1>Student's t</h1>
+        <p class="lede applet-introduction">
+          A t test uses the sample standard deviation to estimate uncertainty in
+          a mean. That estimate adds uncertainty, so the t distribution has
+          heavier tails than the standard normal distribution. Increase the
+          degrees of freedom to see the curves approach each other.
         </p>
         <div class="equation">
           <math
@@ -45,8 +47,9 @@
           >
         </div>
         <p class="symbol-key">
-          x̄ is a sample mean; μ₀ is the null mean; s is the sample SD; n is the
-          sample size. A one-sample t statistic has n − 1 degrees of freedom.
+          x̄ is the sample mean and μ₀ is the null mean. s is the sample standard
+          deviation and n is the sample size. The one-sample t statistic has n −
+          1 degrees of freedom.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -72,19 +75,19 @@
       </section>
       <section class="container" aria-label="Interactive plots">
         <figure class="chart-container">
-          <h2 class="chart-title">Standard normal & Student’s t densities</h2>
+          <h2 class="chart-title">Standard normal & Student's t densities</h2>
           <p class="chart-explanation" id="distributionChart-explanation">
-            Both curves describe possible standardised scores. Compare their
-            tail areas: a t curve assigns more probability to extreme scores at
-            small degrees of freedom. As df increases, it approaches the normal
-            reference.
+            Both curves describe possible standardised scores. At small degrees
+            of freedom, the t curve assigns more probability to extreme scores.
+            As the degrees of freedom increase, it approaches the standard
+            normal curve.
           </p>
           <div class="plot-frame">
             <canvas
               id="distributionChart"
               class="chart-canvas"
               role="img"
-              aria-label="Standard normal & Student’s t densities"
+              aria-label="Standard normal & Student's t densities"
             ></canvas>
           </div>
         </figure>
@@ -92,18 +95,18 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Both curves are probability densities centred at zero; neither is an
-          observed sample histogram. The t curve is the null reference for (x̄ −
-          μ₀)/(s/√n) under independent normal sampling. The plotted range is
-          finite; t with df = 1 has no finite mean or variance. With df = 2 its
-          variance is also not finite.
+          Both curves are probability densities centred at zero. The t curve
+          gives the distribution of the one-sample t statistic under the null
+          for independent observations from a normal population. Both
+          distributions extend beyond the plotted range. With one degree of
+          freedom, t has no defined mean or finite variance. With two degrees of
+          freedom, its variance is still not finite.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

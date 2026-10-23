@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Relate a signed effect, sample size and rejection region to power."
+      content="See how sample size and the true effect change a test's power."
     />
     <title>Statistical power · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,8 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Sampling & uncertainty</p>
         <h1>Statistical power</h1>
-        <p class="lede">
-          Relate a signed effect, sample size and rejection region to power.
+        <p class="lede applet-introduction">
+          Power is the probability that a test rejects the null hypothesis for a
+          specified true effect. This applet calculates power for a one-sample z
+          test with a known population standard deviation. Keep the effect fixed
+          and increase the sample size to see how the chance of rejection
+          changes.
         </p>
         <div class="equation">
           <math
@@ -44,8 +48,9 @@
           >
         </div>
         <p class="symbol-key">
-          H₀ is the null hypothesis. μ₁ is the specified true population mean.
-          Power is the chance of rejecting H₀ when this true mean applies.
+          H₀ is the null hypothesis. d is the true difference between the
+          population mean and the null mean, divided by the population standard
+          deviation. Power is the probability of rejecting H₀ for that effect.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -111,8 +116,8 @@
           <p class="chart-explanation" id="powerChart-explanation">
             The null curve describes z scores when the null is true. The other
             curve describes z scores for the chosen true effect. The shaded area
-            under the latter is power: the chance of rejecting the null for that
-            effect.
+            under that second curve is power. It is the probability of rejecting
+            the null for that effect.
           </p>
           <div class="plot-frame">
             <canvas
@@ -143,20 +148,21 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          This explorer uses an exact one-sample z test with known population σ
-          and independent normal observations. d = (μ − μ₀)/σ is the specified
-          population effect, not an estimated sample effect. The sampling SD of
-          Z is 1; its mean under the specified alternative is d√n. Rejection
-          regions are determined under H₀ before power is calculated under H₁.
-          These calculations are not t-test power; a directional alternative can
-          have power below α when the true effect points the other way.
+          The calculation assumes a one-sample z test with a known population
+          standard deviation and independent normal observations. The effect d =
+          (μ − μ₀)/σ describes the population. The z statistic has standard
+          deviation 1 and mean d√n under that effect. The null distribution
+          determines the rejection region. Power is the area of the alternative
+          distribution inside that region. A one-sided test can have power below
+          α when the true effect points in the opposite direction. These
+          calculations apply to z tests. A t test needs a different power
+          calculation.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

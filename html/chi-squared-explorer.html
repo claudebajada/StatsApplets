@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Relate deviations in counts to χ² and Cohen’s w under a uniform null."
+      content="Compare observed category counts with equal expected counts."
     />
     <title>Chi-squared goodness of fit · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,8 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Hypothesis testing</p>
         <h1>Chi-squared goodness of fit</h1>
-        <p class="lede">
-          Relate deviations in counts to χ² and Cohen’s w under a uniform null.
+        <p class="lede applet-introduction">
+          A chi-squared goodness-of-fit test compares observed category counts
+          with the counts expected under a null hypothesis. Here, the null
+          assigns equal probabilities to all categories. Increase the departure
+          in count weights to see how larger discrepancies affect χ² and its
+          p-value.
         </p>
         <div class="equation">
           <math
@@ -99,14 +103,14 @@
       <section class="result-card" aria-label="Current results">
         <div class="metrics">
           <div class="metric">
-            <span>Effect size (Cohen's w)</span
-            ><strong id="effect-size-value">—</strong>
+            <span>Effect size, Cohen's w</span
+            ><strong id="effect-size-value">...</strong>
           </div>
           <div class="metric">
-            <span>χ² statistic</span><strong id="chi-squared-value">—</strong>
+            <span>χ² statistic</span><strong id="chi-squared-value">...</strong>
           </div>
           <div class="metric">
-            <span>Upper-tail p</span><strong id="p-value">—</strong>
+            <span>Upper-tail p</span><strong id="p-value">...</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
@@ -134,9 +138,10 @@
         <figure class="chart-container">
           <h2 class="chart-title">Null χ² sampling distribution</h2>
           <p class="chart-explanation" id="chiSquaredChart-explanation">
-            Under the null model, repeated studies produce these χ² statistics
-            approximately. The line marks this example’s statistic; the shaded
-            area is the chance of a value at least as large under the null.
+            This curve approximates the distribution of χ² from repeated studies
+            under the null model. The line marks this example's statistic. The
+            shaded area is the probability of a value at least as large when the
+            null is true.
           </p>
           <div class="plot-frame">
             <canvas
@@ -151,21 +156,19 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          The null category probabilities are uniform; no parameters are
-          estimated from the data, so df = k − 1. Counts are deterministic
-          teaching examples, allocated by clipping weights, normalising and
-          assigning largest remainders. They are not simulated random samples.
-          When N is not divisible by k, a perfectly uniform integer allocation
-          is impossible. Cohen’s w = √(χ²/N) measures departure from the null
-          probabilities and need not be ≤ 1. This goodness-of-fit test is
-          upper-tailed: large non-negative χ² values indicate any departure.
+          The null gives each category the same probability. The test estimates
+          no parameters from the counts, so it has k − 1 degrees of freedom. The
+          applet constructs whole-number counts from the slider settings. It
+          does not draw random samples. If N is not divisible by k, the observed
+          counts cannot all be equal. Cohen's w = √(χ²/N) measures departure
+          from the null probabilities and can exceed 1. Discrepancies in either
+          direction increase χ², so the p-value uses the upper tail.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

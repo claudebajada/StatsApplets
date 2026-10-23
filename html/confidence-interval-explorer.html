@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="See repeated intervals vary around a fixed population mean."
+      content="See how often confidence intervals from repeated samples contain the population mean."
     />
     <title>Confidence interval coverage · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,8 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Sampling & uncertainty</p>
         <h1>Confidence interval coverage</h1>
-        <p class="lede">
-          See repeated intervals vary around a fixed population mean.
+        <p class="lede applet-introduction">
+          A confidence interval estimates a population mean using a sample.
+          Repeating the study gives a different sample and interval each time.
+          Under its assumptions, a 95% procedure produces intervals that contain
+          the true mean in 95% of studies in the long run. Change the confidence
+          level to compare coverage and interval width.
         </p>
         <div class="equation">
           <math
@@ -38,9 +42,10 @@
           >
         </div>
         <p class="symbol-key">
-          x̄ is the sample mean. The t procedure uses SE = s/√n and a t critical
-          value with n − 1 degrees of freedom. The z procedure uses known σ/√n
-          and a normal critical value.
+          x̄ is the sample mean and SE is its standard error. The t interval uses
+          the sample standard deviation s and a t critical value with n − 1
+          degrees of freedom. The z interval uses the known population standard
+          deviation σ and a normal critical value.
         </p>
       </header>
       <div id="scenario-toolbar"></div>
@@ -101,7 +106,7 @@
         </div>
         <div class="control-field">
           <label for="level"
-            >Nominal coverage:
+            >Confidence level:
             <output id="level-value" for="level">0.95</output></label
           ><input
             type="range"
@@ -115,8 +120,8 @@
         <div class="control-field">
           <label for="method">Interval procedure</label
           ><select id="method">
-            <option value="t" selected>t interval (estimate s)</option>
-            <option value="z">z interval (known σ)</option>
+            <option value="t" selected>t interval using sample SD</option>
+            <option value="z">z interval using known population SD</option>
           </select>
         </div>
         <div class="control-field">
@@ -154,7 +159,7 @@
           </div>
         </figure>
         <figure class="chart-container">
-          <h2 class="chart-title">Empirical distribution of interval widths</h2>
+          <h2 class="chart-title">Widths of the simulated intervals</h2>
           <p class="chart-explanation" id="widthChart-explanation">
             These bars count the widths of the simulated intervals. Wider
             intervals express less precise estimates.
@@ -164,7 +169,7 @@
               id="widthChart"
               class="chart-canvas"
               role="img"
-              aria-label="Empirical distribution of interval widths"
+              aria-label="Widths of the simulated intervals"
             ></canvas>
           </div>
         </figure>
@@ -172,21 +177,21 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Independent samples come from a normal population. The t procedure
-          estimates s separately for each sample and uses df = n − 1; the z
-          procedure uses known σ. The population mean stays fixed. The chart
-          displays the first 80 intervals, whereas coverage and mean width use
-          every simulated interval. Circle-marked solid intervals cover μ;
-          triangle-marked dashed intervals miss it. The procedure’s long-run
-          coverage is a property of repeated sampling, not a posterior
-          probability that μ lies inside one realised interval.
+          The applet draws independent samples from a normal population. Each t
+          interval uses its sample's standard deviation and n − 1 degrees of
+          freedom. Each z interval uses the known population standard deviation.
+          The population mean stays fixed. The plot shows the first 80
+          intervals. The coverage and mean width calculations use every
+          simulated interval. Solid intervals with circles contain μ. Dashed
+          intervals with triangles miss it. The confidence level describes the
+          procedure over repeated studies. It does not give a probability that
+          the fixed mean lies inside one calculated interval.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

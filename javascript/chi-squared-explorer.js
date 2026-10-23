@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }))
       get(id).textContent = value;
     get("validity-warning").textContent = expected.some((e) => e < 5)
-      ? "Expected counts are below 5: the asymptotic χ² p-value may be unreliable. Consider an exact multinomial or Monte Carlo goodness-of-fit test."
+      ? "Expected counts are below 5. The chi-squared approximation may give an unreliable p-value. Consider an exact multinomial test or a simulation-based goodness-of-fit test."
       : "Expected counts are all at least 5. The χ² approximation also assumes independent observations and categories fixed in advance.";
     frequencyChart.data.labels = expected.map((_, i) => `Category ${i + 1}`);
     frequencyChart.data.datasets[0].data = expected;

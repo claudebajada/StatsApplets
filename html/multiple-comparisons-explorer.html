@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Observe false-positive inflation and compare family-wise and FDR procedures."
+      content="See how testing many hypotheses increases the chance of false positives."
     />
     <title>Multiple comparisons · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Hypothesis testing</p>
         <h1>Multiple comparisons</h1>
-        <p class="lede">
-          Observe false-positive inflation and compare family-wise and FDR
-          procedures.
+        <p class="lede applet-introduction">
+          Testing several hypotheses increases the chance of at least one false
+          positive. This simulation groups tests into families and makes every
+          null hypothesis true. Increase the number of tests, then compare the
+          adjustment methods. Every rejection in this simulation is a false
+          positive.
         </p>
         <div class="equation">
           <math
@@ -95,9 +98,9 @@
           <label for="correction">Adjustment</label
           ><select id="correction">
             <option value="none" selected>None</option>
-            <option value="bonferroni">Bonferroni (FWER)</option>
-            <option value="holm">Holm (FWER)</option>
-            <option value="bh">Benjamini–Hochberg (FDR)</option>
+            <option value="bonferroni">Bonferroni, controls FWER</option>
+            <option value="holm">Holm, controls FWER</option>
+            <option value="bh">Benjamini-Hochberg, controls FDR</option>
           </select>
         </div>
         <div class="control-field">
@@ -123,10 +126,10 @@
             Families with at least one false discovery
           </h2>
           <p class="chart-explanation" id="familyChart-explanation">
-            Compare the theoretical chance of at least one false rejection
-            without adjustment with the simulated proportion for your chosen
-            procedure. The vertical axis is a probability, not a number of
-            tests.
+            The first bar gives the calculated probability of at least one false
+            rejection without adjustment. The second gives the proportion of
+            simulated families with a false rejection under your chosen method.
+            The vertical axis runs from 0 to 1.
           </p>
           <div class="plot-frame">
             <canvas
@@ -159,22 +162,24 @@
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          Every null hypothesis is true. Each test is represented by an
-          independent Uniform(0,1) p-value, which is exact for a continuous
-          correctly calibrated null test. The unadjusted theoretical FWER is 1 −
-          (1 − α)ᵐ. Bonferroni and Holm control FWER without requiring
-          independent tests. BH controls FDR under independence or suitable
-          positive dependence; arbitrary dependence is outside this simulation.
-          Because every discovery here is false, FDR equals FWER in this
-          all-null experiment. This does not demonstrate the mixed-null power
-          trade-off.
+          Every null hypothesis in this simulation is true. The applet draws
+          independent p-values uniformly between 0 and 1. This represents
+          continuous tests whose null p-values follow that distribution. The
+          family-wise error rate, or FWER, is the chance of any false rejection
+          in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and
+          Holm control FWER even for dependent tests. Benjamini-Hochberg
+          controls the false discovery rate, or FDR, under independence or
+          suitable positive dependence. FDR is the expected proportion of false
+          rejections among all rejections, counting the proportion as zero if
+          there are none. Here, every rejection is false, so FDR equals FWER.
+          This simulation cannot show what happens when some null hypotheses are
+          false.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

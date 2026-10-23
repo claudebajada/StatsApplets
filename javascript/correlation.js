@@ -53,10 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
     get("pair-count").textContent = pairs.length;
     get("calculation").textContent =
       r === null
-        ? "Pearson’s r is undefined because at least one variable has zero variance: all its values are equal. There is no variation to compare. Change those values to explore an association."
+        ? "Pearson's r is undefined because at least one variable has zero variance. All its values are equal. There is no variation to compare. Change those values to explore an association."
         : Math.abs(r) < 1e-10
-          ? "r = 0: these points have no linear association. This does not rule out a curved relationship. Correlation alone cannot show that one variable causes the other."
-          : `r = ${format(r)}: ${r > 0 ? "higher x values tend to go with higher y values" : "higher x values tend to go with lower y values"}. ${Math.abs(r) > 0.999999 ? "All points lie on a straight line." : "Values closer to −1 or +1 indicate a tighter straight-line pattern."} Correlation alone cannot show causation.`;
+          ? "r = 0. These points have no linear association. This does not rule out a curved relationship. Correlation alone cannot show that one variable causes the other."
+          : `r = ${format(r)}. ${r > 0 ? "Higher x values tend to go with higher y values" : "Higher x values tend to go with lower y values"}. ${Math.abs(r) > 0.999999 ? "All points lie on a straight line." : "Values closer to −1 or +1 indicate a tighter straight-line pattern."} Correlation alone cannot show causation.`;
     walkthrough.update(pairs);
     scatter.data.datasets[0].data = pairs.map(([x, y]) => ({ x, y }));
     scatter.update();

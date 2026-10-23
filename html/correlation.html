@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Explore how the direction and closeness of a straight-line pattern change Pearson’s r."
+      content="See how a straight-line pattern relates to Pearson's correlation coefficient."
     />
     <title>Correlation · StatsApplets</title>
     <link rel="stylesheet" href="../css/styles.css" />
@@ -22,9 +22,12 @@
       <header class="page-header">
         <p class="eyebrow">Relationships</p>
         <h1>Correlation</h1>
-        <p class="lede">
-          Explore how the direction and closeness of a straight-line pattern
-          change Pearson’s r.
+        <p class="lede applet-introduction">
+          Pearson's r measures the direction and strength of a linear
+          relationship between two variables. Move the association slider to
+          compare positive and negative relationships. Open the calculation
+          walkthrough to see how the angle between two centred data vectors
+          gives r.
         </p>
         <div class="equation">
           <math
@@ -109,10 +112,10 @@
         <div class="metrics">
           <div class="metric">
             <span>Pearson correlation r</span
-            ><strong id="data-pearson-value">—</strong>
+            ><strong id="data-pearson-value">...</strong>
           </div>
           <div class="metric">
-            <span>Observations</span><strong id="pair-count">—</strong>
+            <span>Observations</span><strong id="pair-count">...</strong>
           </div>
         </div>
         <p id="calculation" aria-live="polite"></p>
@@ -125,8 +128,9 @@
           </h2>
           <p class="chart-explanation" id="pairsChart-explanation">
             Each dot is one observation with an x value and a y value. An upward
-            pattern gives positive r; a downward pattern gives negative r. A
-            tighter straight-line pattern puts r closer to +1 or −1.
+            linear pattern gives positive r. A downward linear pattern gives
+            negative r. Points closer to a straight line give r closer to +1 or
+            −1.
           </p>
           <div class="plot-frame">
             <canvas
@@ -149,7 +153,7 @@
         </p>
         <div class="walkthrough-experiments">
           <button type="button" id="correlation-example">
-            Use worked example (3 observations)</button
+            Use a worked example with 3 observations</button
           ><button type="button" id="correlation-shift">
             Add 10 to every y</button
           ><button type="button" id="correlation-stretch">
@@ -211,10 +215,11 @@
               1 · Read each column as one vector
             </h3>
             <p>
-              Each dot in the scatterplot is one observation with two values.
-              Now read down the x column to make one list, and down the y column
-              to make another. A vector is this ordered list viewed as an arrow.
-              Keep the observations in the same order in both lists.
+              Each dot in the scatterplot has an x value and a y value. Read
+              down the x column to make one ordered list, then do the same for
+              y. Each list is a vector. We can represent it as an arrow with one
+              component per observation. Keep the observations in the same order
+              in both lists.
             </p>
             <div class="equation" tabindex="0">
               <math
@@ -247,15 +252,16 @@
             <p class="vector-values" id="correlation-raw-values"></p>
             <p>
               Multiply matching components and add the products to get the
-              <strong>dot product</strong>. Its size depends on both direction
-              and length, so it is not yet Pearson’s r.
+              <strong>dot product</strong>. The dot product depends on both
+              vector lengths and the angle between them. The next steps remove
+              the effects of the means and lengths to calculate Pearson's r.
             </p>
             <p id="correlation-raw-dot"></p>
             <p>
               The diagram below represents the two whole lists as arrows. Each
               arrow has one component per observation. Two arrows from the same
-              origin lie in a shared plane: drawing that plane preserves their
-              angle, even when they have many components.
+              origin fit in a shared plane. Drawing them in that plane preserves
+              their angle, even when they have many components.
             </p>
           </section>
           <section
@@ -269,9 +275,8 @@
             </h3>
             <p>
               Subtract the x mean from every x value and the y mean from every y
-              value. Call the new vectors a and b. A positive component now
-              means “above this variable’s mean”; a negative component means
-              “below its mean”.
+              value. Call the new vectors a and b. A positive component is above
+              that variable's mean. A negative component is below it.
             </p>
             <div class="equation" tabindex="0">
               <math
@@ -319,8 +324,9 @@
             <p id="correlation-sums"></p>
             <p>
               <strong>Try adding 10 to every y.</strong> Its mean also increases
-              by 10, so its deviations stay the same. The raw vectors can change
-              angle; the centred vectors do not.
+              by 10, so its deviations stay the same. The angle between the raw
+              vectors can change. The angle between the centred vectors stays
+              the same.
             </p>
           </section>
           <section
@@ -333,8 +339,8 @@
               3 · Keep direction and set each length to 1
             </h3>
             <p>
-              Find each centred vector’s length: square its components, add
-              them, then take the square root.
+              To find each centred vector's length, square its components, add
+              the squares, then take the square root.
             </p>
             <div class="equation" tabindex="0">
               <math
@@ -368,7 +374,7 @@
             </div>
             <p id="correlation-length-values"></p>
             <p>
-              Divide every component by its own vector’s length. The resulting
+              Divide every component by its own vector's length. The resulting
               unit vectors u and v have length 1. They keep the directions of a
               and b, so the angle stays the same.
             </p>
@@ -410,13 +416,13 @@
             aria-labelledby="correlation-heading-3"
           >
             <h3 id="correlation-heading-3" tabindex="-1">
-              4 · The remaining similarity is an angle
+              4 · Calculate r from the angle
             </h3>
             <p>
               The dot product of two arrows equals the product of their lengths
-              times the cosine of their angle. Once both lengths are 1, their
-              dot product is just the cosine. For our centred vectors, this is
-              Pearson’s r.
+              times the cosine of their angle. When both lengths are 1, the dot
+              product equals the cosine of the angle. For the centred vectors,
+              this is Pearson's r.
             </p>
             <div class="equation" tabindex="0">
               <math
@@ -439,9 +445,10 @@
             <p id="correlation-angle-result" aria-live="polite"></p>
             <p id="correlation-unit-dot"></p>
             <p>
-              The dotted line drops v onto u. The green segment shows how much
-              the unit vector v points along u. That signed amount is r: towards
-              u is positive; away from u is negative.
+              The dotted line projects v onto the direction of u. The green
+              segment shows that projection. Its signed length is r. A
+              projection in the direction of u is positive. A projection in the
+              opposite direction is negative.
             </p>
             <table class="angle-reference">
               <caption>
@@ -543,9 +550,9 @@
               </div>
               <p>
                 The numerator is the centred dot product. The denominator is the
-                product of the two centred vector lengths. The usual
-                sample-covariance and sample-SD formula gives the same result
-                because its n − 1 factors cancel.
+                product of the two centred vector lengths. The formula using
+                sample covariance and sample standard deviations gives the same
+                result. Its n − 1 factors cancel.
               </p>
             </details>
           </section>
@@ -558,9 +565,10 @@
             </h3>
             <p id="correlation-diagram-description">
               We turn the view so the first vector points right. This preserves
-              lengths and the angle between the vectors. These are vector
-              directions, not the measurement axes of the scatterplot. Each view
-              is resized to fit; compare the printed lengths across steps.
+              lengths and the angle between the vectors. The axes here describe
+              vector directions. The scatterplot axes describe measurements. We
+              resize each view to fit, so use the printed lengths to compare
+              steps.
             </p>
             <svg
               id="correlation-angle-diagram"
@@ -690,31 +698,30 @@
           ><button type="button" id="correlation-next">Next step</button>
         </div>
         <p class="small">
-          Further reading and conceptual inspiration:
+          This explanation was inspired by
           <a
             href="https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html"
-            >Brendan O’Connor, “Cosine similarity, Pearson correlation, and OLS
-            coefficients” (2012)</a
+            >Brendan O'Connor's 2012 article, "Cosine similarity, Pearson
+            correlation, and OLS coefficients"</a
           >.
         </p>
       </details>
       <details class="info">
         <summary>Model, assumptions & interpretation</summary>
         <p>
-          The slider constructs a set of points with the selected Pearson r; it
-          does not simulate a population correlation or a hypothesis test. New
-          pattern rearranges the constructed points while keeping r fixed.
-          Manual input calculates r from your own paired observations. A value
-          of zero means no linear association, but other relationships can still
-          exist. Outliers can strongly affect r, and correlation does not imply
+          The slider constructs points with the selected sample correlation. It
+          does not draw a random sample from a population with that correlation.
+          New pattern changes the points while keeping r fixed. Manual input
+          calculates r from your paired observations. A value of zero means no
+          linear association. A curved relationship may still exist. Outliers
+          can change r substantially. Correlation alone cannot establish
           causation.
         </p>
       </details>
     </main>
     <footer>
-      Explore, compare and learn.
       <a href="https://github.com/claudebajada/StatsApplets"
-        >Source & documentation</a
+        >Source code and documentation</a
       >
     </footer>
     <script src="../javascript/statistics.js"></script>

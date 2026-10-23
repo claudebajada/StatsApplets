@@ -534,7 +534,6 @@ document.addEventListener("DOMContentLoaded", () => {
           : [
               ["Your line SSE", f(candidate.sse)],
               ["Minimum possible SSE", f(result.sse)],
-              ["Task", "Adjust slope and intercept, then reveal the fit"],
             ],
       );
       setCalculation(
@@ -730,7 +729,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const discoveries = chart(
       "discoveryChart",
       "False discoveries",
-      "Number of false discoveries",
+      "Discoveries per family",
       "Number of families",
       "bar",
     );
@@ -745,11 +744,7 @@ document.addEventListener("DOMContentLoaded", () => {
           effect: num("signalEffect"),
           sampleSize: num("signalN"),
         });
-      family.data.labels = [
-        "No adjustment: theoretical FWER",
-        "Chosen method: simulated FWER",
-        "Chosen method: simulated FDR",
-      ];
+      family.data.labels = ["Unadjusted FWER", "Chosen FWER", "Chosen FDR"];
       family.options.scales.y.title.text =
         "Probability / expected false fraction";
       family.data.datasets = [
@@ -792,19 +787,10 @@ document.addEventListener("DOMContentLoaded", () => {
       discoveries.options.scales.x.ticks = { precision: 0 };
       discoveries.update();
       resultMetrics([
-        ["Calculated FWER without adjustment", percent(result.unadjustedFWER)],
-        ["Simulated FWER with chosen method", percent(result.empiricalFWER)],
-        ["Families with false discoveries", `${result.families} / ${reps}`],
-        ["Total false discoveries", result.discoveries],
-        ["Total correct discoveries", result.trueDiscoveries],
+        ["Simulated FWER", percent(result.empiricalFWER)],
         ["Simulated FDR", percent(result.empiricalFDR)],
-        ["True effects per family", signals + " / " + m],
-        [
-          "Detection rate for real effects",
-          result.empiricalPower === null
-            ? "No real effects"
-            : percent(result.empiricalPower),
-        ],
+        ["Correct discoveries", result.trueDiscoveries],
+        ["False discoveries", result.discoveries],
       ]);
       setCalculation(
         `With ${m} independent tests, ${result.nulls} nulls are true and ${signals} effects are real. Without adjustment, the chance of at least one false rejection is 1 − (1 − ${alpha})^${result.nulls} = ${f(result.unadjustedFWER, 4)}. The chosen method made false discoveries in ${result.families} of ${reps} families (FWER), and its mean false fraction across all families was ${f(result.empiricalFDR, 4)} (FDR). Families with no discoveries contribute zero to that average. It made ${result.trueDiscoveries} correct and ${result.discoveries} false discoveries in total. ${signals === 0 ? "With every null true, FDR and FWER coincide." : "With real effects, FDR and FWER can differ."} Random variation can put estimates above a controlled threshold in one simulation.`,

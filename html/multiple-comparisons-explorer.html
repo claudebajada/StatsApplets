@@ -21,72 +21,32 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>Multiple comparisons</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            Two different meanings of a false-positive target
+          </h2>
           <p>
-            <a href="power-explorer.html">Statistical power</a> ·
-            <a href="anova-explorer.html">One-way ANOVA</a>
+            Simulate 20 independent tests: six effects are real and fourteen
+            nulls are true. Because this is a simulation, we can check each
+            discovery against the truth.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Multiple comparisons</h1>
-          <p class="lede applet-introduction">
-            See how testing many hypotheses increases the chance of false
-            positives.
+          <p class="comparison-instruction">
+            Compare Benjamini–Hochberg with Bonferroni on the same simulated
+            tests. Read both the chance of any false discovery (FWER) and the
+            average false fraction among discoveries (FDR).
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              Testing several hypotheses increases the chance of false
-              positives. Start with every null true, then add real effects.
-              Compare adjustments using the chance of any false discovery, the
-              average false fraction, and the correct discoveries.
-            </p>
-            <p class="context-status" id="context-status">
-              FWER is the chance of at least one false rejection. FDR is the
-              average false fraction among discoveries, with zero assigned to
-              families with no discoveries. Real effects make these targets
-              differ.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="Independent null tests: FWER = 1 − (1 − α)ᵐ"
-              ><mrow
-                ><mi>FWER</mi><mo>=</mo><mn>1</mn><mo>−</mo
-                ><msup
-                  ><mrow
-                    ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow
-                    ><mo>)</mo></mrow
-                  ><mi>m</mi></msup
-                ></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              For m independent tests of true null hypotheses, each at
-              significance level α, FWER is the chance of at least one false
-              rejection without adjustment.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Simulated independent hypotheses with known truth.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -290,20 +250,6 @@
                 The same seed and settings reproduce the same simulated values.
               </p>
             </details>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -314,15 +260,13 @@
           <p id="scale-note" class="small" role="status"></p>
           <section class="container" aria-label="Interactive plots">
             <figure class="chart-container">
-              <h2 class="chart-title">
-                Families with at least one false discovery
-              </h2>
+              <h2 class="chart-title">Compare false-positive targets</h2>
               <div class="plot-frame">
                 <canvas
                   id="familyChart"
                   class="chart-canvas"
                   role="img"
-                  aria-label="Families with at least one false discovery"
+                  aria-label="Compare false-positive targets"
                 ></canvas>
               </div>
               <p class="chart-explanation" id="familyChart-explanation">
@@ -333,15 +277,13 @@
               </p>
             </figure>
             <figure class="chart-container">
-              <h2 class="chart-title">
-                False discoveries in each simulated family
-              </h2>
+              <h2 class="chart-title">Correct and false discoveries</h2>
               <div class="plot-frame">
                 <canvas
                   id="discoveryChart"
                   class="chart-canvas"
                   role="img"
-                  aria-label="False discoveries in each simulated family"
+                  aria-label="Correct and false discoveries"
                 ></canvas>
               </div>
               <p class="chart-explanation" id="discoveryChart-explanation">
@@ -351,20 +293,46 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="Independent null tests: FWER = 1 − (1 − α)ᵐ"
+                  ><mrow
+                    ><mi>FWER</mi><mo>=</mo><mn>1</mn><mo>−</mo
+                    ><msup
+                      ><mrow
+                        ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow
+                        ><mo>)</mo></mrow
+                      ><mi>m</mi></msup
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  For m independent tests of true null hypotheses, each at
+                  significance level α, FWER is the chance of at least one false
+                  rejection without adjustment.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
-            <p id="calculation" aria-live="polite"></p>
-          </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+            <summary>Assumptions and full calculation</summary>
             <p>
               With the real-effect proportion set to zero, every null hypothesis
               is true. Null p-values are independent uniform values. Non-null
@@ -383,7 +351,16 @@
               averaging the false-discovery proportion across all simulated
               families. All tests are independent.
             </p>
+            <p id="calculation" aria-live="polite"></p>
           </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="power-explorer.html">Statistical power</a> ·
+              <a href="anova-explorer.html">One-way ANOVA</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

@@ -460,8 +460,8 @@ pages["multiple-comparisons-explorer"] = {
     seed,
   metrics: "",
   charts:
-    chart("familyChart", "Families with at least one false discovery") +
-    chart("discoveryChart", "False discoveries in each simulated family"),
+    chart("familyChart", "Compare false-positive targets") +
+    chart("discoveryChart", "Correct and false discoveries"),
   method:
     "With the real-effect proportion set to zero, every null hypothesis is true. Null p-values are independent uniform values. Non-null p-values come from independent two-sided known-SD z tests at the chosen true effect and sample size. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. With every null true, FDR equals FWER. With real effects, the simulation counts true and false discoveries separately and estimates FDR by averaging the false-discovery proportion across all simulated families. All tests are independent.",
   scripts: ["extensions"],
@@ -471,16 +471,6 @@ async function generate() {
     const p = pages[meta.id];
     if (!p) throw Error("Missing page " + meta.id);
     const lesson = learning[meta.id];
-    const contextControls = `<details class="wide context-controls"><summary>Research examples</summary>${select(
-      "context",
-      "Worked context",
-      [
-        ["abstract", "Abstract example"],
-        ["medicine", "Medicine"],
-        ["cognition", "Cognitive science"],
-      ],
-      "abstract",
-    )}<p class="small" id="context-description">All research examples use fictional data.</p></details>`;
     const relatedLinks = lesson.related
       .map((id) => {
         const entry = catalogue.find((a) => a.id === id);
@@ -490,10 +480,11 @@ async function generate() {
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><details class="related-ideas"><summary>Related ideas</summary><p>${relatedLinks}</p></details></nav><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.objective)}</p><details class="intro-details"><summary>How this explorer works</summary><p>${escape(meta.introduction)}</p><p class="context-status" id="context-status">${escape(lesson.plain)}</p></details></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
-<p class="learning-orientation"><strong>${escape(lesson.role)}.</strong></p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}${contextControls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
+<main id="main"><header class="page-header"><h1>${meta.title}</h1></header>
+<section class="worked-comparison" aria-labelledby="experiment-title"><div><h2 id="experiment-title">${escape(lesson.experiment.heading)}</h2><p>${escape(lesson.experiment.story)}</p><p class="comparison-instruction">${escape(lesson.experiment.instruction)}</p></div><div class="comparison-action"><button type="button" id="experiment-action" class="primary-action">Load this comparison</button><a href="#guided-lab">Follow the maths</a></div></section>
+<div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Explore the values</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
 <div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.resultMath || ""}${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
-${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<details class="info"><summary>Model, assumptions and interpretation</summary><p>${p.method}</p></details></div></div>
+${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><div class="comparison-reading"><h3 id="experiment-position">Worked comparison</h3><p id="experiment-reading" role="status"></p></div><section class="guided-lab" id="guided-lab" aria-labelledby="guided-title"><h2 id="guided-title">Follow the calculation</h2><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div><div id="guided-content"></div></section><details class="calculation-details info"><summary>Assumptions and full calculation</summary><p>${p.method}</p><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<nav class="related-learning" aria-label="Related concepts"><h2>Continue exploring</h2><p>${relatedLinks}</p><a href="../index.html#learning-route">Suggested starting route</a></nav></div></div>
 </main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
 <script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}<script src="../javascript/learning.js"></script>
 </body></html>\n`;

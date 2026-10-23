@@ -21,78 +21,31 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>One-sample z test</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            What changes when the population SD is known?
+          </h2>
           <p>
-            <a href="clt-explorer.html">Central limit theorem</a> ·
-            <a href="confidence-interval-explorer.html"
-              >Confidence interval coverage</a
-            >
-            · <a href="power-explorer.html">Statistical power</a>
+            Use an invented blood-pressure study with a mean reduction of 3
+            mmHg. Here we assume the population SD is known to be 6 mmHg; the z
+            test relies on that assumption.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>One-sample z test</h1>
-          <p class="lede applet-introduction">
-            Test a claim about a population mean when its standard deviation is
-            known.
+          <p class="comparison-instruction">
+            Keep the mean reduction and known SD fixed. Compare 25 with 100
+            people and watch the standard error change.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              A one-sample z test compares a sample mean with a claimed
-              population mean. It assumes the population standard deviation is
-              known. Move the sample mean away from the null value, then
-              increase the sample size. Watch how the standard error and p-value
-              change.
-            </p>
-            <p class="context-status" id="context-status">
-              SD describes differences between individual observations. SE
-              describes variation of the estimated mean or mean difference
-              between repeated studies. These controls set summary statistics;
-              changing n does not recruit or resample participants.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="z = (x̄ − μ₀)/(σ/√n), with known population σ"
-              ><mrow
-                ><mi>z</mi><mo>=</mo
-                ><mfrac
-                  ><mrow
-                    ><mover><mi>x</mi><mo>¯</mo></mover
-                    ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
-                  ><mfrac
-                    ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
-                  ></mfrac
-                ></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              x̄ is the sample mean and μ₀ is the null population mean. σ is the
-              known population standard deviation and n is the sample size. The
-              denominator is the standard error, or SE.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Observed summary; population SD assumed known.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -224,20 +177,6 @@
                 </button>
               </div>
             </details>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -311,16 +250,55 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="z = (x̄ − μ₀)/(σ/√n), with known population σ"
+                  ><mrow
+                    ><mi>z</mi><mo>=</mo
+                    ><mfrac
+                      ><mrow
+                        ><mover><mi>x</mi><mo>¯</mo></mover
+                        ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                      ><mfrac
+                        ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  x̄ is the sample mean and μ₀ is the null population mean. σ is
+                  the known population standard deviation and n is the sample
+                  size. The denominator is the standard error, or SE.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              The test assumes independent observations and a normal sampling
+              distribution of the mean. The standard error σ/√n describes how
+              sample means vary across repeated studies. The z score gives the
+              observed difference from μ₀ in standard errors. Choose the
+              alternative before looking at the data.
+            </p>
             <p id="calculation" aria-live="polite"></p>
             <details class="info">
               <summary>Degrees of freedom and other tail probabilities</summary>
@@ -347,16 +325,17 @@
               </p>
             </details>
           </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
             <p>
-              The test assumes independent observations and a normal sampling
-              distribution of the mean. The standard error σ/√n describes how
-              sample means vary across repeated studies. The z score gives the
-              observed difference from μ₀ in standard errors. Choose the
-              alternative before looking at the data.
+              <a href="clt-explorer.html">Central limit theorem</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              · <a href="power-explorer.html">Statistical power</a>
             </p>
-          </details>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

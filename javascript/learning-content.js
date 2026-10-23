@@ -1,4 +1,4 @@
-/* Learning routes, fictional research contexts and prediction experiments. */
+/* One worked comparison per concept, shared by all learners. */
 (function (root, factory) {
   if (typeof module === "object" && module.exports) module.exports = factory();
   else root.LearningContent = factory();
@@ -12,45 +12,28 @@
     related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
-    cases: {
-      medicine: {
-        title: "Fictional blood-pressure study",
-        text: "A fictional sample has a mean blood-pressure reduction of 3 mmHg and SD 6 mmHg. Compare its mean with a reference reduction of zero. This example alone cannot attribute a change to treatment.",
-        settings: {
-          mu: 3,
-          mu0: 0,
-          sigma: 6,
-          N: 25,
-          alternative: "twoSided",
-        },
-      },
-      cognition: {
-        title: "Fictional reaction-time study",
-        text: "A fictional sample improves its reaction time by 6 ms on average, with SD 12 ms. Compare the mean improvement with zero. In the z version, imagine that 12 ms is known from the population model.",
-        settings: {
-          mu: 6,
-          mu0: 0,
-          sigma: 12,
-          N: 25,
-          alternative: "twoSided",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Keep the mean difference and SD fixed. What happens to SE when every sample size grows from 25 to 100?",
-      options: ["It halves", "It quarters", "It stays the same"],
-      answer: 0,
-      explanation:
-        "SE contains 1/√n. Four times as many observations gives twice the denominator, so SE halves. The mean difference and standardised effect stay fixed.",
-      setup: {
-        mu: 0.5,
+    experiment: {
+      heading: "What changes when the population SD is known?",
+      story:
+        "Use an invented blood-pressure study with a mean reduction of 3 mmHg. Here we assume the population SD is known to be 6 mmHg; the z test relies on that assumption.",
+      instruction:
+        "Keep the mean reduction and known SD fixed. Compare 25 with 100 people and watch the standard error change.",
+      action: "Compare with 100 people",
+      baseline: {
+        mu: 3,
         mu0: 0,
-        sigma: 1,
+        sigma: 6,
         N: 25,
+        alternative: "twoSided",
+        lockScale: true,
       },
       change: {
         N: 100,
+      },
+      axes: {
+        meanEstimateChart: {
+          x: "Blood-pressure reduction (mmHg)",
+        },
       },
     },
   },
@@ -63,45 +46,28 @@
     related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
-    cases: {
-      medicine: {
-        title: "Fictional blood-pressure study",
-        text: "A fictional sample has a mean blood-pressure reduction of 3 mmHg and SD 6 mmHg. Compare its mean with a reference reduction of zero. This example alone cannot attribute a change to treatment.",
-        settings: {
-          mu: 3,
-          mu0: 0,
-          sigma: 6,
-          N: 25,
-          alternative: "twoSided",
-        },
-      },
-      cognition: {
-        title: "Fictional reaction-time study",
-        text: "A fictional sample improves its reaction time by 6 ms on average, with SD 12 ms. Compare the mean improvement with zero. In the z version, imagine that 12 ms is known from the population model.",
-        settings: {
-          mu: 6,
-          mu0: 0,
-          sigma: 12,
-          N: 25,
-          alternative: "twoSided",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Keep the mean difference and SD fixed. What happens to SE when every sample size grows from 25 to 100?",
-      options: ["It halves", "It quarters", "It stays the same"],
-      answer: 0,
-      explanation:
-        "SE contains 1/√n. Four times as many observations gives twice the denominator, so SE halves. The mean difference and standardised effect stay fixed.",
-      setup: {
-        mu: 0.5,
+    experiment: {
+      heading: "More people, the same mean change",
+      story:
+        "An invented blood-pressure study has 25 people: mean reduction 3 mmHg, sample SD 6 mmHg. Test a population mean reduction of zero.",
+      instruction:
+        "Keep the mean and SD fixed. Compare 25 with 100 people: the uncertainty bars shrink while the estimated reduction stays at 3 mmHg.",
+      action: "Compare with 100 people",
+      baseline: {
+        mu: 3,
         mu0: 0,
-        sigma: 1,
+        sigma: 6,
         N: 25,
+        alternative: "twoSided",
+        lockScale: true,
       },
       change: {
         N: 100,
+      },
+      axes: {
+        meanEstimateChart: {
+          x: "Blood-pressure reduction (mmHg)",
+        },
       },
     },
   },
@@ -114,49 +80,30 @@
     related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
-    cases: {
-      medicine: {
-        title: "Fictional blood-pressure study",
-        text: "Different participants receive two interventions. Their mean reductions are 6 and 3 mmHg, with SD 6 mmHg in each sample. Compare the 3 mmHg difference with its uncertainty. These numbers are invented for teaching.",
-        settings: {
-          mu1: 6,
-          mu2: 3,
-          sigma: 6,
-          N1: 25,
-          N2: 25,
-          alternative: "twoSided",
-        },
-      },
-      cognition: {
-        title: "Fictional reaction-time study",
-        text: "Two separate participant groups improve their reaction time by 6 and 3 ms on average, each with sample SD 6 ms. A within-participant experiment would require a paired analysis.",
-        settings: {
-          mu1: 6,
-          mu2: 3,
-          sigma: 6,
-          N1: 25,
-          N2: 25,
-          alternative: "twoSided",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Keep the mean difference and SD fixed. What happens to SE when every sample size grows from 25 to 100?",
-      options: ["It halves", "It quarters", "It stays the same"],
-      answer: 0,
-      explanation:
-        "SE contains 1/√n. Four times as many observations gives twice the denominator, so SE halves. The mean difference and standardised effect stay fixed.",
-      setup: {
-        mu1: 0.5,
-        mu2: 0,
-        sigma: 1,
+    experiment: {
+      heading: "A difference between groups has uncertainty too",
+      story:
+        "Two separate groups of 25 people have mean blood-pressure reductions of 6 and 3 mmHg. Both sample SDs are 6 mmHg. The estimated difference is therefore 3 mmHg.",
+      instruction:
+        "Keep both means and SDs fixed. Increase each group to 100 people and compare the uncertainty of the same difference.",
+      action: "Use 100 people in each group",
+      baseline: {
+        mu1: 6,
+        mu2: 3,
+        sigma: 6,
         N1: 25,
         N2: 25,
+        alternative: "twoSided",
+        lockScale: true,
       },
       change: {
         N1: 100,
         N2: 100,
+      },
+      axes: {
+        meanEstimateChart: {
+          x: "Difference in blood-pressure reduction (mmHg)",
+        },
       },
     },
   },
@@ -168,41 +115,22 @@
       "One success/failure sequence is one outcome. A count can represent many sequences. Multiply the number of sequences by the probability of each sequence.",
     related: ["binomial-normal-explorer"],
     keywords: "combinations arrangements successes count probability",
-    cases: {
-      medicine: {
-        title: "Three fictional treatment responses",
-        text: "Suppose three independent patients each have a hypothetical response probability of 0.5. Exactly two responses can occur as SSF, SFS or FSS. This is a probability model, not an estimate of any treatment's effectiveness.",
-        settings: {
-          n: 3,
-          p: 0.5,
-          k: 2,
-        },
-      },
-      cognition: {
-        title: "Three recognition trials",
-        text: "A hypothetical participant independently recognises each of three items with probability 0.5. Exactly two correct responses can occur in three orders.",
-        settings: {
-          n: 3,
-          p: 0.5,
-          k: 2,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "With three independent trials at p = 0.5, what is the probability of exactly two successes?",
-      options: ["1/8", "3/8", "2/3"],
-      answer: 1,
-      explanation:
-        "The three arrangements SSF, SFS and FSS each have probability 1/8. Adding their probabilities gives 3/8.",
-      setup: {
+    experiment: {
+      heading: "One count can happen in several orders",
+      story:
+        "Toss a fair coin three times. Call a head a success. Three successes can occur in only one order: SSS.",
+      instruction:
+        "Compare three successes with two. Each particular sequence still has probability 1/8, but two successes can occur as SSF, SFS or FSS.",
+      action: "Count exactly two successes",
+      baseline: {
         n: 3,
         p: 0.5,
-        k: 1,
+        k: 3,
       },
       change: {
         k: 2,
       },
+      axes: {},
     },
   },
   "binomial-normal-explorer": {
@@ -214,38 +142,14 @@
     related: ["binomial-components-explorer", "clt-explorer"],
     keywords:
       "successes trials probability approximation continuity correction rare",
-    cases: {
-      medicine: {
-        title: "Counting hypothetical responses",
-        text: "Suppose each of 100 independent participants has response probability 0.1. Inspect the chance of exactly ten responses and the continuity-corrected normal approximation.",
-        settings: {
-          N: 100,
-          theta: 0.1,
-          k: 10,
-        },
-      },
-      cognition: {
-        title: "Counting correct recognition responses",
-        text: "Suppose 30 recognition trials are independent with success probability 0.7. Compare the probability of exactly 21 correct responses with a normal approximation.",
-        settings: {
-          N: 30,
-          theta: 0.7,
-          k: 21,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Keep a rare success probability at 0.05. What usually happens to the normal approximation as n grows from 30 to 500?",
-      options: [
-        "It improves as both expected counts grow",
-        "It becomes exact",
-        "It must deteriorate",
-      ],
-      answer: 0,
-      explanation:
-        "The distribution remains discrete, but np grows from 1.5 to 25. The normal approximation becomes more useful; it does not become exact.",
-      setup: {
+    experiment: {
+      heading: "Can an area stand in for a bar?",
+      story:
+        "Suppose an independent event has probability 0.05 on each trial. With 30 trials, the expected number of successes is only 1.5, so a symmetric normal curve is a poor match.",
+      instruction:
+        "Increase to 500 trials. Inspect the expected count, 25, and compare its exact bar probability with the normal area from 24.5 to 25.5.",
+      action: "Compare with 500 trials",
+      baseline: {
         N: 30,
         theta: 0.05,
         k: 2,
@@ -254,6 +158,7 @@
         N: 500,
         k: 25,
       },
+      axes: {},
     },
   },
   "t-distribution-explorer": {
@@ -264,39 +169,20 @@
       "The population SD is fixed at 1 in the sampling experiment. A sample SD can be smaller or larger. Dividing by an underestimated SD stretches the magnitude of the t score.",
     related: ["one-sample-t-test", "clt-explorer"],
     keywords: "student t degrees freedom tails estimate standard deviation",
-    cases: {
-      medicine: {
-        title: "Uncertainty in a small clinical sample",
-        text: "Imagine repeated independent normal samples of a standardised physiological measurement. With n = 5, only four deviations can vary freely once their sum is fixed at zero.",
-        settings: {
-          "df-slider": 4,
-        },
-      },
-      cognition: {
-        title: "Small cognitive experiment",
-        text: "Repeat a study of a normally distributed standardised cognitive score with five participants. Compare scores using known population SD with scores using each sample's estimated SD.",
-        settings: {
-          "df-slider": 4,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "As degrees of freedom increase from 4 to 100, what happens to the t distribution?",
-      options: [
-        "It approaches the standard normal",
-        "Its tails get heavier",
-        "It shifts to the right",
-      ],
-      answer: 0,
-      explanation:
-        "Larger samples estimate SD more consistently. The extra tail probability diminishes and the t curve approaches the standard normal.",
-      setup: {
+    experiment: {
+      heading: "Estimating SD adds uncertainty",
+      story:
+        "A t score divides by a sample SD. In a small sample, that SD can underestimate the population spread and inflate the score. The heavier tails account for this extra uncertainty.",
+      instruction:
+        "Compare five observations (4 degrees of freedom) with 101 observations (100 degrees of freedom). Watch the t curve approach the normal curve.",
+      action: "Use 101 observations",
+      baseline: {
         "df-slider": 4,
       },
       change: {
         "df-slider": 100,
       },
+      axes: {},
     },
   },
   "f-distribution-explorer": {
@@ -307,41 +193,22 @@
       "F is a non-negative ratio. Its numerator and denominator degrees of freedom both affect its reference distribution. The 5% boundary is calculated from the full tail.",
     related: ["anova-explorer", "t-distribution-explorer"],
     keywords: "variance ratio critical value anova",
-    cases: {
-      medicine: {
-        title: "Comparing three fictional clinical groups",
-        text: "For three independent groups with ten participants each, the ANOVA reference distribution has numerator df = 2 and denominator df = 27.",
-        settings: {
-          "df1-slider": 2,
-          "df2-slider": 27,
-          "log-axis": false,
-        },
-      },
-      cognition: {
-        title: "Comparing three cognitive-training groups",
-        text: "Three separate groups of ten participants give ANOVA degrees of freedom 2 and 27. This page explores the reference distribution, rather than observed study results.",
-        settings: {
-          "df1-slider": 2,
-          "df2-slider": 27,
-          "log-axis": false,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Switch to a logarithmic horizontal axis. Does that change the critical F value?",
-      options: ["No", "Yes, it doubles", "Yes, it becomes a p-value"],
-      answer: 0,
-      explanation:
-        "Only the display spacing changes. Ordinary shaded screen area no longer measures probability on a log axis, so the tail fill is removed.",
-      setup: {
-        "df1-slider": 1,
-        "df2-slider": 1,
+    experiment: {
+      heading: "A noisy denominator makes a long tail",
+      story:
+        "F compares two variability estimates. A denominator estimated with few degrees of freedom can be unusually small, making the ratio unusually large.",
+      instruction:
+        "Keep the numerator degrees of freedom at 2. Improve the denominator estimate from 6 to 60 degrees of freedom and watch the upper 5% boundary.",
+      action: "Increase denominator df to 60",
+      baseline: {
+        "df1-slider": 2,
+        "df2-slider": 6,
         "log-axis": false,
       },
       change: {
-        "log-axis": true,
+        "df2-slider": 60,
       },
+      axes: {},
     },
   },
   "chi-squared-explorer": {
@@ -352,38 +219,14 @@
       "The departure control fixes proportions before integer rounding. Increasing N scales those proportions, allowing a comparison at approximately fixed effect size.",
     related: ["binomial-components-explorer", "multiple-comparisons-explorer"],
     keywords: "counts categories categorical goodness fit equal frequencies",
-    cases: {
-      medicine: {
-        title: "Three hypothetical referral categories",
-        text: "Suppose a study expects equal numbers in three pre-specified referral categories. Compare constructed counts with that uniform expectation. These are invented counts, not sampled records.",
-        settings: {
-          categories: 3,
-          "total-observations": 120,
-          skew: 5,
-        },
-      },
-      cognition: {
-        title: "Three response options",
-        text: "Under an equal-probability model, three response options should be chosen equally often in repeated independent trials. Explore a fixed proportional departure.",
-        settings: {
-          categories: 3,
-          "total-observations": 120,
-          skew: 5,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Multiply N by ten while holding the category proportions fixed. What happens to Cohen's w?",
-      options: [
-        "It stays approximately the same",
-        "It falls tenfold",
-        "It increases tenfold",
-      ],
-      answer: 0,
-      explanation:
-        "w measures departure in proportions. Apart from integer rounding it stays fixed, while χ² = Nw² grows with N.",
-      setup: {
+    experiment: {
+      heading: "The same proportions can be stronger evidence",
+      story:
+        "Under the null, five outcome categories are equally common. Our constructed observations have proportions 0%, 10%, 20%, 30% and 40%.",
+      instruction:
+        "Multiply the total count by ten without changing those proportions. Compare the effect size with the chi-squared statistic and p-value.",
+      action: "Increase the total from 100 to 1,000",
+      baseline: {
         categories: 5,
         "total-observations": 100,
         skew: 10,
@@ -391,6 +234,7 @@
       change: {
         "total-observations": 1000,
       },
+      axes: {},
     },
   },
   "clt-explorer": {
@@ -402,45 +246,26 @@
     related: ["confidence-interval-explorer", "one-sample-t-test"],
     keywords:
       "sampling average means standard error central limit repeated studies",
-    cases: {
-      medicine: {
-        title: "Skewed physiological measurements",
-        text: "Imagine a right-skewed measurement standardised to population mean 0 and SD 1. Draw participants for one study, average them, then repeat. The standardised units are not physical measurement units.",
-        settings: {
-          population: "exponential",
-          sampleSize: 10,
-          repetitions: 1000,
-        },
-      },
-      cognition: {
-        title: "Skewed cognitive measurements",
-        text: "Imagine a skewed score such as a transformed response-time measurement. This model is standardised to population mean 0 and SD 1. Each simulated study contributes one average.",
-        settings: {
-          population: "exponential",
-          sampleSize: 10,
-          repetitions: 1000,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Keep the population and n = 10 fixed. Increase repeated studies from 100 to 1000. What happens to theoretical SE?",
-      options: [
-        "It stays 1/√10",
-        "It falls tenfold",
-        "It becomes the population SD",
-      ],
-      answer: 0,
-      explanation:
-        "Repetitions improve the simulation display. SE is a property of the population and observations per study, σ/√n.",
-      setup: {
+    experiment: {
+      heading: "Average observations, then repeat the study",
+      story:
+        "The population is right-skewed, with mean 0 and SD 1 in standardised units. Begin with 1,000 studies containing just one observation each.",
+      instruction:
+        "Keep the same population and 1,000 repeated studies. Average 25 observations in each study: the means become less spread out even though individuals do not.",
+      action: "Average 25 observations per study",
+      baseline: {
         population: "exponential",
-        sampleSize: 10,
-        repetitions: 100,
+        sampleSize: 1,
+        repetitions: 1000,
+        traceMode: false,
+        traceCount: 1000,
+        lockScale: true,
+        seed: 42,
       },
       change: {
-        repetitions: 1000,
+        sampleSize: 25,
       },
+      axes: {},
     },
   },
   "confidence-interval-explorer": {
@@ -452,45 +277,27 @@
     related: ["clt-explorer", "one-sample-t-test", "power-explorer"],
     keywords:
       "confidence uncertainty precision interval coverage estimate mean",
-    cases: {
-      medicine: {
-        title: "Fictional population mean",
-        text: "Suppose a normally distributed physiological change has true mean 3 measurement units and SD 1. The simulator knows those values; an investigator estimates the mean from each sample.",
-        settings: {
-          populationMean: 3,
-          populationSD: 1,
-          sampleSize: 20,
-          method: "t",
-          level: 0.95,
-        },
-      },
-      cognition: {
-        title: "Fictional cognitive-score improvement",
-        text: "Suppose a normal population has true mean improvement 5 score points and SD 2. Build intervals from independent samples of 20 participants.",
-        settings: {
-          populationMean: 5,
-          populationSD: 2,
-          sampleSize: 20,
-          method: "t",
-          level: 0.95,
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Using the same samples, raise confidence from 95% to 99%. What happens to interval width?",
-      options: ["It increases", "It decreases", "It must stay fixed"],
-      answer: 0,
-      explanation:
-        "A larger critical value creates wider intervals. The increased long-run coverage comes with less precise intervals.",
-      setup: {
-        level: 0.95,
+    experiment: {
+      heading: "Greater confidence costs width",
+      story:
+        "Repeat a study of 20 observations from a normal population with fixed mean 0 and SD 1. Each sample produces a different t interval.",
+      instruction:
+        "Keep the generated samples identical. Raise confidence from 95% to 99%: only the interval rule changes, not the observations or the true mean.",
+      action: "Raise confidence to 99%",
+      baseline: {
+        populationMean: 0,
+        populationSD: 1,
         sampleSize: 20,
+        repetitions: 500,
+        level: 0.95,
         method: "t",
+        seed: 42,
+        lockScale: true,
       },
       change: {
         level: 0.99,
       },
+      axes: {},
     },
   },
   "power-explorer": {
@@ -504,44 +311,23 @@
       "multiple-comparisons-explorer",
     ],
     keywords: "sample size planning detect effect power false negative",
-    cases: {
-      medicine: {
-        title: "Planning a hypothetical study",
-        text: "Assume a true mean change of 3 units and known population SD 10, so d = 0.3. Explore sample size without changing the assumed effect. This is an illustrative model.",
-        settings: {
-          effect: 0.3,
-          sampleSize: 30,
-          alpha: 0.05,
-          alternative: "twoSided",
-        },
-      },
-      cognition: {
-        title: "Planning a cognitive experiment",
-        text: "Assume a true reaction-time difference of 15 ms and known population SD 30 ms, so d = 0.5. The calculation concerns a one-sample z test, not a paired or independent t test.",
-        settings: {
-          effect: 0.5,
-          sampleSize: 30,
-          alpha: 0.05,
-          alternative: "twoSided",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Set the true effect to zero with α = 0.05. What is the rejection probability?",
-      options: ["5%", "95%", "0%"],
-      answer: 0,
-      explanation:
-        "At the true null the rejection probability is the Type I error rate α. The 95% non-rejection probability is a correct decision rate, not Type II error.",
-      setup: {
+    experiment: {
+      heading: "Plan for an effect you might miss",
+      story:
+        "Imagine planning a study where the true mean is half a population SD above the null value (d = 0.5). This is an assumed true effect, not an effect estimated after seeing data.",
+      instruction:
+        "Keep the effect and 5% significance level fixed. Compare studies with 20 and 80 observations; look for the alternative distribution inside the rejection regions.",
+      action: "Compare with 80 observations",
+      baseline: {
+        sampleSize: 20,
         effect: 0.5,
-        sampleSize: 30,
         alpha: 0.05,
         alternative: "twoSided",
       },
       change: {
-        effect: 0,
+        sampleSize: 80,
       },
+      axes: {},
     },
   },
   correlation: {
@@ -552,38 +338,21 @@
     related: ["regression-explorer"],
     keywords:
       "association relationship pearson covariance scatter plot outlier",
-    cases: {
-      medicine: {
-        title: "Fictional age and biomarker pairs",
-        text: "The pairs represent age in decades and a biomarker in arbitrary units. They demonstrate association only; the data are invented and cannot establish causation.",
-        settings: {
-          dataMode: "manual",
-          pairs: "2,1\n3,3\n4,2\n5,5\n6,4",
-        },
-      },
-      cognition: {
-        title: "Fictional practice and recall scores",
-        text: "Each pair gives practice blocks completed and recall score for a separate hypothetical participant. Inspect deviations around the two means.",
-        settings: {
-          dataMode: "manual",
-          pairs: "1,4\n2,6\n3,5\n4,8\n5,7",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "For the curved pairs x = −2, −1, 0, 1, 2 and y = x², what is Pearson's r?",
-      options: ["0, despite a perfect curved relationship", "+1", "−1"],
-      answer: 0,
-      explanation:
-        "Positive and negative deviation products cancel. Pearson's r measures linear association, so a deterministic curved relationship can have r = 0.",
-      setup: {
+    experiment: {
+      heading: "Zero correlation can hide a perfect pattern",
+      story:
+        "Start with five pairs lying on y = x. Every increase in x is matched by an increase in y, so Pearson’s r is 1.",
+      instruction:
+        "Replace y with x². The relationship is still exact, but upward and downward contributions cancel. Follow the centred products below to see why r becomes zero.",
+      action: "Replace y with x²",
+      baseline: {
         dataMode: "manual",
         pairs: "-2,-2\n-1,-1\n0,0\n1,1\n2,2",
       },
       change: {
         pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4",
       },
+      axes: {},
     },
   },
   "regression-explorer": {
@@ -594,42 +363,27 @@
       "A residual is observed y minus predicted y. Squaring makes both signs contribute positive error. The fitted line minimises the sum of those squared errors.",
     related: ["correlation", "anova-explorer"],
     keywords: "predict prediction line fit slope residual least squares",
-    cases: {
-      medicine: {
-        title: "Fictional age and biomarker data",
-        text: "Age in decades is x and an invented biomarker in arbitrary units is y. Fit a descriptive line, then inspect what it misses. The example supplies no causal or clinical evidence.",
-        settings: {
-          dataMode: "manual",
-          pairs: "2,1\n3,3\n4,2\n5,5\n6,4",
-        },
-      },
-      cognition: {
-        title: "Fictional practice and recall data",
-        text: "x is practice blocks and y is recall score for hypothetical separate participants. Try your own line, then reveal the least-squares solution.",
-        settings: {
-          dataMode: "manual",
-          pairs: "1,4\n2,6\n3,5\n4,8\n5,7",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Can a curved relationship leave a pattern in the residuals even when a straight line has been fitted?",
-      options: [
-        "Yes",
-        "No, residuals must always be random",
-        "Only if the slope is zero",
-      ],
-      answer: 0,
-      explanation:
-        "Least squares removes the fitted linear trend. It does not remove curvature or guarantee an appropriate model.",
-      setup: {
+    experiment: {
+      heading: "Choose a line by the errors it leaves",
+      story:
+        "For these five observations, begin by predicting y = 3 for everyone. A residual is the observed value minus this prediction. Squaring and adding those residuals gives the total error.",
+      instruction:
+        "Compare the horizontal line with the least-squares line. Follow the residual segments and squared-error areas as the total error falls.",
+      action: "Show the least-squares line",
+      baseline: {
         dataMode: "manual",
-        pairs: "-2,-2\n-1,-1\n0,0\n1,1\n2,2",
+        pairs: "1,1\n2,3\n3,2\n4,5\n5,4",
+        tryLine: true,
+        candidateSlope: 0,
+        candidateIntercept: 3,
+        revealFit: false,
       },
       change: {
-        pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4",
+        candidateSlope: 0.8,
+        candidateIntercept: 0.6,
+        revealFit: true,
       },
+      axes: {},
     },
   },
   "anova-explorer": {
@@ -644,44 +398,21 @@
       "multiple-comparisons-explorer",
     ],
     keywords: "compare three groups variance analysis omnibus sums squares",
-    cases: {
-      medicine: {
-        title: "Three fictional independent clinical groups",
-        text: "The invented observations are measurement changes in three separate groups. Compare group means with the grand mean and inspect how each group's sample size weights its contribution.",
-        settings: {
-          dataMode: "manual",
-          groups: "1,2,3\n2,3,4\n4,5,6",
-        },
-      },
-      cognition: {
-        title: "Three fictional cognitive-training groups",
-        text: "The invented observations are recall-score improvements in three separate participant groups. An omnibus F test does not identify which specific groups differ.",
-        settings: {
-          dataMode: "manual",
-          groups: "1,2,3\n2,3,4\n4,5,6",
-        },
-      },
-    },
-    prediction: {
-      prompt:
-        "Generate groups with identical population means. Must their observed sample means be identical?",
-      options: [
-        "No, sampling variation remains",
-        "Yes",
-        "Only when there are three groups",
-      ],
-      answer: 0,
-      explanation:
-        "Equal population means do not force random sample means to match. This variation is represented by the null F distribution.",
-      setup: {
-        dataMode: "generated",
-        separation: 1,
-        sampleSize: 20,
-        withinSD: 1,
+    experiment: {
+      heading: "Separated means are only half the story",
+      story:
+        "Three groups have means 2, 3 and 5. ANOVA compares their separation with the variability of observations inside each group.",
+      instruction:
+        "Keep all three means fixed but triple every deviation from its group mean. Watch within-group variation grow and the F statistic fall.",
+      action: "Increase within-group spread",
+      baseline: {
+        dataMode: "manual",
+        groups: "1,2,3\n2,3,4\n4,5,6",
       },
       change: {
-        separation: 0,
+        groups: "-1,2,5\n0,3,6\n2,5,8",
       },
+      axes: {},
     },
   },
   "multiple-comparisons-explorer": {
@@ -693,44 +424,27 @@
     related: ["power-explorer", "anova-explorer"],
     keywords:
       "many tests multiplicity false positives bonferroni holm fdr fwer benjamini hochberg",
-    cases: {
-      medicine: {
-        title: "Screening hypothetical biomarkers",
-        text: "Simulate 20 independent tests, with 30% having a true standardised effect of 0.5 in a known-SD z model at n = 30. Compare discoveries with known simulated truth.",
-        settings: {
-          tests: 20,
-          signalFraction: 0.3,
-          signalEffect: 0.5,
-          signalN: 30,
-          correction: "bh",
-        },
-      },
-      cognition: {
-        title: "Testing hypothetical cognitive outcomes",
-        text: "Imagine 20 independent outcome tests, six with real effects. Real cognitive outcomes are often correlated; this independent-test experiment does not model that dependence.",
-        settings: {
-          tests: 20,
-          signalFraction: 0.3,
-          signalEffect: 0.5,
-          signalN: 30,
-          correction: "bh",
-        },
-      },
-    },
-    prediction: {
-      prompt: "If every null is true, how do FDR and FWER compare?",
-      options: ["They are equal", "FDR must be zero", "FDR must be larger"],
-      answer: 0,
-      explanation:
-        "Any family with discoveries has a false-discovery proportion of 1, and a family without discoveries contributes 0. Its expectation is the chance of any false discovery. Add real effects to see the targets differ.",
-      setup: {
+    experiment: {
+      heading: "Two different meanings of a false-positive target",
+      story:
+        "Simulate 20 independent tests: six effects are real and fourteen nulls are true. Because this is a simulation, we can check each discovery against the truth.",
+      instruction:
+        "Compare Benjamini–Hochberg with Bonferroni on the same simulated tests. Read both the chance of any false discovery (FWER) and the average false fraction among discoveries (FDR).",
+      action: "Use Bonferroni instead",
+      baseline: {
         tests: 20,
+        repetitions: 1000,
+        alpha: 0.05,
         signalFraction: 0.3,
+        signalEffect: 0.5,
+        signalN: 30,
         correction: "bh",
+        seed: 42,
       },
       change: {
-        signalFraction: 0,
+        correction: "bonferroni",
       },
+      axes: {},
     },
   },
 }));

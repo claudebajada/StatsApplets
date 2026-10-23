@@ -122,25 +122,30 @@ test("mixed-truth experiments distinguish FDR, FWER and correct discoveries", ()
   close(allSignals.empiricalFDR, 0);
   assert.equal(allSignals.nulls, 0);
 });
-test("every applet has a prediction, related concepts and both fictional research contexts", () => {
+test("every applet has one worked comparison shared by all learners", () => {
   assert.equal(Object.keys(C).length, 15);
   for (const lesson of Object.values(C)) {
     assert.ok(
       lesson.role && lesson.question && lesson.plain && lesson.related.length,
     );
-    assert.ok(lesson.prediction.options[lesson.prediction.answer]);
-    assert.ok(
-      lesson.cases.medicine.settings && lesson.cases.cognition.settings,
-    );
+    assert.equal(lesson.cases, undefined);
+    for (const key of [
+      "heading",
+      "story",
+      "instruction",
+      "action",
+      "baseline",
+      "change",
+    ])
+      assert.ok(lesson.experiment[key]);
     lesson.related.forEach((id) => assert.ok(C[id]));
   }
 });
-test("all worked examples and prediction experiments contain valid data rows", () => {
+test("all worked comparisons contain valid data rows", () => {
   for (const [id, lesson] of Object.entries(C)) {
     const settings = [
-      ...Object.values(lesson.cases).map((example) => example.settings),
-      lesson.prediction.setup,
-      lesson.prediction.change,
+      lesson.experiment.baseline,
+      { ...lesson.experiment.baseline, ...lesson.experiment.change },
     ];
     for (const values of settings) {
       if (values.pairs) {
@@ -163,4 +168,30 @@ test("all worked examples and prediction experiments contain valid data rows", (
       }
     }
   }
+});
+
+test("worked comparisons isolate precision and within-group variability", () => {
+  const e = C["one-sample-t-test"].experiment;
+  const before = S.oneSample(
+    e.baseline.mu,
+    e.baseline.mu0,
+    e.baseline.sigma,
+    e.baseline.N,
+  );
+  const after = S.oneSample(
+    e.baseline.mu,
+    e.baseline.mu0,
+    e.baseline.sigma,
+    e.change.N,
+  );
+  close(before.d, after.d);
+  close(after.se, before.se / 2);
+  const a = C["anova-explorer"].experiment;
+  const groups = (text) =>
+    text.split("\n").map((row) => row.split(",").map(Number));
+  const x = T.anova(groups(a.baseline.groups)),
+    y = T.anova(groups(a.change.groups));
+  assert.deepEqual(x.means, y.means);
+  close(y.within, 9 * x.within);
+  close(y.f, x.f / 9);
 });

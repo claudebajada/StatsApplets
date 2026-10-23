@@ -58,6 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
       ? "F statistic, logarithmic scale"
       : "F statistic";
     chart.update();
+    document.dispatchEvent(
+      new CustomEvent("applet:render", {
+        detail: { kind: "f-distribution-explorer", df1, df2, critical, log },
+      }),
+    );
     get("plot-note").textContent =
       `The plot extends to F = ${max.toFixed(2)}, at least the 99th percentile. The critical value ${critical.toFixed(3)} leaves 5% probability to its right, including the tail beyond the plot. With fewer than two numerator degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. Select a logarithmic axis to inspect the long tail. ${log ? "Logarithmic spacing changes screen areas, so the tail fill is removed: the visible area is not a probability." : "On this linear axis, probability corresponds to area under the density."}`;
   }

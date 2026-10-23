@@ -21,93 +21,31 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>Independent t test</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            A difference between groups has uncertainty too
+          </h2>
           <p>
-            <a href="clt-explorer.html">Central limit theorem</a> ·
-            <a href="confidence-interval-explorer.html"
-              >Confidence interval coverage</a
-            >
-            · <a href="power-explorer.html">Statistical power</a>
+            Two separate groups of 25 people have mean blood-pressure reductions
+            of 6 and 3 mmHg. Both sample SDs are 6 mmHg. The estimated
+            difference is therefore 3 mmHg.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Independent t test</h1>
-          <p class="lede applet-introduction">
-            Compare two independent group means under an equal-variance model.
+          <p class="comparison-instruction">
+            Keep both means and SDs fixed. Increase each group to 100 people and
+            compare the uncertainty of the same difference.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              An independent-samples t test compares the population means of two
-              separate groups. This version assumes equal population variances
-              and uses the same sample standard deviation for both groups. Set a
-              difference between the sample means, then change each group's
-              sample size to see how precision changes.
-            </p>
-            <p class="context-status" id="context-status">
-              SD describes differences between individual observations. SE
-              describes variation of the estimated mean or mean difference
-              between repeated studies. These controls set summary statistics;
-              changing n does not recruit or resample participants.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
-              ><mrow
-                ><mi>t</mi><mo>=</mo
-                ><mfrac
-                  ><mrow
-                    ><msub
-                      ><mover><mi>x</mi><mo>¯</mo></mover
-                      ><mn>1</mn></msub
-                    ><mo>−</mo
-                    ><msub
-                      ><mover><mi>x</mi><mo>¯</mo></mover
-                      ><mn>2</mn></msub
-                    ></mrow
-                  ><mrow
-                    ><msub><mi>s</mi><mi>p</mi></msub
-                    ><msqrt
-                      ><mrow
-                        ><mfrac
-                          ><mn>1</mn><msub><mi>n</mi><mn>1</mn></msub></mfrac
-                        ><mo>+</mo
-                        ><mfrac
-                          ><mn>1</mn><msub><mi>n</mi><mn>2</mn></msub></mfrac
-                        ></mrow
-                      ></msqrt
-                    ></mrow
-                  ></mfrac
-                ></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
-              deviation. n₁ and n₂ are the sample sizes. The denominator
-              estimates the standard error of the mean difference.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Observed sample summaries.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -269,20 +207,6 @@
                 </button>
               </div>
             </details>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -356,16 +280,80 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
+                  ><mrow
+                    ><mi>t</mi><mo>=</mo
+                    ><mfrac
+                      ><mrow
+                        ><msub
+                          ><mover><mi>x</mi><mo>¯</mo></mover
+                          ><mn>1</mn></msub
+                        ><mo>−</mo
+                        ><msub
+                          ><mover><mi>x</mi><mo>¯</mo></mover
+                          ><mn>2</mn></msub
+                        ></mrow
+                      ><mrow
+                        ><msub><mi>s</mi><mi>p</mi></msub
+                        ><msqrt
+                          ><mrow
+                            ><mfrac
+                              ><mn>1</mn
+                              ><msub><mi>n</mi><mn>1</mn></msub></mfrac
+                            ><mo>+</mo
+                            ><mfrac
+                              ><mn>1</mn
+                              ><msub><mi>n</mi><mn>2</mn></msub></mfrac
+                            ></mrow
+                          ></msqrt
+                        ></mrow
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
+                  deviation. n₁ and n₂ are the sample sizes. The denominator
+                  estimates the standard error of the mean difference.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              This is the pooled equal-variance test for different participants
+              in the two groups. Repeated measurements on the same participants
+              require a paired approach. The applet gives both groups the same
+              sample SD for illustration; the pooled test in general does not
+              require identical sample SDs. Welch's test, which allows unequal
+              population variances, is outside this applet's model. Here the
+              pooled SD is s. The test has n₁ + n₂ − 2 degrees of freedom. Exact
+              p-values assume independent observations from normal populations
+              with equal variances. Plot 1 shows the observed mean difference
+              and its estimated standard error. Plot 2 shows the distribution of
+              t when the population means are equal. Choose the alternative
+              before looking at the data.
+            </p>
             <p id="calculation" aria-live="polite"></p>
             <details class="info">
               <summary>Degrees of freedom and other tail probabilities</summary>
@@ -396,23 +384,17 @@
               </p>
             </details>
           </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
             <p>
-              This is the pooled equal-variance test for different participants
-              in the two groups. Repeated measurements on the same participants
-              require a paired approach. The applet gives both groups the same
-              sample SD for illustration; the pooled test in general does not
-              require identical sample SDs. Welch's test, which allows unequal
-              population variances, is outside this applet's model. Here the
-              pooled SD is s. The test has n₁ + n₂ − 2 degrees of freedom. Exact
-              p-values assume independent observations from normal populations
-              with equal variances. Plot 1 shows the observed mean difference
-              and its estimated standard error. Plot 2 shows the distribution of
-              t when the population means are equal. Choose the alternative
-              before looking at the data.
+              <a href="clt-explorer.html">Central limit theorem</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              · <a href="power-explorer.html">Statistical power</a>
             </p>
-          </details>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

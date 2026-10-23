@@ -21,68 +21,29 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>Linear regression</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Choose a line by the errors it leaves</h2>
           <p>
-            <a href="correlation.html">Correlation</a> ·
-            <a href="anova-explorer.html">One-way ANOVA</a>
+            For these five observations, begin by predicting y = 3 for everyone.
+            A residual is the observed value minus this prediction. Squaring and
+            adding those residuals gives the total error.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Linear regression</h1>
-          <p class="lede applet-introduction">
-            Fit a straight line and inspect the differences between observed and
-            predicted values.
+          <p class="comparison-instruction">
+            Compare the horizontal line with the least-squares line. Follow the
+            residual segments and squared-error areas as the total error falls.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              Linear regression fits a straight line to predict y from x. Each
-              residual is the difference between an observed y value and the
-              line's prediction. Increase the noise to see how the points spread
-              around the line, then compare the fitted line with the slope used
-              to generate the data.
-            </p>
-            <p class="context-status" id="context-status">
-              A residual is observed y minus predicted y. Squaring makes both
-              signs contribute positive error. The fitted line minimises the sum
-              of those squared errors.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST"
-              ><mrow
-                ><mover><mi>y</mi><mo>^</mo></mover
-                ><mo>=</mo><msub><mi>b</mi><mn>0</mn></msub
-                ><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub
-                ><mi>x</mi></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              ŷ is the predicted y value. b₀ is the fitted intercept and b₁ is
-              the fitted slope. Each residual is the observed y minus ŷ.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Simulated or observed paired values.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -286,20 +247,6 @@
 4,5
 5,4</textarea>
             </div>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -343,20 +290,42 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="ŷ = b₀ + b₁x; SSE = Σ(y − ŷ)²; R² = 1 − SSE/SST"
+                  ><mrow
+                    ><mover><mi>y</mi><mo>^</mo></mover
+                    ><mo>=</mo><msub><mi>b</mi><mn>0</mn></msub
+                    ><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub
+                    ><mi>x</mi></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  ŷ is the predicted y value. b₀ is the fitted intercept and b₁
+                  is the fitted slope. Each residual is the observed y minus ŷ.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
-            <p id="calculation" aria-live="polite"></p>
-          </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+            <summary>Assumptions and full calculation</summary>
             <p>
               The simulated data use fixed x values and a population intercept
               of 1. The errors are independent normal values with the chosen
@@ -369,7 +338,16 @@
               assumptions. The simulation controls have no effect on manual
               data.
             </p>
+            <p id="calculation" aria-live="polite"></p>
           </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="correlation.html">Correlation</a> ·
+              <a href="anova-explorer.html">One-way ANOVA</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

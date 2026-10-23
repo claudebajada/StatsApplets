@@ -22,80 +22,30 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>Statistical power</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Plan for an effect you might miss</h2>
           <p>
-            <a href="one-sample-z-test.html">One-sample z test</a> ·
-            <a href="confidence-interval-explorer.html"
-              >Confidence interval coverage</a
-            >
-            ·
-            <a href="multiple-comparisons-explorer.html"
-              >Multiple comparisons</a
-            >
+            Imagine planning a study where the true mean is half a population SD
+            above the null value (d = 0.5). This is an assumed true effect, not
+            an effect estimated after seeing data.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Statistical power</h1>
-          <p class="lede applet-introduction">
-            See how sample size and the true effect change a test's power.
+          <p class="comparison-instruction">
+            Keep the effect and 5% significance level fixed. Compare studies
+            with 20 and 80 observations; look for the alternative distribution
+            inside the rejection regions.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              Power is the probability that a test rejects the null hypothesis
-              for a specified true effect. This applet calculates power for a
-              one-sample z test with a known population standard deviation. Keep
-              the effect fixed and increase the sample size to see how the
-              chance of rejection changes.
-            </p>
-            <p class="context-status" id="context-status">
-              This is prospective power for a known-SD z test. The effect is an
-              assumed population difference, rather than a sample effect
-              estimated after a study.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"
-              ><mrow
-                ><mi>Power</mi><mo>=</mo><mi>P</mi
-                ><mrow
-                  ><mo>(</mo
-                  ><mrow
-                    ><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub
-                    ><mo>|</mo><mi>μ</mi><mo>=</mo
-                    ><msub><mi>μ</mi><mn>1</mn></msub></mrow
-                  ><mo>)</mo></mrow
-                ></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              H₀ is the null hypothesis. d is the true difference between the
-              population mean and the null mean, divided by the population
-              standard deviation. Power is the probability of rejecting H₀ for
-              that effect.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Assumed true population effect.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -192,20 +142,6 @@
                 <option value="twoSided" selected>different from</option>
               </select>
             </div>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -251,20 +187,49 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"
+                  ><mrow
+                    ><mi>Power</mi><mo>=</mo><mi>P</mi
+                    ><mrow
+                      ><mo>(</mo
+                      ><mrow
+                        ><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub
+                        ><mo>|</mo><mi>μ</mi><mo>=</mo
+                        ><msub><mi>μ</mi><mn>1</mn></msub></mrow
+                      ><mo>)</mo></mrow
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  H₀ is the null hypothesis. d is the true difference between
+                  the population mean and the null mean, divided by the
+                  population standard deviation. Power is the probability of
+                  rejecting H₀ for that effect.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
-            <p id="calculation" aria-live="polite"></p>
-          </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+            <summary>Assumptions and full calculation</summary>
             <p>
               The calculation assumes a one-sample z test with a known
               population standard deviation and independent normal observations.
@@ -276,7 +241,22 @@
               in the opposite direction. These calculations apply to z tests. A
               t test needs a different power calculation.
             </p>
+            <p id="calculation" aria-live="polite"></p>
           </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="one-sample-z-test.html">One-sample z test</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              ·
+              <a href="multiple-comparisons-explorer.html"
+                >Multiple comparisons</a
+              >
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

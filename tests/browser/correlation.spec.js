@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 const AxeBuilder = require("@axe-core/playwright").default;
 async function open(page) {
-  await page.goto("/html/correlation.html");
+  await page.goto("/html/correlation.html?dataMode=generated");
   await page.locator("#correlation-working > summary").click();
 }
 async function step(page, index) {
@@ -103,9 +103,9 @@ test("shifting and stretching real observations preserve the centred angle and r
     ),
   ).toEqual(points);
   await page.locator("#reset").click();
-  await expect(page.locator("#pair-count")).toHaveText("12");
+  await expect(page.locator("#pair-count")).toHaveText("5");
   await expect(page.locator("#correlation-experiment-status")).toContainText(
-    "12 current observations",
+    "5 current observations",
   );
 });
 test("angle diagram handles aligned, perpendicular, opposed and undefined vectors faithfully", async ({

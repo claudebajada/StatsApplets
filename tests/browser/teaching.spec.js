@@ -41,7 +41,7 @@ for (const item of catalogue) {
     expect(await state(page)).toEqual(configured);
     expect(await chartData(page)).toEqual(data);
     await expect(page.locator("#lecturer, #lecturer-panel")).toHaveCount(0);
-    await expect(page.locator(".page-header math")).toBeVisible();
+    await expect(page.locator(".guided-lab math")).toBeVisible();
     await page.locator("#reset").click();
     expect(await state(page)).toEqual(initial);
     await expect(page.locator("#input-warning")).toBeHidden();
@@ -111,7 +111,9 @@ test("manual regression matches independent reference and detects zero x varianc
   page,
 }) => {
   const r = fixture.regression[0];
-  await page.goto("/html/regression-explorer.html");
+  await page.goto(
+    "/html/regression-explorer.html?tryLine=false&revealFit=true",
+  );
   await page.locator("#dataMode").selectOption("manual");
   await page.locator("#pairs").fill(r.pairs.map((p) => p.join(",")).join("\n"));
   await expect(page.locator("#calculation")).toContainText(
@@ -142,19 +144,19 @@ test("invalid URL numbers cannot create non-finite results or inject markup", as
   await page.goto(
     "/html/one-sample-t-test.html?mu=Infinity&sigma=0&N=-10&_lecture=1&_title=%3Cimg%20src=x%20onerror=alert(1)%3E",
   );
-  await expect(page.locator("#mu")).toHaveValue("0");
-  await expect(page.locator("#sigma")).toHaveValue("1");
-  await expect(page.locator("#N")).toHaveValue("30");
+  await expect(page.locator("#mu")).toHaveValue("3");
+  await expect(page.locator("#sigma")).toHaveValue("6");
+  await expect(page.locator("#N")).toHaveValue("25");
   await expect(page.locator("#lecturer, #lecturer-panel, img")).toHaveCount(0);
   expect(new URL(page.url()).searchParams.has("_lecture")).toBe(false);
   expect(new URL(page.url()).searchParams.has("_title")).toBe(false);
-  await expect(page.locator("#t-value")).toHaveText("0.0000");
+  await expect(page.locator("#t-value")).toHaveText("2.5000");
 });
 
 test("correlation starts with one scatterplot and offers optional calculation steps", async ({
   page,
 }) => {
-  await page.goto("/html/correlation.html");
+  await page.goto("/html/correlation.html?dataMode=generated");
   await expect(page.locator("canvas")).toHaveCount(1);
   await expect(page.locator("#data-pearson-value")).toHaveText("0.6000");
   await expect(page.locator("#correlation-working")).not.toHaveAttribute(
@@ -199,7 +201,7 @@ test("mean-test estimate bars represent the sample estimate and one SE in origin
       "one standard error",
     );
     // Browser layout must stack a fraction, rather than printing slash notation.
-    const fraction = page.locator(".page-header math > mrow > mfrac");
+    const fraction = page.locator(".guided-lab math > mrow > mfrac");
     const geometry = await fraction.evaluate((el) => {
       const [a, b] = [...el.children].map((c) => c.getBoundingClientRect());
       return { numerator: a.y + a.height / 2, denominator: b.y + b.height / 2 };
@@ -258,11 +260,13 @@ test("restored form values cannot redefine the applet defaults", async ({
   );
   await expect(page.locator("#pair-count")).toHaveText("3");
   await page.locator("#reset").click();
-  await expect(page.locator("#dataMode")).toHaveValue("generated");
+  await expect(page.locator("#dataMode")).toHaveValue("manual");
   await expect(page.locator("#observations")).toHaveValue("12");
   await expect(page.locator("#association")).toHaveValue("0.6");
-  await expect(page.locator("#pairs")).toHaveValue("1,1\n2,3\n3,2");
-  await expect(page.locator("#pair-count")).toHaveText("12");
+  await expect(page.locator("#pairs")).toHaveValue(
+    "-2,-2\n-1,-1\n0,0\n1,1\n2,2",
+  );
+  await expect(page.locator("#pair-count")).toHaveText("5");
   await page.goto("/html/f-distribution-explorer.html");
   await expect(page.locator("#log-axis")).not.toBeChecked();
 });

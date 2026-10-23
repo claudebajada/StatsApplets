@@ -47,7 +47,9 @@ for (const file of applets)
       if (r.status() >= 400 && !r.url().endsWith("/favicon.ico"))
         failed.push(r.url());
     });
-    await page.goto("/html/" + file);
+    await page.goto(
+      "/html/" + file + "?dataMode=generated&tryLine=false&revealFit=true",
+    );
     await expect(page.locator("canvas").first()).toBeVisible();
     expect(await page.evaluate(() => Object.keys(Chart.instances).length)).toBe(
       await page.locator("canvas").count(),
@@ -209,7 +211,9 @@ test("binomial boundaries are point masses without a continuous normal density",
 test("F(1,1) critical value is visible within a dynamically extended axis", async ({
   page,
 }) => {
-  await page.goto("/html/f-distribution-explorer.html");
+  await page.goto(
+    "/html/f-distribution-explorer.html?df1-slider=1&df2-slider=1",
+  );
   expect(Number(await page.locator("#critical-value").innerText())).toBeCloseTo(
     161.447639,
     3,

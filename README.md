@@ -53,7 +53,7 @@ Correlation starts with a single scatterplot and Pearson’s r. Its sliders cons
 
 Conceptual inspiration and further reading: [Brendan O’Connor (2012), Cosine similarity, Pearson correlation, and OLS coefficients](https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html). The student explanations, example and graphics were authored for StatsApplets. Positive changes of scale preserve r; negative changes of scale reverse its sign.
 
-All simulations use an explicit integer seed and a deterministic Mulberry32 generator. Each applet labels its resampling action for the experiment; it increments the seed. Reopening a link reproduces the same numerical experiment, including population settings and repetition count. Reset restores the applet's original parameter defaults.
+All simulations use an explicit integer seed and a deterministic Mulberry32 generator. Each applet labels its resampling action for the experiment; it increments the seed. Reopening a link reproduces the same numerical experiment, including population settings and repetition count. Reset restores the starting worked comparison. These authored settings also supply defaults for incomplete shared URLs.
 
 ## Accessibility and visual design
 
@@ -128,12 +128,12 @@ Copy `index.html`, `html/`, `javascript/`, `css/` and `lib/` to a static host, p
 
 Do not deploy or merge without approval. BSD-3-Clause; see [LICENSE](LICENSE). Third-party notices are in `lib/`.
 
-## Guided learning experiments
+## Worked comparisons
 
-The starting route connects sampling and standard error to confidence intervals, t tests and power. Every applet includes a prediction experiment, related concepts and fictional medicine/cognitive-science examples. Shared URLs preserve canonical parameter values; exact-number partners edit the same sliders rather than adding duplicate parameters.
+The starting route connects sampling and standard error to confidence intervals, t tests and power. Each applet opens with one worked comparison for all learners: a concrete question, a named change and the plots to inspect. One reversible action changes the settings; a live explanation beside the plots interprets the actual result. Examples are selected for the statistical idea they expose. There is no cohort selector or separate prediction form. Shared URLs preserve canonical parameter values; exact-number partners edit the same sliders rather than adding duplicate parameters.
 
 - Mean tests default to two-sided alternatives, show the estimate, 95% interval and effect size, and offer fixed axes with an explicit fit action. A staged calculation connects the difference, SE, standardisation and null-tail interpretation.
-- CLT starts with one study mean. Its traced observations are the actual samples feeding the histogram. Students can add one or ten studies or reveal the full run. The mean axis can stay fixed as n changes.
+- The CLT comparison keeps 1,000 repeated studies fixed and increases observations per study from 1 to 25. The separate sample trace follows the actual observations feeding the histogram; students can start with one study, add one or ten studies, or reveal the full run. The mean axis stays fixed as n changes.
 - Confidence interval inspection follows the original sample, estimated SD, critical value and endpoints. The plot states how many intervals it shows and how many the coverage calculation uses.
 - Selected binomial counts link highlighted factors, enumerated arrangements for small n, exact probability and continuity-corrected normal area. The approximation explorer supports n up to 1000, with stable log probabilities.
 - The t sampling experiment compares known-SD Z and estimated-SD t for each identical sample. Centred deviations and signed products introduce the existing geometric correlation walkthrough; nonlinear and outlier examples expose limitations.
@@ -143,3 +143,5 @@ The starting route connects sampling and standard error to confidence intervals,
 - The logarithmic F view removes tail area fill because screen area is no longer proportional to probability. At a true null, the power explorer calls 1−α a non-rejection probability and marks Type II error inapplicable.
 
 Core scientific parameter state is shareable. Temporary inspection selections and walkthrough tabs are interface state. Simulation seeds remain explicit and reproducible, inside an optional disclosure.
+
+The derivation follows the plots in an open section. The equation, stage controls, sample inspectors and worked numbers are visible along that path. Assumptions and the full reference calculation share one disclosure. Related topics appear together at the end. The sample-mean comparison holds a 3 mmHg reduction fixed while n grows from 25 to 100; the ANOVA comparison holds group means fixed while within-group deviations triple. These are controlled teaching examples, not clinical evidence.

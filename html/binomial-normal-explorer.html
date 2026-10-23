@@ -21,73 +21,29 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
+      <header class="page-header"><h1>Binomial & normal</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Can an area stand in for a bar?</h2>
           <p>
-            <a href="binomial-components-explorer.html"
-              >Building the binomial</a
-            >
-            · <a href="clt-explorer.html">Central limit theorem</a>
+            Suppose an independent event has probability 0.05 on each trial.
+            With 30 trials, the expected number of successes is only 1.5, so a
+            symmetric normal curve is a poor match.
           </p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Binomial & normal</h1>
-          <p class="lede applet-introduction">
-            Compare binomial probabilities with a normal approximation.
+          <p class="comparison-instruction">
+            Increase to 500 trials. Inspect the expected count, 25, and compare
+            its exact bar probability with the normal area from 24.5 to 25.5.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              The binomial distribution gives the probability of each possible
-              count of successes in a fixed number of independent trials. Each
-              trial has the same success probability. Change that probability or
-              the number of trials to see when a normal curve gives a useful
-              approximation.
-            </p>
-            <p class="context-status" id="context-status">
-              A bar gives the probability of one count. A continuous density
-              gives probability through an interval's area. The selected count
-              connects those two representations.
-            </p>
-          </details>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
-              ><mrow
-                ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
-                ><msup><mi>σ</mi><mn>2</mn></msup
-                ><mo>=</mo><mi>n</mi><mi>p</mi
-                ><mrow
-                  ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
-                  ><mo>)</mo></mrow
-                ></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              n is the number of trials. p is the success probability on each
-              trial. μ and σ² are the mean and variance of the count of
-              successes.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Specified population probability.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -174,20 +130,6 @@
               </div>
               <span class="range-bounds" aria-hidden="true">0 to 1000</span>
             </div>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -239,20 +181,46 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
+                  ><mrow
+                    ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
+                    ><msup><mi>σ</mi><mn>2</mn></msup
+                    ><mo>=</mo><mi>n</mi><mi>p</mi
+                    ><mrow
+                      ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                      ><mo>)</mo></mrow
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  n is the number of trials. p is the success probability on
+                  each trial. μ and σ² are the mean and variance of the count of
+                  successes.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
-            <p id="calculation" aria-live="polite"></p>
-          </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
+            <summary>Assumptions and full calculation</summary>
             <p>
               Each binomial bar gives the probability of one count. The normal
               curve is a probability density. Approximate P(X = k) using the
@@ -262,7 +230,18 @@
               on whether the approximation is suitable. It does not guarantee
               accuracy.
             </p>
+            <p id="calculation" aria-live="polite"></p>
           </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="binomial-components-explorer.html"
+                >Building the binomial</a
+              >
+              · <a href="clt-explorer.html">Central limit theorem</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

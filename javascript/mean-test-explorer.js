@@ -180,12 +180,7 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
         lockedBounds = desiredBounds;
       estimateChart.options.scales.x.min = lockedBounds[0];
       estimateChart.options.scales.x.max = lockedBounds[1];
-      const units =
-        get("context").value === "medicine"
-          ? "mmHg"
-          : get("context").value === "cognition"
-            ? "ms"
-            : "original units";
+      const units = "original units";
       estimateChart.options.scales.x.title.text =
         (independent ? "Mean difference" : "Mean") + " (" + units + ")";
       estimateChart.update();

@@ -69,7 +69,9 @@ test("power at the true null labels the correct decision rate", async ({
 test("CLT traces actual studies into its displayed sampling distribution", async ({
   page,
 }) => {
-  await page.goto("/html/clt-explorer.html");
+  await page.goto(
+    "/html/clt-explorer.html?traceMode=true&traceCount=1&sampleSize=10",
+  );
   await expect(page.locator("#trace-status")).toContainText("Study 1:");
   await expect(page.locator("#meansChart-explanation")).toContainText(
     "Showing 1 of 1000",
@@ -91,7 +93,7 @@ test("candidate regression line reaches a known least-squares solution", async (
   page,
 }) => {
   await page.goto("/html/regression-explorer.html?dataMode=manual");
-  await page.locator("#guided-lab > summary").click();
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await page.locator("#start-line-challenge").click();
   await page.locator("#candidateSlope-number").fill("0.8");
   await page.locator("#candidateIntercept-number").fill("0.6");
@@ -110,18 +112,19 @@ test("candidate regression line reaches a known least-squares solution", async (
   ).toBe(true);
   await expect(page.locator("#input-warning")).toBeHidden();
 });
-test("confidence-interval contexts fit the locked axis to the new population", async ({
+test("loading a confidence-interval comparison fits the locked axis", async ({
   page,
 }) => {
-  await page.goto("/html/confidence-interval-explorer.html");
-  await page.locator(".context-controls > summary").click();
-  await page.locator("#context").selectOption("cognition");
+  await page.goto(
+    "/html/confidence-interval-explorer.html?populationMean=5&populationSD=2",
+  );
+  await page.locator("#experiment-action").click();
   const bounds = await page.evaluate(() => {
-    const scale = Chart.getChart("intervalChart").scales.x;
-    return [scale.min, scale.max];
+    const x = Chart.getChart("intervalChart").scales.x;
+    return [x.min, x.max];
   });
-  expect(bounds[0]).toBeLessThan(5);
-  expect(bounds[1]).toBeGreaterThan(5);
+  expect(bounds[0]).toBeLessThan(0);
+  expect(bounds[1]).toBeGreaterThan(0);
   await page.locator(".plot-controls > summary").click();
   await page.locator("#lockScale").uncheck();
   await expect(page.locator("#scale-note")).toContainText("resizes");
@@ -130,7 +133,7 @@ test("ANOVA inspector connects observations, group means and weighted between SS
   page,
 }) => {
   await page.goto("/html/anova-explorer.html?dataMode=manual");
-  await page.locator("#guided-lab > summary").click();
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await expect(page.locator("#anova-working")).toContainText(
     "Observation 1.000",
   );
@@ -147,7 +150,7 @@ test("correlation exposes a curved zero-r relationship and reversible influentia
   await page.goto(
     "/html/correlation.html?dataMode=manual&pairs=-2,4%0A-1,1%0A0,0%0A1,1%0A2,4",
   );
-  await page.locator("#guided-lab > summary").click();
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await expect(page.locator("#data-pearson-value")).toHaveText("0.0000");
   await page.locator("#toggle-outlier").click();
   expect(
@@ -159,12 +162,12 @@ test("correlation exposes a curved zero-r relationship and reversible influentia
 test("selected binomial count links arrangements and a continuity-corrected area", async ({
   page,
 }) => {
-  await page.goto("/html/binomial-components-explorer.html");
-  await page.locator("#guided-lab > summary").click();
+  await page.goto("/html/binomial-components-explorer.html?k=2");
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await expect(page.locator(".arrangement-list code")).toHaveCount(3);
   await expect(page.locator("#binomial-working")).toContainText("0.3750");
   await page.goto("/html/binomial-normal-explorer.html?N=500&theta=0.05&k=25");
-  await page.locator("#guided-lab > summary").click();
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await expect(page.locator("#binomial-working")).toContainText("24.5 to 25.5");
   expect(
     await page.evaluate(
@@ -181,7 +184,7 @@ test("mixed truth exposes both correct discoveries and different error rates", a
   await page.goto(
     "/html/multiple-comparisons-explorer.html?signalFraction=0.3&correction=bh",
   );
-  await page.locator("#guided-lab > summary").click();
+  await page.getByRole("link", { name: "Follow the maths" }).click();
   await expect(page.locator("#multiplicity-working")).toContainText(
     "6 real effects and 14 true nulls",
   );
@@ -193,45 +196,54 @@ test("mixed truth exposes both correct discoveries and different error rates", a
   );
 });
 for (const [id, lesson] of Object.entries(C)) {
-  test(`${id}: predict before revealing a controlled change`, async ({
+  test(`${id}: one comparison connects question, controls, interpretation and maths`, async ({
     page,
   }) => {
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`/html/${id}.html`);
-    await page.locator("#prediction-panel > summary").click();
-    await page.locator("#prediction-start").click();
-    await page
-      .locator(
-        `input[name="prediction-choice"][value="${lesson.prediction.answer}"]`,
-      )
-      .check();
-    await page.locator("#prediction-check").click();
-    await expect(page.locator("#prediction-feedback")).toContainText(
-      "Your prediction matched.",
+    const matches = (state) =>
+      page.evaluate(
+        (state) =>
+          Object.entries(state).every(
+            ([key, value]) => String(AppletPage.read()[key]) === String(value),
+          ),
+        state,
+      );
+    if (!(await matches(lesson.experiment.baseline)))
+      await page.locator("#experiment-action").click();
+    expect(await matches(lesson.experiment.baseline)).toBe(true);
+    await expect(page.locator("#experiment-position")).toHaveText(
+      "Starting example",
+    );
+    await expect(page.locator("#experiment-action")).toHaveText(
+      lesson.experiment.action,
+    );
+    await page.locator("#experiment-action").click();
+    expect(
+      await matches({
+        ...lesson.experiment.baseline,
+        ...lesson.experiment.change,
+      }),
+    ).toBe(true);
+    await expect(page.locator("#experiment-position")).toHaveText(
+      "After the change",
+    );
+    await expect(page.locator("#experiment-reading")).not.toBeEmpty();
+    await expect(page.locator("#experiment-reading")).not.toContainText(
+      /undefined|NaN/,
     );
     await expect(page.locator("#input-warning")).toBeHidden();
-    expect(errors).toEqual([]);
-  });
-  test(`${id}: both fictional research contexts load and survive a shared link`, async ({
-    page,
-  }) => {
-    const errors = [];
-    page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`/html/${id}.html`);
-    await page.locator(".context-controls > summary").click();
-    for (const context of ["medicine", "cognition"]) {
-      await page.locator("#context").selectOption(context);
-      await expect(page.locator("#context-status")).toHaveText(
-        lesson.cases[context].text,
-      );
-      await expect(page.locator("#input-warning")).toBeHidden();
-    }
     await page.reload();
-    await expect(page.locator("#context")).toHaveValue("cognition");
-    await expect(page.locator("#context-status")).toHaveText(
-      lesson.cases.cognition.text,
+    await expect(page.locator("#experiment-position")).toHaveText(
+      "After the change",
     );
+    await page.getByRole("link", { name: "Follow the maths" }).click();
+    await expect(page.locator("#guided-content")).toBeVisible();
+    await expect(page.locator("#context")).toHaveCount(0);
+    expect(new URL(page.url()).searchParams.has("context")).toBe(false);
+    await page.locator("#experiment-action").click();
+    expect(await matches(lesson.experiment.baseline)).toBe(true);
     expect(errors).toEqual([]);
   });
 }
@@ -262,7 +274,7 @@ test("capture representative teaching views and check narrow layouts", async ({
   ];
   for (const [path, open] of views) {
     await page.goto("/html/" + path);
-    if (open) await page.locator(open + " > summary").click();
+    if (open) await page.locator(open).scrollIntoViewIfNeeded();
     await page.evaluate(() => document.fonts.ready);
     expect(
       await page.evaluate(

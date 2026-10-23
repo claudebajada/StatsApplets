@@ -21,64 +21,31 @@
       </div>
     </nav>
     <main id="main">
-      <nav class="learning-route" aria-label="Suggested learning route">
-        <a href="../index.html#learning-route">Suggested starting route</a>
-        <details class="related-ideas">
-          <summary>Related ideas</summary>
-          <p><a href="regression-explorer.html">Linear regression</a></p>
-        </details>
-      </nav>
-      <header class="page-header">
-        <div class="title-block">
-          <h1>Correlation</h1>
-          <p class="lede applet-introduction">
-            See how a straight-line pattern relates to Pearson's correlation
-            coefficient.
+      <header class="page-header"><h1>Correlation</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            Zero correlation can hide a perfect pattern
+          </h2>
+          <p>
+            Start with five pairs lying on y = x. Every increase in x is matched
+            by an increase in y, so Pearson’s r is 1.
           </p>
-          <details class="intro-details">
-            <summary>How this explorer works</summary>
-            <p>
-              Pearson's r measures the direction and strength of a linear
-              relationship between two variables. Move the association slider to
-              compare positive and negative relationships. Open the calculation
-              walkthrough to see how the angle between two centred data vectors
-              gives r.
-            </p>
-            <p class="context-status" id="context-status">
-              Each point is one paired observation. Centring puts the mean at
-              zero. Products of matching deviations show whether a point
-              supports a positive or negative association.
-            </p>
-          </details>
+          <p class="comparison-instruction">
+            Replace y with x². The relationship is still exact, but upward and
+            downward contributions cancel. Follow the centred products below to
+            see why r becomes zero.
+          </p>
         </div>
-        <div class="formula-block">
-          <div class="equation">
-            <math
-              xmlns="http://www.w3.org/1998/Math/MathML"
-              display="block"
-              aria-label="−1 ≤ r ≤ 1, when both variables vary"
-              ><mrow
-                ><mo>−</mo><mn>1</mn><mo>≤</mo><mi>r</mi><mo>≤</mo
-                ><mn>1</mn></mrow
-              ></math
-            >
-          </div>
-          <details class="symbol-details">
-            <summary>What the symbols mean</summary>
-            <p class="symbol-key">
-              r measures the direction and strength of a straight-line
-              association. It has no units. It is undefined if either variable
-              has no variation.
-            </p>
-          </details>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
         </div>
-      </header>
-      <p class="learning-orientation">
-        <strong>Constructed example or observed paired values.</strong>
-      </p>
+      </section>
       <div class="applet-workspace">
         <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Parameters</h2>
+          <h2 id="parameters-heading">Explore the values</h2>
           <div id="scenario-toolbar"></div>
           <section class="controls-panel" id="controls" aria-label="Parameters">
             <div class="control-field">
@@ -187,20 +154,6 @@
                 </p>
               </details>
             </details>
-            <details class="wide context-controls">
-              <summary>Research examples</summary>
-              <div class="control-field">
-                <label for="context">Worked context</label
-                ><select id="context">
-                  <option value="abstract" selected>Abstract example</option>
-                  <option value="medicine">Medicine</option>
-                  <option value="cognition">Cognitive science</option>
-                </select>
-              </div>
-              <p class="small" id="context-description">
-                All research examples use fictional data.
-              </p>
-            </details>
           </section>
           <p id="input-warning" class="notice" role="status" hidden></p>
         </aside>
@@ -238,16 +191,50 @@
               </p>
             </figure>
           </section>
-          <details class="prediction-panel info" id="prediction-panel">
-            <summary>Predict, then try the change</summary>
-            <div id="prediction-experiment"></div>
-          </details>
-          <details class="guided-lab info" id="guided-lab">
-            <summary id="guided-title">Build the idea step by step</summary>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="−1 ≤ r ≤ 1, when both variables vary"
+                  ><mrow
+                    ><mo>−</mo><mn>1</mn><mo>≤</mo><mi>r</mi><mo>≤</mo
+                    ><mn>1</mn></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  r measures the direction and strength of a straight-line
+                  association. It has no units. It is undefined if either
+                  variable has no variation.
+                </p>
+              </details>
+            </div>
             <div id="guided-content"></div>
-          </details>
+          </section>
           <details class="calculation-details info">
-            <summary>Read the calculation</summary>
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              The slider constructs points with the selected sample correlation.
+              It does not draw a random sample from a population with that
+              correlation. New pattern changes the points while keeping r fixed.
+              Manual input calculates r from your paired observations. A value
+              of zero means no linear association. A curved relationship may
+              still exist. Outliers can change r substantially. Correlation
+              alone cannot establish causation.
+            </p>
             <p id="calculation" aria-live="polite"></p>
           </details>
           <details class="info" id="correlation-working">
@@ -826,18 +813,11 @@
               >.
             </p>
           </details>
-          <details class="info">
-            <summary>Model, assumptions and interpretation</summary>
-            <p>
-              The slider constructs points with the selected sample correlation.
-              It does not draw a random sample from a population with that
-              correlation. New pattern changes the points while keeping r fixed.
-              Manual input calculates r from your paired observations. A value
-              of zero means no linear association. A curved relationship may
-              still exist. Outliers can change r substantially. Correlation
-              alone cannot establish causation.
-            </p>
-          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p><a href="regression-explorer.html">Linear regression</a></p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
         </div>
       </div>
     </main>

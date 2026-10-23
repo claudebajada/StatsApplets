@@ -6,10 +6,12 @@
   const content = LearningContent[id];
   if (!content) return;
   let latest,
-    refresh = () => {};
+    refresh = () => {},
+    refreshExperiment = () => {};
   document.addEventListener("applet:render", (event) => {
     latest = event.detail;
     refresh();
+    refreshExperiment();
   });
   const add = (tag, text, parent, attributes = {}) => {
     const node = document.createElement(tag);
@@ -55,7 +57,12 @@
   }
   function table(parent, headings, rows, caption) {
     parent.replaceChildren();
-    const scroll = add("div", null, parent, { class: "table-scroll" });
+    const scroll = add("div", null, parent, {
+      class: "table-scroll",
+      tabindex: "0",
+      role: "region",
+      "aria-label": caption,
+    });
     const t = add("table", null, scroll);
     add("caption", caption, t);
     const head = add("thead", null, t),
@@ -71,102 +78,101 @@
     const meta = AppletCatalogue.find((item) => item.id === id);
     const root = byId("guided-content");
     const title = byId("guided-title");
-    const context = byId("context");
-    function contextText() {
-      const selected = content.cases[context.value];
-      byId("context-description").textContent = selected
-        ? selected.title + ". " + selected.text
-        : "All research examples use fictional data.";
-      byId("context-status").textContent = selected
-        ? selected.text
-        : content.plain;
-    }
-    context.addEventListener("change", () => {
-      const selected = content.cases[context.value];
-      if (selected) {
-        apply({
-          ...selected.settings,
-          context: context.value,
-          ...(id === "clt-explorer" ? { traceCount: 1, traceMode: true } : {}),
-        });
-        byId("fit-axes")?.click();
+    const experiment = content.experiment;
+    const action = byId("experiment-action"),
+      reading = byId("experiment-reading");
+    const comparison = { ...experiment.baseline, ...experiment.change };
+    const matches = (state) =>
+      Object.entries(state).every(
+        ([key, value]) => String(AppletPage.read()[key]) === String(value),
+      );
+    const originalAxes = new Map();
+    function readExperiment() {
+      const d = latest;
+      if (!d) return "";
+      if (id.includes("sample") && id.includes("test")) {
+        return `The estimated reduction${d.independent ? " difference" : ""} is ${fixed(d.estimate)} mmHg. ${d.knownSigma ? "Known-SD" : "Estimated"} SE = ${fixed(d.result.se)} mmHg, so ${d.knownSigma ? "z" : "t"} = ${fixed(d.estimate)} / ${fixed(d.result.se)} = ${fixed(d.result.statistic)}. The two-sided p-value is ${probability(d.result.tails.twoSided)}. More people make the estimate more precise; the estimated reduction has not grown.`;
       }
-      contextText();
+      if (id.startsWith("binomial-")) {
+        const n = Number(
+            byId(id === "binomial-normal-explorer" ? "N" : "n").value,
+          ),
+          p = Number(
+            byId(id === "binomial-normal-explorer" ? "theta" : "p").value,
+          ),
+          k = Number(byId("k").value),
+          r = LearningMath.binomialSelection(n, p, k);
+        return id === "binomial-components-explorer"
+          ? `${r.coefficient} arrangement${r.coefficient === 1 ? "" : "s"} × ${probability(r.term)} per arrangement = ${probability(r.exact)} for exactly ${k} successes. The factor counting arrangements explains why the middle counts are more likely.`
+          : `For exactly ${k} successes: exact probability ${probability(r.exact)}, normal area ${r.normalArea === null ? "undefined" : probability(r.normalArea)}. Expected successes np = ${fixed(n * p, 1)} and failures n(1−p) = ${fixed(n * (1 - p), 1)}. Compare area with probability, not curve height with bar height.`;
+      }
+      if (id === "t-distribution-explorer")
+        return `With ${d.df} degrees of freedom, the two-sided 5% boundary is ±${fixed(jStat.studentt.inv(0.975, d.df))}, compared with ±1.960 for Z. A less reliable SD estimate needs a more distant boundary.`;
+      if (id === "f-distribution-explorer")
+        return `The upper 5% boundary is F = ${fixed(d.critical)}. A more stable denominator makes extreme ratios less common. Read the horizontal tick values: this plot fits its changing tail.`;
+      if (id === "chi-squared-explorer")
+        return `χ² = ${fixed(d.result.statistic)}, Cohen’s w = ${fixed(d.result.w)} and p = ${probability(d.result.p)}. The proportional departure is the same; a larger count gives stronger evidence against equal proportions.`;
+      if (id === "clt-explorer")
+        return `Individual SD stays 1. With ${d.n} observations per study, SE = 1/√${d.n} = ${fixed(d.result.theoreticalSE)}. Repeating studies fills the distribution; averaging more observations narrows it.`;
+      if (id === "confidence-interval-explorer")
+        return `Mean interval width is ${fixed(d.result.averageWidth)}. ${d.result.covered} of ${d.reps} intervals contain the fixed mean. Raising confidence widens the same samples’ intervals; it does not move the population mean.`;
+      if (id === "power-explorer")
+        return `Power is ${fixed(d.result.power * 100, 1)}%: the chance that this planned test rejects the null when the specified effect is real. The true effect remains d = ${fixed(d.d, 2)}; increasing n reduces the chance of missing it.`;
+      if (id === "correlation")
+        return `Pearson’s r = ${d.r === null ? "undefined" : fixed(d.r, 4)}. ${Math.abs(d.r || 0) < 1e-10 ? "The curve is still a perfect relationship. Its positive and negative centred products cancel, so a measure of linear association misses it." : "All five points rise along a straight line. The centred products reinforce one another."}`;
+      if (id === "regression-explorer")
+        return d.reveal
+          ? `The fitted line is ŷ = ${fixed(d.result.intercept)} + ${fixed(d.result.slope)}x. Its squared errors sum to ${fixed(d.result.sse)}, compared with 10 for the horizontal line. Smaller squared errors, not a prettier-looking slope, define this fit.`
+          : `Predicting y = 3 gives total squared error ${fixed(d.candidate.sse)}. Try changing the slope and intercept, or reveal the line that minimises this total.`;
+      if (id === "anova-explorer")
+        return `Between-group SS = ${fixed(d.result.between)}; within-group SS = ${fixed(d.result.within)}. The group means have stayed fixed, but extra scatter inside groups weakens the evidence that their population means differ.`;
+      if (id === "multiple-comparisons-explorer")
+        return `FWER = ${fixed(d.result.empiricalFWER * 100, 1)}%; FDR = ${fixed(d.result.empiricalFDR * 100, 1)}%. Across ${d.reps} families, ${d.result.trueDiscoveries} discoveries were correct and ${d.result.discoveries} were false. Bonferroni targets the chance of any false discovery; BH targets the average false fraction.`;
+      return "";
+    }
+    refreshExperiment = () => {
+      const changed = matches(comparison),
+        started = matches(experiment.baseline),
+        active = changed || started;
+      action.textContent = changed
+        ? "Return to starting example"
+        : started
+          ? experiment.action
+          : "Load this comparison";
+      byId("experiment-position").textContent = changed
+        ? "After the change"
+        : started
+          ? "Starting example"
+          : "Worked comparison";
+      reading.textContent = active
+        ? readExperiment()
+        : "Load this comparison to connect the question to the controls and plots. You can also explore your own settings below.";
+      for (const [chartId, axes] of Object.entries(experiment.axes)) {
+        const chart = Chart.getChart(chartId);
+        if (!chart) continue;
+        for (const [axis, label] of Object.entries(axes)) {
+          const key = chartId + axis;
+          if (!originalAxes.has(key))
+            originalAxes.set(key, chart.options.scales[axis].title.text);
+          chart.options.scales[axis].title.text = active
+            ? label
+            : originalAxes.get(key);
+        }
+        chart.update("none");
+      }
+    };
+    action.addEventListener("click", () => {
+      const starting = !matches(experiment.baseline);
+      AppletPage.loadExample(starting ? experiment.baseline : comparison);
+      if (starting) byId("fit-axes")?.click();
+      refreshExperiment();
     });
-    document.addEventListener("applet:state", contextText);
-    contextText();
-
-    // A controlled experiment: predict before revealing the intervention's result.
-    const prediction = content.prediction,
-      panel = byId("prediction-experiment");
-    add("p", prediction.prompt, panel);
-    const load = button(
-      "Load starting example",
-      panel,
-      () => {
-        apply({ ...prediction.setup, context: "abstract" });
-        byId("fit-axes")?.click();
-        choices.forEach((input) => {
-          input.disabled = false;
-          input.checked = false;
-        });
-        check.disabled = true;
-        feedback.textContent =
-          "Starting example loaded. Make a prediction before applying the change.";
-      },
-      { id: "prediction-start" },
+    document.addEventListener("applet:state", () =>
+      queueMicrotask(refreshExperiment),
     );
-    const fieldset = add("fieldset", null, panel);
-    add("legend", "Your prediction", fieldset);
-    const choices = prediction.options.map((text, index) => {
-      const label = add("label", null, fieldset, {
-        class: "prediction-choice",
-      });
-      const input = add("input", null, label, {
-        type: "radio",
-        name: "prediction-choice",
-        value: index,
-      });
-      input.disabled = true;
-      label.append(" " + text);
-      return input;
-    });
-    const check = button(
-      "Apply change and explain",
-      panel,
-      () => {
-        const chosen = choices.find((input) => input.checked);
-        if (!chosen) return;
-        apply({
-          ...prediction.setup,
-          ...prediction.change,
-          context: "abstract",
-        });
-        feedback.textContent =
-          (Number(chosen.value) === prediction.answer
-            ? "Your prediction matched. "
-            : "Compare your prediction with the result. ") +
-          prediction.explanation;
-      },
-      { id: "prediction-check" },
+    byId("controls").addEventListener("input", () =>
+      queueMicrotask(refreshExperiment),
     );
-    check.disabled = true;
-    choices.forEach((input) =>
-      input.addEventListener("change", () => {
-        check.disabled = false;
-      }),
-    );
-    const feedback = add(
-      "p",
-      "Load the starting example, then choose a prediction.",
-      panel,
-      { id: "prediction-feedback", role: "status" },
-    );
-    add("details", null, panel, { class: "transfer-question" });
-    const transfer = panel.lastElementChild;
-    add("summary", "Check the idea in words", transfer);
-    add("p", meta.question, transfer);
-    add("p", meta.answer, transfer);
 
     if (id.includes("sample") && id.includes("test")) {
       title.textContent = "Build the statistic from difference and uncertainty";
@@ -189,7 +195,11 @@
         if (!latest) return;
         const d = latest,
           r = d.result,
-          difference = d.mean1 - d.mean2;
+          difference = d.mean1 - d.mean2,
+          unit =
+            matches(experiment.baseline) || matches(comparison)
+              ? "mmHg"
+              : "original units";
         buttons.forEach((b, i) => {
           if (i === stage) b.setAttribute("aria-current", "step");
           else b.removeAttribute("aria-current");
@@ -200,7 +210,7 @@
           add("p", content.question, view);
           add(
             "p",
-            `${d.independent ? "Difference between sample means" : "Difference from the null mean"} = ${fixed(d.mean1)} − ${fixed(d.mean2)} = ${fixed(difference)} original units.`,
+            `${d.independent ? "Difference between sample means" : "Difference from the null mean"} = ${fixed(d.mean1)} − ${fixed(d.mean2)} = ${fixed(difference)} ${unit}.`,
             view,
             { class: "worked-number" },
           );
@@ -771,7 +781,7 @@
       refresh = () => {
         if (!latest) return;
         const r = latest.result;
-        text.textContent = `Each family has ${r.signals} real effects and ${r.nulls} true nulls. FWER counts families with any false discovery. FDR averages each family's false fraction, including zero when it makes no discoveries. Across this run: ${r.trueDiscoveries} correct discoveries and ${r.discoveries} false discoveries. The table follows the first simulated family.`;
+        text.textContent = `Each family has ${r.signals} real effects and ${r.nulls} true nulls. FWER counts families with any false discovery. FDR averages each family's false fraction, including zero when it makes no discoveries. Across this run: ${r.trueDiscoveries} correct discoveries and ${r.discoveries} false discoveries. The detection rate for real effects is ${r.empiricalPower === null ? "undefined because there are no real effects" : fixed(r.empiricalPower * 100, 1) + "%"}. The table follows the first simulated family.`;
         table(
           data,
           ["Test", "Simulated truth", "Raw p", "Adjusted p", "Decision"],
@@ -828,5 +838,6 @@
       add("p", meta.question + " " + meta.answer, root);
     }
     refresh();
+    refreshExperiment();
   });
 })();

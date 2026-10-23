@@ -31,9 +31,9 @@ Chart series also use rust `#a64922`, teal `#006b69`, purple `#793d91` and olive
 
 ## Layout
 
-The page width is at most 1440px. Desktop applet headers pair the introduction with the equation. Below them, a 256px parameter column sits beside the results and plots. The parameter column becomes 232px at narrower desktop widths, then moves above the plots at 900px. Controls form two columns on phones when labels and input types allow it. Selects and text areas use the full phone width.
+The page width is at most 1440px. Applet headers name the concept. A single worked comparison states the question and the change to try. The equation belongs with the derivation below the plots. Below them, a 256px parameter column sits beside the results and plots. The parameter column becomes 232px at narrower desktop widths, then moves above the plots at 900px. Controls form two columns on phones when labels and input types allow it. Selects and text areas use the full phone width.
 
-Results form one aligned row without separate boxes. Plot captions follow the figure. Calculations, symbol explanations and model details remain available through native disclosure controls. The correlation walkthrough keeps its four stages and vector diagram.
+Results form aligned groups without separate boxes. Plot captions and a live interpretation follow the figures. The main derivation is an open section, with actual values and inspectors. One disclosure holds model assumptions and the full calculation; symbol definitions remain beside the equation. The correlation walkthrough keeps its four stages and vector diagram.
 
 Regression and ANOVA show the controls for the selected data source. Simulated mode hides the manual text area. Manual mode hides simulation parameters and the new-sample action. Switching modes preserves both sets of values and their URL state.
 
@@ -50,3 +50,11 @@ Every interactive element keeps a visible keyboard focus outline. Buttons and se
 Compare the catalogue, a mean test, a single-distribution applet, the three-stage binomial applet and the correlation walkthrough at desktop and mobile sizes. Check intermediate widths, 320px screens, open disclosures, long labels, manual data, errors, keyboard input and touch. Verify that the statistical data and equations remain unchanged when editing appearance.
 
 The design used the written Anthropic Frontend Design and Impeccable guidance, including their typography, layout, responsive and critique references. The Impeccable launcher was unavailable, so its scripted detector and review commands were not run.
+
+## Learning flow
+
+The audience is students who can reason about research but have limited mathematical fluency. Medicine and cognitive science share the same interface and explanations. Choose an applied example only when its question, measurements and units explain the statistical concept; use a mathematical construction when it is clearer. Do not add cohort-specific labels or duplicate examples.
+
+The reading order is question, controlled change, controls and plots, interpretation, derivation, then related concepts. One primary blue button changes the example and returns to its starting state. The starting controls already match the example; students do not need to load it before learning. Free exploration and other presets remain available. After manual changes, the primary action clearly offers to reload the worked comparison.
+
+Keep the main mathematical explanation visible. Use disclosure for assumptions, reference calculations, reproducibility and specialised extensions. Remove duplicate introductions, navigation choices and quiz staging. A correct calculation and a passing accessibility scan do not establish that students can follow the explanation.

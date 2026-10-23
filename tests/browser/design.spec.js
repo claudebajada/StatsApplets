@@ -87,7 +87,7 @@ test("regression and ANOVA reveal the selected data controls without losing manu
     ["regression-explorer", "pairs", "1,2\n2,4\n3,5"],
     ["anova-explorer", "groups", "1,2,3\n3,4,5\n6,7,8"],
   ]) {
-    await page.goto(`/html/${id}.html`);
+    await page.goto(`/html/${id}.html?dataMode=generated`);
     await expect(page.locator(`#${input}`)).toBeHidden();
     await expect(page.locator("#sampleSize")).toBeVisible();
     await page.locator("#dataMode").selectOption("manual");
@@ -110,7 +110,9 @@ test("regression and ANOVA reveal the selected data controls without losing manu
 test("regression renders its fitted line, residual segments and zero reference in both data modes", async ({
   page,
 }) => {
-  await page.goto("/html/regression-explorer.html");
+  await page.goto(
+    "/html/regression-explorer.html?tryLine=false&revealFit=true",
+  );
   for (const mode of ["generated", "manual"]) {
     await page.locator("#dataMode").selectOption(mode);
     const lines = await page.evaluate(() => {

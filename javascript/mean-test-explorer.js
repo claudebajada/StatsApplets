@@ -48,9 +48,19 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
               ...lineDataset("SE end caps", [], chartPalette[0]),
               showLine: true,
             },
-            {...lineDataset("Two-sided 95% confidence interval", [], chartPalette[2]),showLine:true,borderWidth:2},
-            {...lineDataset("95% CI end caps", [], chartPalette[2]),showLine:true},
-
+            {
+              ...lineDataset(
+                "Two-sided 95% confidence interval",
+                [],
+                chartPalette[2],
+              ),
+              showLine: true,
+              borderWidth: 2,
+            },
+            {
+              ...lineDataset("95% CI end caps", [], chartPalette[2]),
+              showLine: true,
+            },
           ],
         },
         options: chartOptions(
@@ -89,7 +99,9 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
     nullChart.data.datasets[1].backgroundColor = chartPalette[1] + "66";
     nullChart.data.datasets[2].borderColor = chartPalette[3];
     nullChart.data.datasets[2].borderDash = [6, 4];
-    let lockedBounds = null, lockedNullExtent = null, fitRequested = false;
+    let lockedBounds = null,
+      lockedNullExtent = null,
+      fitRequested = false;
     function update() {
       const sd = number("sigma"),
         n = number(independent ? "N1" : "N");
@@ -122,10 +134,18 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
         `Your ${independent ? "mean difference" : "sample mean"} ${difference === 0 ? "matches the null value" : `is ${Math.abs(difference).toFixed(2)} units ${difference < 0 ? "below" : "above"} the null value`}. Dividing the signed difference by the ${isT ? "estimated " : ""}standard error ${se.toFixed(4)} gives ${statisticName} = ${statistic.toFixed(4)}. This is ${Math.abs(statistic).toFixed(2)} standard errors from the null. The p-value is the shaded area in plot 2, assuming the null hypothesis is true.`;
       const estimate = independent ? difference : mean1;
       const nullValue = independent ? 0 : mean2;
-      const critical = TeachingMath.confidenceInterval(0, 1, df+1, 0.95, isT ? "t" : "z").critical;
-      const low = estimate - critical*se, high = estimate + critical*se;
+      const critical = TeachingMath.confidenceInterval(
+        0,
+        1,
+        df + 1,
+        0.95,
+        isT ? "t" : "z",
+      ).critical;
+      const low = estimate - critical * se,
+        high = estimate + critical * se;
       get("estimate-value").textContent = estimate.toFixed(3);
-      get("ci-value").textContent = "[" + low.toFixed(3) + ", " + high.toFixed(3) + "]";
+      get("ci-value").textContent =
+        "[" + low.toFixed(3) + ", " + high.toFixed(3) + "]";
       estimateChart.data.datasets[0].data = [{ x: estimate, y: 1 }];
       estimateChart.data.datasets[1].data = [{ x: nullValue, y: 0 }];
       estimateChart.data.datasets[2].data = [
@@ -139,20 +159,35 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
         { x: estimate + se, y: 0.9 },
         { x: estimate + se, y: 1.1 },
       ];
-      estimateChart.data.datasets[4].data = [{x:low,y:0.75},{x:high,y:0.75}];
-      estimateChart.data.datasets[5].data = [
-        {x:low,y:0.68},{x:low,y:0.82},{x:estimate,y:null},
-        {x:high,y:0.68},{x:high,y:0.82},
+      estimateChart.data.datasets[4].data = [
+        { x: low, y: 0.75 },
+        { x: high, y: 0.75 },
       ];
-      const padding = Math.max(se, Math.abs(difference)*0.15);
-      const desiredBounds = [Math.min(nullValue,low)-padding, Math.max(nullValue,high)+padding];
+      estimateChart.data.datasets[5].data = [
+        { x: low, y: 0.68 },
+        { x: low, y: 0.82 },
+        { x: estimate, y: null },
+        { x: high, y: 0.68 },
+        { x: high, y: 0.82 },
+      ];
+      const padding = Math.max(se, Math.abs(difference) * 0.15);
+      const desiredBounds = [
+        Math.min(nullValue, low) - padding,
+        Math.max(nullValue, high) + padding,
+      ];
       const locked = get("lockScale").checked;
-      if (!lockedBounds || !locked || fitRequested) lockedBounds = desiredBounds;
+      if (!lockedBounds || !locked || fitRequested)
+        lockedBounds = desiredBounds;
       estimateChart.options.scales.x.min = lockedBounds[0];
       estimateChart.options.scales.x.max = lockedBounds[1];
-      const units = get("context").value === "medicine" ? "mmHg" :
-        get("context").value === "cognition" ? "ms" : "original units";
-      estimateChart.options.scales.x.title.text = (independent ? "Mean difference" : "Mean") + " (" + units + ")";
+      const units =
+        get("context").value === "medicine"
+          ? "mmHg"
+          : get("context").value === "cognition"
+            ? "ms"
+            : "original units";
+      estimateChart.options.scales.x.title.text =
+        (independent ? "Mean difference" : "Mean") + " (" + units + ")";
       estimateChart.update();
       const pdf = (x) =>
         isT ? jStat.studentt.pdf(x, df) : normalDensity(x, 0, 1);
@@ -190,30 +225,52 @@ function initMeanTest({ independent = false, knownSigma = false } = {}) {
       ];
       nullChart.data.datasets[2].label = `Observed ${statisticName} = ${statistic.toFixed(3)}`;
       nullChart.options.scales.x.title.text = statisticName + " statistic";
-      if (!lockedNullExtent || !locked || fitRequested) lockedNullExtent = extent;
+      if (!lockedNullExtent || !locked || fitRequested)
+        lockedNullExtent = extent;
       nullChart.options.scales.x.min = -lockedNullExtent;
       nullChart.options.scales.x.max = lockedNullExtent;
       get("scale-note").textContent = locked
-        ? (low < lockedBounds[0] || high > lockedBounds[1] || Math.abs(statistic) > lockedNullExtent
+        ? low < lockedBounds[0] ||
+          high > lockedBounds[1] ||
+          Math.abs(statistic) > lockedNullExtent
           ? "Some values lie outside the locked axes. Use Fit axes to current example to include them."
-          : "Axes are fixed: changing uncertainty changes the bar width on screen. Use Fit axes to choose a new reference.")
+          : "Axes are fixed: changing uncertainty changes the bar width on screen. Use Fit axes to choose a new reference."
         : "Axes resize to the current example. Their changing scale can hide changes in uncertainty.";
       fitRequested = false;
       // Datasets contain {x,y} objects: only numeric y values enter the maximum.
       nullChart.options.scales.y.max =
         Math.max(...points.map((p) => p.y)) * 1.1;
       nullChart.update();
-      document.dispatchEvent(new CustomEvent("applet:render", {detail:{
-        kind:document.body.dataset.applet, independent, knownSigma, mean1, mean2,
-        sd, n, n2:independent ? number("N2") : null, result, estimate, nullValue, low, high, critical,
-      }}));
+      document.dispatchEvent(
+        new CustomEvent("applet:render", {
+          detail: {
+            kind: document.body.dataset.applet,
+            independent,
+            knownSigma,
+            mean1,
+            mean2,
+            sd,
+            n,
+            n2: independent ? number("N2") : null,
+            result,
+            estimate,
+            nullValue,
+            low,
+            high,
+            critical,
+          },
+        }),
+      );
     }
     document
       .querySelectorAll('input[type="range"]')
       .forEach((slider) => slider.addEventListener("input", update));
     alternative.addEventListener("change", update);
     get("lockScale").addEventListener("change", update);
-    get("fit-axes").addEventListener("click", () => { fitRequested = true; update(); });
+    get("fit-axes").addEventListener("click", () => {
+      fitRequested = true;
+      update();
+    });
     document.addEventListener("applet:state", update);
     update();
   });

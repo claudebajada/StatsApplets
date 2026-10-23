@@ -24,7 +24,7 @@ Use Node.js 22 or newer, then open http://127.0.0.1:4173. Alternatively run `pyt
 | Hypothesis testing     | [Independent t](html/independent-samples-t-test.html)                  | Pooled equal-variance test; equal sample SDs, adjustable group sizes                |
 | Hypothesis testing     | [Chi-squared GOF](html/chi-squared-explorer.html)                      | Uniform null probabilities, exact integer totals and Cohen's w                      |
 | Hypothesis testing     | [One-way ANOVA](html/anova-explorer.html)                              | Between/within sums of squares, F and η²; generated or manual groups                |
-| Hypothesis testing     | [Multiple comparisons](html/multiple-comparisons-explorer.html)        | Independent all-null simulations: no adjustment, Bonferroni, Holm and BH            |
+| Hypothesis testing     | [Multiple comparisons](html/multiple-comparisons-explorer.html)        | Independent mixed-truth simulations: discoveries, FWER, FDR and corrections         |
 | Relationships          | [Correlation](html/correlation.html)                                   | One scatterplot, constructed/manual pairs and optional centring/normalisation steps |
 | Relationships          | [Linear regression](html/regression-explorer.html)                     | Generated or manual pairs; least squares, residuals, SSE and R²                     |
 | Sampling & uncertainty | [CLT](html/clt-explorer.html)                                          | Repeated means from normal, uniform, exponential or rare binary populations         |
@@ -35,7 +35,7 @@ Every page has a learning objective, equation, current-value explanation, assump
 
 ### Teaching distinctions
 
-- Mean-test sliders describe **sample statistics**, except the z test's known population σ. The independent test retains the original pooled, single-SD model; it is not Welch's test. Standardised differences are signed. Two plots connect the sample estimate in original units (with a ±1 SE bar) to the null distribution of z/t scores. The bar is explicitly not a confidence interval; individual measurements are not represented by a synthetic population curve.
+- Mean-test sliders describe **sample statistics**, except the z test's known population σ. The independent test retains the original pooled, single-SD model; it is not Welch's test. Standardised differences are signed. Two plots connect the sample estimate in original units (with a ±1 SE bar and a separate two-sided 95% confidence interval) to the null distribution of z/t scores. The bar is explicitly not a confidence interval; individual measurements are not represented by a synthetic population curve.
 - Greater-than, less-than and different-from alternatives are available for the mean tests and power. GOF χ² and omnibus ANOVA F are upper-tailed by construction, so they do not offer mathematically inappropriate signed alternatives.
 - Binomial bars are point probabilities; the normal curve is a density. Continuity-corrected **areas**, rather than curve heights, approximate binomial probabilities. At n=0, p=0 or p=1, the exact distribution remains valid and the continuous normal curve is omitted.
 - GOF counts are deterministic examples. Dimensionless category proportions are normalised, then allocated to integers by largest remainders. Changing N holds the underlying proportions fixed. Observed counts always sum to N; equal integer counts are impossible when N is not divisible by k. The effect is Cohen's w, not Cramér's V.
@@ -53,7 +53,7 @@ Correlation starts with a single scatterplot and Pearson’s r. Its sliders cons
 
 Conceptual inspiration and further reading: [Brendan O’Connor (2012), Cosine similarity, Pearson correlation, and OLS coefficients](https://brenocon.com/oldblog/brenocon.com/blog/2012/03/cosine-similarity-pearson-correlation-and-ols-coefficients/index.html). The student explanations, example and graphics were authored for StatsApplets. Positive changes of scale preserve r; negative changes of scale reverse its sign.
 
-All simulations use an explicit integer seed and a deterministic Mulberry32 generator. **New random sample** increments the seed. Reopening a link reproduces the same numerical experiment, including population settings and repetition count. Reset restores the applet's original parameter defaults.
+All simulations use an explicit integer seed and a deterministic Mulberry32 generator. Each applet labels its resampling action for the experiment; it increments the seed. Reopening a link reproduces the same numerical experiment, including population settings and repetition count. Reset restores the applet's original parameter defaults.
 
 ## Accessibility and visual design
 
@@ -127,7 +127,6 @@ Upstream references: [Chart.js v4 migration](https://www.chartjs.org/docs/latest
 Copy `index.html`, `html/`, `javascript/`, `css/` and `lib/` to a static host, preserving paths. No Node/Python server, npm install or build command is required in production. Links are relative, so repository-subdirectory hosting works. The existing `Videos/` assets remain available and are optional.
 
 Do not deploy or merge without approval. BSD-3-Clause; see [LICENSE](LICENSE). Third-party notices are in `lib/`.
-
 
 ## Guided learning experiments
 

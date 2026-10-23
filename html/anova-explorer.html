@@ -1,12 +1,326 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Compare variation between group means with variation within groups."><title>One-way ANOVA · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="anova-explorer"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Hypothesis testing</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="f-distribution-explorer.html">F distribution</a> · <a href="independent-samples-t-test.html">Independent t test</a> · <a href="multiple-comparisons-explorer.html">Multiple comparisons</a></span></nav><header class="page-header"><div class="title-block"><h1>One-way ANOVA</h1><p class="lede applet-introduction">One-way analysis of variance, or ANOVA, tests whether groups have equal population means. It compares variation between group means with variation within groups. Increase the spacing between population means to see how the F statistic responds. The test alone does not identify which groups differ.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="F = (SSbetween/(k − 1))/(SSwithin/(N − k)); η² = SSbetween/SStotal"><mrow><mi>F</mi><mo>=</mo><mfrac><mfrac><msub><mi>SS</mi><mtext>between</mtext></msub><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mfrac><msub><mi>SS</mi><mtext>within</mtext></msub><mrow><mi>N</mi><mo>−</mo><mi>k</mi></mrow></mfrac></mfrac></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">SS means sum of squares. k is the number of groups and N is the total sample size. Divide each sum of squares by its degrees of freedom to get a mean square. F is the between-group mean square divided by the within-group mean square.</p></details></div></header>
-<p class="learning-orientation"><strong>Simulated groups or observed group values.</strong> Are group means separated relative to the variation within groups?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="dataMode">Data source</label><select id="dataMode"><option value="generated" selected>Simulated data</option><option value="manual">Use the groups below</option></select></div><div class="control-field"><label for="sampleSize">Generated sample size per group: <output id="sampleSize-value" for="sampleSize">20</output></label><div class="range-pair"><input type="range" id="sampleSize" min="2" max="100" step="1" value="20"><label class="visually-hidden" for="sampleSize-number">Exact value: Generated sample size per group</label><input type="number" class="range-number" data-range="sampleSize" id="sampleSize-number" min="2" max="100" step="1" value="20"></div><span class="range-bounds" aria-hidden="true">2 to 100</span></div><div class="control-field"><label for="separation">Spacing between population means: <output id="separation-value" for="separation">1</output></label><div class="range-pair"><input type="range" id="separation" min="0" max="3" step="0.1" value="1"><label class="visually-hidden" for="separation-number">Exact value: Spacing between population means</label><input type="number" class="range-number" data-range="separation" id="separation-number" min="0" max="3" step="0.1" value="1"></div><span class="range-bounds" aria-hidden="true">0 to 3</span></div><div class="control-field"><label for="withinSD">Common population SD: <output id="withinSD-value" for="withinSD">1</output></label><div class="range-pair"><input type="range" id="withinSD" min="0.1" max="3" step="0.1" value="1"><label class="visually-hidden" for="withinSD-number">Exact value: Common population SD</label><input type="number" class="range-number" data-range="withinSD" id="withinSD-number" min="0.1" max="3" step="0.1" value="1"></div><span class="range-bounds" aria-hidden="true">0.1 to 3</span></div><details class="wide seed-details"><summary>Reproduce this experiment</summary><div class="control-field"><label for="seed">Random seed</label><input type="number" id="seed" min="0" max="2147483647" step="1" value="42"></div><p class="small">The same seed and settings reproduce the same simulated values.</p></details><div class="control-field wide"><label for="groups">Manual groups: one line per group, values separated by commas</label><textarea id="groups" rows="6" maxlength="12000" spellcheck="false">1,2,3
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare variation between group means with variation within groups."
+    />
+    <title>One-way ANOVA · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="anova-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p>
+            <a href="f-distribution-explorer.html">F distribution</a> ·
+            <a href="independent-samples-t-test.html">Independent t test</a> ·
+            <a href="multiple-comparisons-explorer.html"
+              >Multiple comparisons</a
+            >
+          </p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>One-way ANOVA</h1>
+          <p class="lede applet-introduction">
+            Compare variation between group means with variation within groups.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              One-way analysis of variance, or ANOVA, tests whether groups have
+              equal population means. It compares variation between group means
+              with variation within groups. Increase the spacing between
+              population means to see how the F statistic responds. The test
+              alone does not identify which groups differ.
+            </p>
+            <p class="context-status" id="context-status">
+              Group differences can coexist with noisy individual observations.
+              ANOVA partitions total squared deviations into within-group and
+              between-group contributions.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="F = (SSbetween/(k − 1))/(SSwithin/(N − k)); η² = SSbetween/SStotal"
+              ><mrow
+                ><mi>F</mi><mo>=</mo
+                ><mfrac
+                  ><mfrac
+                    ><msub><mi>SS</mi><mtext>between</mtext></msub
+                    ><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac
+                  ><mfrac
+                    ><msub><mi>SS</mi><mtext>within</mtext></msub
+                    ><mrow><mi>N</mi><mo>−</mo><mi>k</mi></mrow></mfrac
+                  ></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              SS means sum of squares. k is the number of groups and N is the
+              total sample size. Divide each sum of squares by its degrees of
+              freedom to get a mean square. F is the between-group mean square
+              divided by the within-group mean square.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Simulated groups or observed group values.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="dataMode">Data source</label
+              ><select id="dataMode">
+                <option value="generated" selected>Simulated data</option>
+                <option value="manual">Use the groups below</option>
+              </select>
+            </div>
+            <div class="control-field">
+              <label for="sampleSize"
+                >Generated sample size per group:
+                <output id="sampleSize-value" for="sampleSize"
+                  >20</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sampleSize"
+                  min="2"
+                  max="100"
+                  step="1"
+                  value="20"
+                /><label class="visually-hidden" for="sampleSize-number"
+                  >Exact value: Generated sample size per group</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sampleSize"
+                  id="sampleSize-number"
+                  min="2"
+                  max="100"
+                  step="1"
+                  value="20"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">2 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="separation"
+                >Spacing between population means:
+                <output id="separation-value" for="separation">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="separation"
+                  min="0"
+                  max="3"
+                  step="0.1"
+                  value="1"
+                /><label class="visually-hidden" for="separation-number"
+                  >Exact value: Spacing between population means</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="separation"
+                  id="separation-number"
+                  min="0"
+                  max="3"
+                  step="0.1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 3</span>
+            </div>
+            <div class="control-field">
+              <label for="withinSD"
+                >Common population SD:
+                <output id="withinSD-value" for="withinSD">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="withinSD"
+                  min="0.1"
+                  max="3"
+                  step="0.1"
+                  value="1"
+                /><label class="visually-hidden" for="withinSD-number"
+                  >Exact value: Common population SD</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="withinSD"
+                  id="withinSD-number"
+                  min="0.1"
+                  max="3"
+                  step="0.1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.1 to 3</span>
+            </div>
+            <details class="wide seed-details">
+              <summary>Reproduce this experiment</summary>
+              <div class="control-field">
+                <label for="seed">Random seed</label
+                ><input
+                  type="number"
+                  id="seed"
+                  min="0"
+                  max="2147483647"
+                  step="1"
+                  value="42"
+                />
+              </div>
+              <p class="small">
+                The same seed and settings reproduce the same simulated values.
+              </p>
+            </details>
+            <div class="control-field wide">
+              <label for="groups"
+                >Manual groups: one line per group, values separated by
+                commas</label
+              ><textarea
+                id="groups"
+                rows="6"
+                maxlength="12000"
+                spellcheck="false"
+              >
+1,2,3
 2,3,4
-4,5,6</textarea></div><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">Group differences can coexist with noisy individual observations. ANOVA partitions total squared deviations into within-group and between-group contributions.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"></div></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">Individual observations & sample group means</h2><div class="plot-frame"><canvas id="groupsChart" class="chart-canvas" role="img" aria-label="Individual observations & sample group means"></canvas></div><p class="chart-explanation" id="groupsChart-explanation">Dots show individual observations in each group. Squares mark the sample means. Compare the separation between means with the variation within groups.</p></figure><figure class="chart-container"><h2 class="chart-title">Null F density & observed F</h2><div class="plot-frame"><canvas id="anovaChart" class="chart-canvas" role="img" aria-label="Null F density & observed F"></canvas></div><p class="chart-explanation" id="anovaChart-explanation">This curve describes F statistics from repeated studies with equal population means. The vertical line marks the observed F. The shaded upper tail is its p-value.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>The simulated groups have population means of −spacing, 0 and +spacing. They share a population standard deviation, and observations are independent normal values. ANOVA divides the total sum of squares into between-group and within-group parts. Exact F-test p-values assume independent observations, normal errors and equal population variances. Even with equal population means, random samples usually give different sample means and an F above zero. A significant result does not identify which groups differ. Manual input allows unequal group sizes. Enter at least two observations per group.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/extensions.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+4,5,6</textarea>
+            </div>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Individual observations & sample group means
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="groupsChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Individual observations & sample group means"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="groupsChart-explanation">
+                Dots show individual observations in each group. Squares mark
+                the sample means. Compare the separation between means with the
+                variation within groups.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Null F density & observed F</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="anovaChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null F density & observed F"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="anovaChart-explanation">
+                This curve describes F statistics from repeated studies with
+                equal population means. The vertical line marks the observed F.
+                The shaded upper tail is its p-value.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The simulated groups have population means of −spacing, 0 and
+              +spacing. They share a population standard deviation, and
+              observations are independent normal values. ANOVA divides the
+              total sum of squares into between-group and within-group parts.
+              Exact F-test p-values assume independent observations, normal
+              errors and equal population variances. Even with equal population
+              means, random samples usually give different sample means and an F
+              above zero. A significant result does not identify which groups
+              differ. Manual input allows unequal group sizes. Enter at least
+              two observations per group.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

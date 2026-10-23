@@ -1,10 +1,299 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="See how sample size and the true effect change a test's power."><title>Statistical power · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="power-explorer"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Sampling &amp; uncertainty</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="one-sample-z-test.html">One-sample z test</a> · <a href="confidence-interval-explorer.html">Confidence interval coverage</a> · <a href="multiple-comparisons-explorer.html">Multiple comparisons</a></span></nav><header class="page-header"><div class="title-block"><h1>Statistical power</h1><p class="lede applet-introduction">Power is the probability that a test rejects the null hypothesis for a specified true effect. This applet calculates power for a one-sample z test with a known population standard deviation. Keep the effect fixed and increase the sample size to see how the chance of rejection changes.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"><mrow><mi>Power</mi><mo>=</mo><mi>P</mi><mrow><mo>(</mo><mrow><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub><mo>|</mo><mi>μ</mi><mo>=</mo><msub><mi>μ</mi><mn>1</mn></msub></mrow><mo>)</mo></mrow></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">H₀ is the null hypothesis. d is the true difference between the population mean and the null mean, divided by the population standard deviation. Power is the probability of rejecting H₀ for that effect.</p></details></div></header>
-<p class="learning-orientation"><strong>Assumed true population effect.</strong> How often would a planned test detect a specified true effect?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="sampleSize">Sample size n: <output id="sampleSize-value" for="sampleSize">30</output></label><div class="range-pair"><input type="range" id="sampleSize" min="2" max="300" step="1" value="30"><label class="visually-hidden" for="sampleSize-number">Exact value: Sample size n</label><input type="number" class="range-number" data-range="sampleSize" id="sampleSize-number" min="2" max="300" step="1" value="30"></div><span class="range-bounds" aria-hidden="true">2 to 300</span></div><div class="control-field"><label for="effect">True signed standardised effect d: <output id="effect-value" for="effect">0.5</output></label><div class="range-pair"><input type="range" id="effect" min="-2" max="2" step="0.05" value="0.5"><label class="visually-hidden" for="effect-number">Exact value: True signed standardised effect d</label><input type="number" class="range-number" data-range="effect" id="effect-number" min="-2" max="2" step="0.05" value="0.5"></div><span class="range-bounds" aria-hidden="true">-2 to 2</span></div><div class="control-field"><label for="alpha">Significance level α: <output id="alpha-value" for="alpha">0.05</output></label><div class="range-pair"><input type="range" id="alpha" min="0.01" max="0.2" step="0.01" value="0.05"><label class="visually-hidden" for="alpha-number">Exact value: Significance level α</label><input type="number" class="range-number" data-range="alpha" id="alpha-number" min="0.01" max="0.2" step="0.01" value="0.05"></div><span class="range-bounds" aria-hidden="true">0.01 to 0.2</span></div><div class="control-field"><label for="alternative">H₁: μ is … μ₀</label><select id="alternative"><option value="upper">greater than</option><option value="lower">less than</option><option value="twoSided" selected>different from</option></select></div><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">This is prospective power for a known-SD z test. The effect is an assumed population difference, rather than a sample effect estimated after a study.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"></div></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">Null & specified alternative sampling densities</h2><div class="plot-frame"><canvas id="powerChart" class="chart-canvas" role="img" aria-label="Null & specified alternative sampling densities"></canvas></div><p class="chart-explanation" id="powerChart-explanation">The null curve describes z scores when the null is true. The other curve describes z scores for the chosen true effect. The shaded area under that second curve is power. It is the probability of rejecting the null for that effect.</p></figure><figure class="chart-container"><h2 class="chart-title">Power as sample size changes</h2><div class="plot-frame"><canvas id="powerCurveChart" class="chart-canvas" role="img" aria-label="Power as sample size changes"></canvas></div><p class="chart-explanation" id="powerCurveChart-explanation">Each point gives the chance of rejecting the null at that sample size, holding the true effect, significance level and alternative fixed.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>The calculation assumes a one-sample z test with a known population standard deviation and independent normal observations. The effect d = (μ − μ₀)/σ describes the population. The z statistic has standard deviation 1 and mean d√n under that effect. The null distribution determines the rejection region. Power is the area of the alternative distribution inside that region. A one-sided test can have power below α when the true effect points in the opposite direction. These calculations apply to z tests. A t test needs a different power calculation.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/extensions.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how sample size and the true effect change a test's power."
+    />
+    <title>Statistical power · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="power-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a
+        ><span>Sampling &amp; uncertainty</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p>
+            <a href="one-sample-z-test.html">One-sample z test</a> ·
+            <a href="confidence-interval-explorer.html"
+              >Confidence interval coverage</a
+            >
+            ·
+            <a href="multiple-comparisons-explorer.html"
+              >Multiple comparisons</a
+            >
+          </p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>Statistical power</h1>
+          <p class="lede applet-introduction">
+            See how sample size and the true effect change a test's power.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              Power is the probability that a test rejects the null hypothesis
+              for a specified true effect. This applet calculates power for a
+              one-sample z test with a known population standard deviation. Keep
+              the effect fixed and increase the sample size to see how the
+              chance of rejection changes.
+            </p>
+            <p class="context-status" id="context-status">
+              This is prospective power for a known-SD z test. The effect is an
+              assumed population difference, rather than a sample effect
+              estimated after a study.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"
+              ><mrow
+                ><mi>Power</mi><mo>=</mo><mi>P</mi
+                ><mrow
+                  ><mo>(</mo
+                  ><mrow
+                    ><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub
+                    ><mo>|</mo><mi>μ</mi><mo>=</mo
+                    ><msub><mi>μ</mi><mn>1</mn></msub></mrow
+                  ><mo>)</mo></mrow
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              H₀ is the null hypothesis. d is the true difference between the
+              population mean and the null mean, divided by the population
+              standard deviation. Power is the probability of rejecting H₀ for
+              that effect.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Assumed true population effect.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="sampleSize"
+                >Sample size n:
+                <output id="sampleSize-value" for="sampleSize"
+                  >30</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sampleSize"
+                  min="2"
+                  max="300"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="sampleSize-number"
+                  >Exact value: Sample size n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sampleSize"
+                  id="sampleSize-number"
+                  min="2"
+                  max="300"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">2 to 300</span>
+            </div>
+            <div class="control-field">
+              <label for="effect"
+                >True signed standardised effect d:
+                <output id="effect-value" for="effect">0.5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="effect"
+                  min="-2"
+                  max="2"
+                  step="0.05"
+                  value="0.5"
+                /><label class="visually-hidden" for="effect-number"
+                  >Exact value: True signed standardised effect d</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="effect"
+                  id="effect-number"
+                  min="-2"
+                  max="2"
+                  step="0.05"
+                  value="0.5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-2 to 2</span>
+            </div>
+            <div class="control-field">
+              <label for="alpha"
+                >Significance level α:
+                <output id="alpha-value" for="alpha">0.05</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="alpha"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                /><label class="visually-hidden" for="alpha-number"
+                  >Exact value: Significance level α</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="alpha"
+                  id="alpha-number"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.01 to 0.2</span>
+            </div>
+            <div class="control-field">
+              <label for="alternative">H₁: μ is … μ₀</label
+              ><select id="alternative">
+                <option value="upper">greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided" selected>different from</option>
+              </select>
+            </div>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Null & specified alternative sampling densities
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="powerChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null & specified alternative sampling densities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="powerChart-explanation">
+                The null curve describes z scores when the null is true. The
+                other curve describes z scores for the chosen true effect. The
+                shaded area under that second curve is power. It is the
+                probability of rejecting the null for that effect.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Power as sample size changes</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="powerCurveChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Power as sample size changes"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="powerCurveChart-explanation">
+                Each point gives the chance of rejecting the null at that sample
+                size, holding the true effect, significance level and
+                alternative fixed.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The calculation assumes a one-sample z test with a known
+              population standard deviation and independent normal observations.
+              The effect d = (μ − μ₀)/σ describes the population. The z
+              statistic has standard deviation 1 and mean d√n under that effect.
+              The null distribution determines the rejection region. Power is
+              the area of the alternative distribution inside that region. A
+              one-sided test can have power below α when the true effect points
+              in the opposite direction. These calculations apply to z tests. A
+              t test needs a different power calculation.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

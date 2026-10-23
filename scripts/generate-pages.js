@@ -9,7 +9,12 @@ const escape = (s) =>
     .replaceAll("<", "&lt;")
     .replaceAll('"', "&quot;");
 const range = (id, label, min, max, step, value) => {
-  const outputId = {"df-slider":"df-value","df1-slider":"df1-value","df2-slider":"df2-value"}[id] || id+"-value";
+  const outputId =
+    {
+      "df-slider": "df-value",
+      "df1-slider": "df1-value",
+      "df2-slider": "df2-value",
+    }[id] || id + "-value";
   return `<div class="control-field"><label for="${id}">${label}: <output id="${outputId}" for="${id}">${value}</output></label><div class="range-pair"><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"><label class="visually-hidden" for="${id}-number">Exact value: ${label}</label><input type="number" class="range-number" data-range="${id}" id="${id}-number" min="${min}" max="${max}" step="${step}" value="${value}"></div><span class="range-bounds" aria-hidden="true">${min} to ${max}</span></div>`;
 };
 const select = (id, label, options, value) =>
@@ -139,17 +144,20 @@ for (const id of [
         independent ? "H₁: μ₁ − μ₂ is … 0" : "H₁: μ is … μ₀",
         directions,
         "twoSided",
-      ) + '<div class="control-field wide"><label><input id="lockScale" type="checkbox" checked> Keep axes fixed for comparison</label><button id="fit-axes" type="button">Fit axes to current example</button></div>',
+      ) +
+      '<details class="wide plot-controls"><summary>Plot axes</summary><div class="control-field"><label><input id="lockScale" type="checkbox" checked> Keep axes fixed for comparison</label><button id="fit-axes" type="button">Fit axes to current example</button></div></details>',
     metrics:
-      metric(independent ? "Estimated difference" : "Estimated mean", "estimate-value") +
-      metric("95% confidence interval", "ci-value") +
-      metric(z ? "Standardised difference (σ)" : "Signed Cohen's d", "cohen-d-value") +
-      metric("Selected p-value", "p-value-selected") +
-      metric(z ? "z score" : "t score", z ? "z-value" : "t-value") +
       metric(
-        z ? "Standard error, SE" : "Estimated standard error, SE",
-        "se-value",
-      ),
+        independent ? "Estimated difference" : "Estimated mean",
+        "estimate-value",
+      ) +
+      metric("95% confidence interval", "ci-value") +
+      metric(
+        z ? "Standardised difference (σ)" : "Signed Cohen's d",
+        "cohen-d-value",
+      ) +
+      metric("Selected p-value", "p-value-selected"),
+    resultMath: `<p class="result-math">${z ? 'z = <strong id="z-value">…</strong>; known' : 't = <strong id="t-value">…</strong>; estimated'} SE = <strong id="se-value">…</strong></p>`,
     extraResults: `<details class="info"><summary>Degrees of freedom and other tail probabilities</summary><div class="metrics">${
       (z ? "" : metric("Degrees of freedom", "df-value")) +
       metric("Lower-tail p", "p-value-lower") +
@@ -307,7 +315,8 @@ pages["clt-explorer"] = {
     '<div class="control-field wide"><label><input type="checkbox" id="lockScale" checked> Keep mean axis fixed for comparison</label></div>' +
     seed,
   metrics: "",
-  beforePlots:'<section class="sample-trace" aria-labelledby="trace-title"><h2 id="trace-title">Watch one study become one mean</h2><div id="sample-trace"></div></section>',
+  beforePlots:
+    '<section class="sample-trace" aria-labelledby="trace-title"><h2 id="trace-title">Watch one study become one mean</h2><div id="sample-trace"></div></section>',
   charts:
     chart("populationChart", "Individual observations from the population") +
     chart("meansChart", "Means from repeated samples"),
@@ -322,7 +331,7 @@ pages["confidence-interval-explorer"] = {
     range("sampleSize", "Sample size n", 2, 100, 1, 20) +
     range("repetitions", "Repeated intervals", 100, 1000, 100, 500) +
     range("level", "Confidence level", 0.8, 0.99, 0.01, 0.95) +
-    '<div class="control-field wide"><label><input type="checkbox" id="lockScale" checked> Keep interval axis fixed for comparison</label></div>' +
+    '<details class="wide plot-controls"><summary>Plot axes</summary><div class="control-field"><label><input type="checkbox" id="lockScale" checked> Keep interval axis fixed for comparison</label><button id="fit-axes" type="button">Fit axes to current example</button></div></details>' +
     select(
       "method",
       "Interval procedure",
@@ -419,9 +428,23 @@ pages["multiple-comparisons-explorer"] = {
   controls:
     range("tests", "Independent tests per family m", 1, 100, 1, 20) +
     range("repetitions", "Simulated families", 100, 2000, 100, 1000) +
-    range("alpha", "Error-rate threshold α", 0.01, 0.2, 0.01, 0.05) +
-    range("signalFraction", "Proportion of hypotheses with a real effect", 0, 1, 0.05, 0) +
-    range("signalEffect", "True effect d for real effects", 0.05, 1.5, 0.05, 0.5) +
+    range("alpha", "Threshold α (FWER) or q (FDR)", 0.01, 0.2, 0.01, 0.05) +
+    range(
+      "signalFraction",
+      "Proportion of hypotheses with a real effect",
+      0,
+      1,
+      0.05,
+      0,
+    ) +
+    range(
+      "signalEffect",
+      "True effect d for real effects",
+      0.05,
+      1.5,
+      0.05,
+      0.5,
+    ) +
     range("signalN", "Observations per signal test", 2, 100, 1, 30) +
     select(
       "correction",
@@ -448,17 +471,28 @@ async function generate() {
     const p = pages[meta.id];
     if (!p) throw Error("Missing page " + meta.id);
     const lesson = learning[meta.id];
-    const contextControls = `<details class="wide context-controls"><summary>Research examples</summary>${select("context","Worked context",[["abstract","Abstract example"],["medicine","Medicine"],["cognition","Cognitive science"]],"abstract")}<p class="small" id="context-description">All research examples use fictional data.</p></details>`;
-    const relatedLinks = lesson.related.map(id => {
-      const entry = catalogue.find(a => a.id === id);
-      return `<a href="${id}.html">${entry.title}</a>`;
-    }).join(" · ");
+    const contextControls = `<details class="wide context-controls"><summary>Research examples</summary>${select(
+      "context",
+      "Worked context",
+      [
+        ["abstract", "Abstract example"],
+        ["medicine", "Medicine"],
+        ["cognition", "Cognitive science"],
+      ],
+      "abstract",
+    )}<p class="small" id="context-description">All research examples use fictional data.</p></details>`;
+    const relatedLinks = lesson.related
+      .map((id) => {
+        const entry = catalogue.find((a) => a.id === id);
+        return `<a href="${id}.html">${entry.title}</a>`;
+      })
+      .join(" · ");
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: ${relatedLinks}</span></nav><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.introduction)}</p></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
-<p class="learning-orientation"><strong>${escape(lesson.role)}.</strong> ${escape(lesson.question)}</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}${contextControls}</section><p class="small context-status" id="context-status">${escape(lesson.plain)}</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
+<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><details class="related-ideas"><summary>Related ideas</summary><p>${relatedLinks}</p></details></nav><header class="page-header"><div class="title-block"><h1>${meta.title}</h1><p class="lede applet-introduction">${escape(meta.objective)}</p><details class="intro-details"><summary>How this explorer works</summary><p>${escape(meta.introduction)}</p><p class="context-status" id="context-status">${escape(lesson.plain)}</p></details></div><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div></header>
+<p class="learning-orientation"><strong>${escape(lesson.role)}.</strong></p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}${contextControls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
+<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.resultMath || ""}${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
 ${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<details class="info"><summary>Model, assumptions and interpretation</summary><p>${p.method}</p></details></div></div>
 </main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
 <script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}<script src="../javascript/learning.js"></script>

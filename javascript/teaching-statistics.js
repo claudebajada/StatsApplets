@@ -180,9 +180,13 @@
       shift,
       power: Math.max(0, Math.min(1, probability)),
       nonRejection: Math.max(0, 1 - probability),
-      beta: d !== 0 && (direction === "twoSided" ||
-        (direction === "upper" && d > 0) || (direction === "lower" && d < 0))
-        ? Math.max(0, 1 - probability) : null,
+      beta:
+        d !== 0 &&
+        (direction === "twoSided" ||
+          (direction === "upper" && d > 0) ||
+          (direction === "lower" && d < 0))
+          ? Math.max(0, 1 - probability)
+          : null,
     };
   }
   function parsePairs(text, min = 2, max = 100) {
@@ -424,34 +428,53 @@
     } else throw new RangeError("Unknown adjustment");
     return result;
   }
-  function multipleComparisons(m, repetitions, alpha, method, seed, options = {}) {
+  function multipleComparisons(
+    m,
+    repetitions,
+    alpha,
+    method,
+    seed,
+    options = {},
+  ) {
     integer(m, 1, 100);
     integer(repetitions, 10, 5000);
     rate(alpha);
-    const signals = options.signals ?? 0, effect = options.effect ?? 0.8,
+    const signals = options.signals ?? 0,
+      effect = options.effect ?? 0.8,
       sampleSize = options.sampleSize ?? 30;
     integer(signals, 0, m);
     finite(effect);
     integer(sampleSize, 2, 1000);
     const random = rng(seed);
-    let families = 0, discoveries = 0, trueDiscoveries = 0, fdpSum = 0;
-    const counts = [], trueCounts = [];
+    let families = 0,
+      discoveries = 0,
+      trueDiscoveries = 0,
+      fdpSum = 0;
+    const counts = [],
+      trueCounts = [];
     let firstFamily;
     for (let i = 0; i < repetitions; i++) {
-      const ps = Array.from({ length: m }, (_, j) => j < signals
-        ? S.zTails(gaussian(random) + effect * Math.sqrt(sampleSize)).twoSided
-        : random());
+      const ps = Array.from({ length: m }, (_, j) =>
+        j < signals
+          ? S.zTails(gaussian(random) + effect * Math.sqrt(sampleSize)).twoSided
+          : random(),
+      );
       const adjusted = adjustPValues(ps, method);
-      let falseCount = 0, trueCount = 0;
+      let falseCount = 0,
+        trueCount = 0;
       adjusted.forEach((p, j) => {
         if (p <= alpha) {
           if (j < signals) trueCount++;
           else falseCount++;
         }
       });
-      if (i === 0) firstFamily = ps.map((p, j) => ({
-        p, adjusted: adjusted[j], isNull: j >= signals, rejected: adjusted[j] <= alpha,
-      }));
+      if (i === 0)
+        firstFamily = ps.map((p, j) => ({
+          p,
+          adjusted: adjusted[j],
+          isNull: j >= signals,
+          rejected: adjusted[j] <= alpha,
+        }));
       counts.push(falseCount);
       trueCounts.push(trueCount);
       if (falseCount) families++;
@@ -461,11 +484,19 @@
       fdpSum += total ? falseCount / total : 0;
     }
     return {
-      families, discoveries, trueDiscoveries, counts, trueCounts, firstFamily,
-      signals, nulls: m - signals,
+      families,
+      discoveries,
+      trueDiscoveries,
+      counts,
+      trueCounts,
+      firstFamily,
+      signals,
+      nulls: m - signals,
       empiricalFWER: families / repetitions,
       empiricalFDR: fdpSum / repetitions,
-      empiricalPower: signals ? trueDiscoveries / (signals * repetitions) : null,
+      empiricalPower: signals
+        ? trueDiscoveries / (signals * repetitions)
+        : null,
       unadjustedFWER: 1 - (1 - alpha) ** (m - signals),
     };
   }

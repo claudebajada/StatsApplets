@@ -177,8 +177,14 @@
         ["Negative association", { association: -0.8 }],
         ["No linear association", { association: 0 }],
         ["Perfect straight line", { association: 1 }],
-        ["Curved relationship, r = 0", {dataMode:"manual",pairs:"-2,4\n-1,1\n0,0\n1,1\n2,4"}],
-        ["Influential outlier", {dataMode:"manual",pairs:"1,1\n2,3\n3,2\n4,5\n5,4\n20,-20"}],
+        [
+          "Curved relationship, r = 0",
+          { dataMode: "manual", pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4" },
+        ],
+        [
+          "Influential outlier",
+          { dataMode: "manual", pairs: "1,1\n2,3\n3,2\n4,5\n5,4\n20,-20" },
+        ],
       ],
     ),
     item(
@@ -258,9 +264,21 @@
         ["Strong signal", { slope: 2, noise: 0.4, sampleSize: 30 }],
         ["Small sample", { slope: 1, noise: 1, sampleSize: 5 }],
         ["Large sample", { slope: 1, noise: 1, sampleSize: 100 }],
-        ["Curvature in residuals", {dataMode:"manual",pairs:"-2,4\n-1,1\n0,0\n1,1\n2,4"}],
-        ["Unequal residual spread", {dataMode:"manual",pairs:"0,1\n1,1.9\n2,3.2\n3,3.5\n4,6\n5,3\n6,10\n7,4"}],
-        ["Influential observation", {dataMode:"manual",pairs:"1,1\n2,3\n3,2\n4,5\n5,4\n20,-20"}],
+        [
+          "Curvature in residuals",
+          { dataMode: "manual", pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4" },
+        ],
+        [
+          "Unequal residual spread",
+          {
+            dataMode: "manual",
+            pairs: "0,1\n1,1.9\n2,3.2\n3,3.5\n4,6\n5,3\n6,10\n7,4",
+          },
+        ],
+        [
+          "Influential observation",
+          { dataMode: "manual", pairs: "1,1\n2,3\n3,2\n4,5\n5,4\n20,-20" },
+        ],
       ],
     ),
     item(
@@ -296,8 +314,28 @@
         ["Unadjusted family", { tests: 20, alpha: 0.05, correction: "none" }],
         ["Bonferroni", { tests: 20, alpha: 0.05, correction: "bonferroni" }],
         ["BH FDR", { tests: 20, alpha: 0.05, correction: "bh" }],
-        ["Mixed truth: BH", {tests:20,alpha:0.05,correction:"bh",signalFraction:0.3,signalEffect:0.5,signalN:30}],
-        ["Mixed truth: Bonferroni", {tests:20,alpha:0.05,correction:"bonferroni",signalFraction:0.3,signalEffect:0.5,signalN:30}],
+        [
+          "Mixed truth: BH",
+          {
+            tests: 20,
+            alpha: 0.05,
+            correction: "bh",
+            signalFraction: 0.3,
+            signalEffect: 0.5,
+            signalN: 30,
+          },
+        ],
+        [
+          "Mixed truth: Bonferroni",
+          {
+            tests: 20,
+            alpha: 0.05,
+            correction: "bonferroni",
+            signalFraction: 0.3,
+            signalEffect: 0.5,
+            signalN: 30,
+          },
+        ],
       ],
     ),
   ];

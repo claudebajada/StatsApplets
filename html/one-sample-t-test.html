@@ -1,10 +1,386 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Test a claim about a population mean using a sample standard deviation."><title>One-sample t test · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="one-sample-t-test"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Hypothesis testing</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="clt-explorer.html">Central limit theorem</a> · <a href="confidence-interval-explorer.html">Confidence interval coverage</a> · <a href="power-explorer.html">Statistical power</a></span></nav><header class="page-header"><div class="title-block"><h1>One-sample t test</h1><p class="lede applet-introduction">A one-sample t test compares a sample mean with a claimed population mean. It uses the sample standard deviation to estimate the standard error. Set a nonzero mean difference, then increase the sample size to see how the estimated uncertainty and t score change.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="t = (x̄ − μ₀)/(s/√n); df = n − 1; d = (x̄ − μ₀)/s"><mrow><mi>t</mi><mo>=</mo><mfrac><mrow><mover><mi>x</mi><mo>¯</mo></mover><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow><mfrac><mi>s</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">x̄ is the sample mean and μ₀ is the null population mean. s is the sample standard deviation and n is the sample size. The denominator estimates the standard error, or SE.</p></details></div></header>
-<p class="learning-orientation"><strong>Observed sample summaries.</strong> How far is this sample mean from the reference value, relative to its uncertainty?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="mu">Sample mean x̄: <output id="mu-value" for="mu">0</output></label><div class="range-pair"><input type="range" id="mu" min="-10" max="10" step="0.1" value="0"><label class="visually-hidden" for="mu-number">Exact value: Sample mean x̄</label><input type="number" class="range-number" data-range="mu" id="mu-number" min="-10" max="10" step="0.1" value="0"></div><span class="range-bounds" aria-hidden="true">-10 to 10</span></div><div class="control-field"><label for="mu0">Null population mean μ₀: <output id="mu0-value" for="mu0">0</output></label><div class="range-pair"><input type="range" id="mu0" min="-10" max="10" step="0.1" value="0"><label class="visually-hidden" for="mu0-number">Exact value: Null population mean μ₀</label><input type="number" class="range-number" data-range="mu0" id="mu0-number" min="-10" max="10" step="0.1" value="0"></div><span class="range-bounds" aria-hidden="true">-10 to 10</span></div><div class="control-field"><label for="sigma">Sample SD s: <output id="sigma-value" for="sigma">1</output></label><div class="range-pair"><input type="range" id="sigma" min="0.1" max="20" step="0.1" value="1"><label class="visually-hidden" for="sigma-number">Exact value: Sample SD s</label><input type="number" class="range-number" data-range="sigma" id="sigma-number" min="0.1" max="20" step="0.1" value="1"></div><span class="range-bounds" aria-hidden="true">0.1 to 20</span></div><div class="control-field"><label for="N">Sample size n: <output id="N-value" for="N">30</output></label><div class="range-pair"><input type="range" id="N" min="5" max="100" step="1" value="30"><label class="visually-hidden" for="N-number">Exact value: Sample size n</label><input type="number" class="range-number" data-range="N" id="N-number" min="5" max="100" step="1" value="30"></div><span class="range-bounds" aria-hidden="true">5 to 100</span></div><div class="control-field"><label for="alternative">H₁: μ is … μ₀</label><select id="alternative"><option value="upper">greater than</option><option value="lower">less than</option><option value="twoSided" selected>different from</option></select></div><div class="control-field wide"><label><input id="lockScale" type="checkbox" checked> Keep axes fixed for comparison</label><button id="fit-axes" type="button">Fit axes to current example</button></div><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">SD describes differences between individual observations. SE describes variation of the estimated mean or mean difference between repeated studies. These controls set summary statistics; changing n does not recruit or resample participants.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"><div class="metric"><span>Estimated mean</span><strong id="estimate-value">...</strong></div><div class="metric"><span>95% confidence interval</span><strong id="ci-value">...</strong></div><div class="metric"><span>Signed Cohen's d</span><strong id="cohen-d-value">...</strong></div><div class="metric"><span>Selected p-value</span><strong id="p-value-selected">...</strong></div><div class="metric"><span>t score</span><strong id="t-value">...</strong></div><div class="metric"><span>Estimated standard error, SE</span><strong id="se-value">...</strong></div></div></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">1 · Compare the sample estimate with the null value</h2><div class="plot-frame"><canvas id="meanEstimateChart" class="chart-canvas" role="img" aria-label="1 · Compare the sample estimate with the null value"></canvas></div><p class="chart-explanation" id="meanEstimateChart-explanation">The circle is the sample estimate. The diamond is the null value. The blue horizontal bar extends one standard error on either side of the estimate. The thinner teal bar is the two-sided 95% confidence interval. The axis uses original measurement units. A two-sided 95% interval corresponds to a two-sided 5% test; directional tests use different rejection regions.</p></figure><figure class="chart-container"><h2 class="chart-title">2 · Read the p-value under the null hypothesis</h2><div class="plot-frame"><canvas id="tChart" class="chart-canvas" role="img" aria-label="2 · Read the p-value under the null hypothesis"></canvas></div><p class="chart-explanation" id="tChart-explanation">Imagine repeating the study when the null hypothesis is true. This curve shows the distribution of the resulting t scores, not the distribution of individual measurements. The vertical line marks your t score. The shaded area is the p-value for your chosen alternative.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p><details class="info"><summary>Degrees of freedom and other tail probabilities</summary><div class="metrics"><div class="metric"><span>Degrees of freedom</span><strong id="df-value">...</strong></div><div class="metric"><span>Lower-tail p</span><strong id="p-value-lower">...</strong></div><div class="metric"><span>Upper-tail p</span><strong id="p-value-one-sided">...</strong></div><div class="metric"><span>Two-sided p</span><strong id="p-value-two-sided">...</strong></div></div><p>The selected p-value above uses your chosen alternative hypothesis. The other p-values use the alternatives shown here. Divide the observed difference by the sample standard deviation to get the effect size. Its sign follows the order of subtraction.</p></details></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>The sliders set sample statistics. Exact t-test p-values assume independent observations from a normal population. The test uses n − 1 degrees of freedom. With small samples, skewness and outliers can make its p-values unreliable. Plot 1 shows the sample mean and its estimated standard error. Plot 2 shows the distribution of t when the null is true. Choose the alternative before looking at the data.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/mean-test-explorer.js"></script><script src="../javascript/one-sample-t-test.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Test a claim about a population mean using a sample standard deviation."
+    />
+    <title>One-sample t test · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="one-sample-t-test">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p>
+            <a href="clt-explorer.html">Central limit theorem</a> ·
+            <a href="confidence-interval-explorer.html"
+              >Confidence interval coverage</a
+            >
+            · <a href="power-explorer.html">Statistical power</a>
+          </p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>One-sample t test</h1>
+          <p class="lede applet-introduction">
+            Test a claim about a population mean using a sample standard
+            deviation.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              A one-sample t test compares a sample mean with a claimed
+              population mean. It uses the sample standard deviation to estimate
+              the standard error. Set a nonzero mean difference, then increase
+              the sample size to see how the estimated uncertainty and t score
+              change.
+            </p>
+            <p class="context-status" id="context-status">
+              SD describes differences between individual observations. SE
+              describes variation of the estimated mean or mean difference
+              between repeated studies. These controls set summary statistics;
+              changing n does not recruit or resample participants.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="t = (x̄ − μ₀)/(s/√n); df = n − 1; d = (x̄ − μ₀)/s"
+              ><mrow
+                ><mi>t</mi><mo>=</mo
+                ><mfrac
+                  ><mrow
+                    ><mover><mi>x</mi><mo>¯</mo></mover
+                    ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                  ><mfrac
+                    ><mi>s</mi><msqrt><mi>n</mi></msqrt></mfrac
+                  ></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              x̄ is the sample mean and μ₀ is the null population mean. s is the
+              sample standard deviation and n is the sample size. The
+              denominator estimates the standard error, or SE.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Observed sample summaries.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="mu"
+                >Sample mean x̄: <output id="mu-value" for="mu">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu-number"
+                  >Exact value: Sample mean x̄</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu"
+                  id="mu-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="mu0"
+                >Null population mean μ₀:
+                <output id="mu0-value" for="mu0">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu0"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu0-number"
+                  >Exact value: Null population mean μ₀</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu0"
+                  id="mu0-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="sigma"
+                >Sample SD s:
+                <output id="sigma-value" for="sigma">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sigma"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                /><label class="visually-hidden" for="sigma-number"
+                  >Exact value: Sample SD s</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sigma"
+                  id="sigma-number"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.1 to 20</span>
+            </div>
+            <div class="control-field">
+              <label for="N"
+                >Sample size n: <output id="N-value" for="N">30</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="N"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="N-number"
+                  >Exact value: Sample size n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="N"
+                  id="N-number"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">5 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="alternative">H₁: μ is … μ₀</label
+              ><select id="alternative">
+                <option value="upper">greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided" selected>different from</option>
+              </select>
+            </div>
+            <details class="wide plot-controls">
+              <summary>Plot axes</summary>
+              <div class="control-field">
+                <label
+                  ><input id="lockScale" type="checkbox" checked /> Keep axes
+                  fixed for comparison</label
+                ><button id="fit-axes" type="button">
+                  Fit axes to current example
+                </button>
+              </div>
+            </details>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Estimated mean</span
+                ><strong id="estimate-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>95% confidence interval</span
+                ><strong id="ci-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Signed Cohen's d</span
+                ><strong id="cohen-d-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Selected p-value</span
+                ><strong id="p-value-selected">...</strong>
+              </div>
+            </div>
+            <p class="result-math">
+              t = <strong id="t-value">…</strong>; estimated SE =
+              <strong id="se-value">…</strong>
+            </p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                1 · Compare the sample estimate with the null value
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="meanEstimateChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="1 · Compare the sample estimate with the null value"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="meanEstimateChart-explanation">
+                The circle is the sample estimate. The diamond is the null
+                value. The blue horizontal bar extends one standard error on
+                either side of the estimate. The thinner teal bar is the
+                two-sided 95% confidence interval. The axis uses original
+                measurement units. A two-sided 95% interval corresponds to a
+                two-sided 5% test; directional tests use different rejection
+                regions.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                2 · Read the p-value under the null hypothesis
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="tChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="2 · Read the p-value under the null hypothesis"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="tChart-explanation">
+                Imagine repeating the study when the null hypothesis is true.
+                This curve shows the distribution of the resulting t scores, not
+                the distribution of individual measurements. The vertical line
+                marks your t score. The shaded area is the p-value for your
+                chosen alternative.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+            <details class="info">
+              <summary>Degrees of freedom and other tail probabilities</summary>
+              <div class="metrics">
+                <div class="metric">
+                  <span>Degrees of freedom</span
+                  ><strong id="df-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Lower-tail p</span
+                  ><strong id="p-value-lower">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Upper-tail p</span
+                  ><strong id="p-value-one-sided">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Two-sided p</span
+                  ><strong id="p-value-two-sided">...</strong>
+                </div>
+              </div>
+              <p>
+                The selected p-value above uses your chosen alternative
+                hypothesis. The other p-values use the alternatives shown here.
+                Divide the observed difference by the sample standard deviation
+                to get the effect size. Its sign follows the order of
+                subtraction.
+              </p>
+            </details>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The sliders set sample statistics. Exact t-test p-values assume
+              independent observations from a normal population. The test uses n
+              − 1 degrees of freedom. With small samples, skewness and outliers
+              can make its p-values unreliable. Plot 1 shows the sample mean and
+              its estimated standard error. Plot 2 shows the distribution of t
+              when the null is true. Choose the alternative before looking at
+              the data.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/mean-test-explorer.js"></script>
+    <script src="../javascript/one-sample-t-test.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

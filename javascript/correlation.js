@@ -60,7 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
     walkthrough.update(pairs);
     scatter.data.datasets[0].data = pairs.map(([x, y]) => ({ x, y }));
     scatter.update();
-    document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:"correlation",pairs,r}}));
+    document.dispatchEvent(
+      new CustomEvent("applet:render", {
+        detail: { kind: "correlation", pairs, r },
+      }),
+    );
     window.syncRangeNumbers?.();
   }
   watchControls(update);

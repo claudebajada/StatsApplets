@@ -118,12 +118,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Update Full Distribution Chart
     fullDistChart.data.labels = kValues;
     fullDistChart.data.datasets[0].data = fullDistribution;
-    for (const chart of [coeffChart,probTermChart,fullDistChart]) {
-      chart.data.datasets[0].backgroundColor = kValues.map(k => k === selected ? chartPalette[3] : chartPalette[0]+"aa");
+    for (const chart of [coeffChart, probTermChart, fullDistChart]) {
+      chart.data.datasets[0].backgroundColor = kValues.map((k) =>
+        k === selected ? chartPalette[3] : chartPalette[0] + "aa",
+      );
       chart.update();
     }
-    const result=LearningMath.binomialSelection(n,p,selected);
-    document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:"binomial-components-explorer",n,p,k:selected,result}}));
+    const result = LearningMath.binomialSelection(n, p, selected);
+    document.dispatchEvent(
+      new CustomEvent("applet:render", {
+        detail: {
+          kind: "binomial-components-explorer",
+          n,
+          p,
+          k: selected,
+          result,
+        },
+      }),
+    );
     window.syncRangeNumbers?.();
   }
 

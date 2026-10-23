@@ -13,11 +13,22 @@ function renderCatalogue() {
     const entries = AppletCatalogue.filter(
       (a) =>
         a.group === group &&
-        terms.every(term => `${a.title} ${a.objective} ${a.group} ${LearningContent[a.id]?.keywords || ""}`.toLowerCase().includes(term)),
+        terms.every((term) =>
+          `${a.title} ${a.objective} ${a.group} ${LearningContent[a.id]?.keywords || ""}`
+            .toLowerCase()
+            .includes(term),
+        ),
     );
-    if(group === "Hypothesis testing") {
-      const order=["one-sample-t-test","independent-samples-t-test","one-sample-z-test","chi-squared-explorer","anova-explorer","multiple-comparisons-explorer"];
-      entries.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
+    if (group === "Hypothesis testing") {
+      const order = [
+        "one-sample-t-test",
+        "independent-samples-t-test",
+        "one-sample-z-test",
+        "chi-squared-explorer",
+        "anova-explorer",
+        "multiple-comparisons-explorer",
+      ];
+      entries.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
     }
     if (!entries.length) continue;
     count += entries.length;

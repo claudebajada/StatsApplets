@@ -15,39 +15,13 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Prepare and capture formatted review files
-        run: |
-          npm run pages
-          npm run format
-          node <<'NODE'
-          const fs = require('node:fs');
-          const cp = require('node:child_process');
-          const changed = cp.execFileSync('git',['diff','--name-only'],{encoding:'utf8'}).trim().split('\n');
-          for(const path of changed.filter(p=>/\.(js|css|html|md)$/.test(p))) {
-            console.log('CODEX_FORMATTED:'+JSON.stringify({path,base64:fs.readFileSync(path).toString('base64')}));
-          }
-          NODE
       - run: npm run format:check
       - run: npm run check
       - run: npm test
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser -- --workers=2
-      - name: Capture rendered teaching views
-        if: always()
-        run: |
-          node <<'NODE'
-          const fs = require('node:fs');
-          function walk(path) {
-            if(!fs.existsSync(path)) return [];
-            return fs.readdirSync(path,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path+'/'+d.name):[path+'/'+d.name]);
-          }
-          const images=walk('test-results').filter(p=>/learning-capture/.test(p)&&/\.png$/.test(p)&&!p.includes('test-failed'));
-          for(const path of images.filter(p=>p.includes('-desktop/')||p.includes('-mobile/')&&/one-sample-t-test|clt-explorer/.test(p))) {
-            console.log('CODEX_SCREENSHOT:'+JSON.stringify({path,base64:fs.readFileSync(path).toString('base64')}));
-          }
-          NODE
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         with:
           name: playwright-failures
           path: test-results/

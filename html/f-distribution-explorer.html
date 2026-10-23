@@ -1,10 +1,248 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="See how the degrees of freedom affect the F distribution and its critical value."><title>F distribution · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="f-distribution-explorer"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Distributions</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="anova-explorer.html">One-way ANOVA</a> · <a href="t-distribution-explorer.html">Student's t</a></span></nav><header class="page-header"><div class="title-block"><h1>F distribution</h1><p class="lede applet-introduction">F statistics compare two estimates of variability. In ANOVA, the F statistic compares variation between group means with variation within groups. Change either set of degrees of freedom to see how the distribution changes. The dashed line marks the upper 5% critical value.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)"><mrow><mi>F</mi><mo>=</mo><mfrac><mfrac><mi>U</mi><msub><mi>df</mi><mn>1</mn></msub></mfrac><mfrac><mi>V</mi><msub><mi>df</mi><mn>2</mn></msub></mfrac></mfrac></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">U and V are independent chi-squared variables, with df₁ and df₂ degrees of freedom. F is the ratio after dividing each by its own degrees of freedom.</p></details></div></header>
-<p class="learning-orientation"><strong>Reference distribution under a null model.</strong> How unusual would a ratio of variability estimates be under the null?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="df1-slider">Numerator df₁: <output id="df1-value" for="df1-slider">1</output></label><div class="range-pair"><input type="range" id="df1-slider" min="1" max="100" step="1" value="1"><label class="visually-hidden" for="df1-slider-number">Exact value: Numerator df₁</label><input type="number" class="range-number" data-range="df1-slider" id="df1-slider-number" min="1" max="100" step="1" value="1"></div><span class="range-bounds" aria-hidden="true">1 to 100</span></div><div class="control-field"><label for="df2-slider">Denominator df₂: <output id="df2-value" for="df2-slider">1</output></label><div class="range-pair"><input type="range" id="df2-slider" min="1" max="100" step="1" value="1"><label class="visually-hidden" for="df2-slider-number">Exact value: Denominator df₂</label><input type="number" class="range-number" data-range="df2-slider" id="df2-slider-number" min="1" max="100" step="1" value="1"></div><span class="range-bounds" aria-hidden="true">1 to 100</span></div><div class="control-field"><label><input type="checkbox" id="log-axis"> Logarithmic F axis</label></div><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">F is a non-negative ratio. Its numerator and denominator degrees of freedom both affect its reference distribution. The 5% boundary is calculated from the full tail.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"><div class="metric"><span>Upper 5% critical F</span><strong id="critical-value">...</strong></div></div><p id="plot-note" class="notice" role="status"></p></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">Null F density & rejection region</h2><div class="plot-frame"><canvas id="distributionChart" class="chart-canvas" role="img" aria-label="Null F density & rejection region"></canvas></div><p class="chart-explanation" id="distributionChart-explanation">The curve shows possible F values under the null hypothesis. The dashed line marks the upper 5% critical value. Values to its right make up the rejection region. This explorer shows a critical value rather than a statistic calculated from observed data.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>F is non-negative and has no upper limit. For an upper-tail variance-ratio test or ANOVA, values above the critical value lead to rejection of the null. When the numerator has fewer than two degrees of freedom, the density grows without limit near zero. The curve omits that endpoint. On a linear axis the shaded area ends at the plot edge, while the critical value uses the full distribution. On a logarithmic axis screen area is not proportional to probability; the fill is removed. The probability and critical value remain unchanged.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/f-distribution-explorer.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how the degrees of freedom affect the F distribution and its critical value."
+    />
+    <title>F distribution · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="f-distribution-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p>
+            <a href="anova-explorer.html">One-way ANOVA</a> ·
+            <a href="t-distribution-explorer.html">Student's t</a>
+          </p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>F distribution</h1>
+          <p class="lede applet-introduction">
+            See how the degrees of freedom affect the F distribution and its
+            critical value.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              F statistics compare two estimates of variability. In ANOVA, the F
+              statistic compares variation between group means with variation
+              within groups. Change either set of degrees of freedom to see how
+              the distribution changes. The dashed line marks the upper 5%
+              critical value.
+            </p>
+            <p class="context-status" id="context-status">
+              F is a non-negative ratio. Its numerator and denominator degrees
+              of freedom both affect its reference distribution. The 5% boundary
+              is calculated from the full tail.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)"
+              ><mrow
+                ><mi>F</mi><mo>=</mo
+                ><mfrac
+                  ><mfrac
+                    ><mi>U</mi><msub><mi>df</mi><mn>1</mn></msub></mfrac
+                  ><mfrac
+                    ><mi>V</mi><msub><mi>df</mi><mn>2</mn></msub></mfrac
+                  ></mfrac
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              U and V are independent chi-squared variables, with df₁ and df₂
+              degrees of freedom. F is the ratio after dividing each by its own
+              degrees of freedom.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Reference distribution under a null model.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="df1-slider"
+                >Numerator df₁:
+                <output id="df1-value" for="df1-slider">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="df1-slider"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                /><label class="visually-hidden" for="df1-slider-number"
+                  >Exact value: Numerator df₁</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="df1-slider"
+                  id="df1-slider-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="df2-slider"
+                >Denominator df₂:
+                <output id="df2-value" for="df2-slider">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="df2-slider"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                /><label class="visually-hidden" for="df2-slider-number"
+                  >Exact value: Denominator df₂</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="df2-slider"
+                  id="df2-slider-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+            <div class="control-field">
+              <label
+                ><input type="checkbox" id="log-axis" /> Logarithmic F
+                axis</label
+              >
+            </div>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Upper 5% critical F</span
+                ><strong id="critical-value">...</strong>
+              </div>
+            </div>
+            <p id="plot-note" class="notice" role="status"></p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">Null F density & rejection region</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="distributionChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null F density & rejection region"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="distributionChart-explanation">
+                The curve shows possible F values under the null hypothesis. The
+                dashed line marks the upper 5% critical value. Values to its
+                right make up the rejection region. This explorer shows a
+                critical value rather than a statistic calculated from observed
+                data.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              F is non-negative and has no upper limit. For an upper-tail
+              variance-ratio test or ANOVA, values above the critical value lead
+              to rejection of the null. When the numerator has fewer than two
+              degrees of freedom, the density grows without limit near zero. The
+              curve omits that endpoint. On a linear axis the shaded area ends
+              at the plot edge, while the critical value uses the full
+              distribution. On a logarithmic axis screen area is not
+              proportional to probability; the fill is removed. The probability
+              and critical value remain unchanged.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/f-distribution-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

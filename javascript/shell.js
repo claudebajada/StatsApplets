@@ -58,9 +58,14 @@
       ]),
     );
   function assign(state, notify = true) {
-    const countLimit = meta.id === "binomial-normal-explorer" ? state.N
-      : meta.id === "binomial-components-explorer" ? state.n : undefined;
-    if (countLimit !== undefined) document.getElementById("k").max = String(countLimit);
+    const countLimit =
+      meta.id === "binomial-normal-explorer"
+        ? state.N
+        : meta.id === "binomial-components-explorer"
+          ? state.n
+          : undefined;
+    if (countLimit !== undefined)
+      document.getElementById("k").max = String(countLimit);
     for (const el of settings)
       if (Object.hasOwn(state, el.id)) {
         const value = AppletState.validate(String(state[el.id]), schema[el.id]);
@@ -96,13 +101,16 @@
     window.syncRangeNumbers?.();
     const names = {
       "clt-explorer": "Rerun " + (read().repetitions || 1000) + " studies",
-      "confidence-interval-explorer": "Rerun " + (read().repetitions || 500) + " intervals",
-      "multiple-comparisons-explorer": "Rerun " + (read().repetitions || 1000) + " test families",
+      "confidence-interval-explorer":
+        "Rerun " + (read().repetitions || 500) + " intervals",
+      "multiple-comparisons-explorer":
+        "Rerun " + (read().repetitions || 1000) + " test families",
       "regression-explorer": "Draw another study",
       "anova-explorer": "Draw another set of groups",
       correlation: "New pattern",
     };
-    document.getElementById("resample").textContent = names[meta.id] || "New sample";
+    document.getElementById("resample").textContent =
+      names[meta.id] || "New sample";
     history.replaceState(null, "", url());
   }
   function explain() {

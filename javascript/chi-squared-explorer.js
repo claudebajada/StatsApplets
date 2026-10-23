@@ -102,7 +102,19 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
     distribution.options.scales.x.max = max;
     distribution.update();
-    document.dispatchEvent(new CustomEvent("applet:render",{detail:{kind:"chi-squared-explorer",categories,n,skew,expected,observed,result:{statistic,df,w,p}}}));
+    document.dispatchEvent(
+      new CustomEvent("applet:render", {
+        detail: {
+          kind: "chi-squared-explorer",
+          categories,
+          n,
+          skew,
+          expected,
+          observed,
+          result: { statistic, df, w, p },
+        },
+      }),
+    );
   }
   ["categories", "total-observations", "skew"].forEach((id) =>
     addSliderListener(id, update),

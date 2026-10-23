@@ -197,8 +197,8 @@ test("binomial boundaries are point masses without a continuous normal density",
     const state = await page.evaluate(() =>
       Object.values(Chart.instances).map((c) => c.data.datasets[0].data),
     );
-    expect(state[0].reduce((a, b) => a + b, 0)).toBe(1);
-    expect(state[0][n * p]).toBe(1);
+    expect(state[0].reduce((a, b) => a + b.y, 0)).toBe(1);
+    expect(state[0].find((point) => point.x === n * p).y).toBe(1);
     expect(state[1]).toEqual([]);
     await expect(page.locator("#approximation-warning")).toContainText(
       "Variance is zero",
@@ -224,7 +224,7 @@ test("undefined correlations have mathematical explanations and recover after in
   page,
 }) => {
   await page.goto("/html/correlation.html");
-  await page.locator(".input-details summary").click();
+  await page.locator(".input-details > summary").click();
   await page.locator("#dataMode").selectOption("manual");
   await page.locator("#pairs").fill("1,2\n1,3\n1,4");
   await expect(page.locator("#data-pearson-value")).toHaveText("Undefined");

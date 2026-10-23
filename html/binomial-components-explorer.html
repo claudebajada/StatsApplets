@@ -1,10 +1,293 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="See why a probability term must be multiplied by the number of arrangements."><title>Building the binomial · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="binomial-components-explorer"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Distributions</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="binomial-normal-explorer.html">Binomial & normal</a></span></nav><header class="page-header"><div class="title-block"><h1>Building the binomial</h1><p class="lede applet-introduction">Several arrangements can give the same count of successes. With two trials, success followed by failure and failure followed by success both give one success. The binomial formula multiplies the probability of one arrangement by the number of possible arrangements. Change p and compare the three plots.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="P(X = k) = C(n,k) pᵏ(1 − p)ⁿ⁻ᵏ"><mrow><mi>P</mi><mrow><mo>(</mo><mrow><mi>X</mi><mo>=</mo><mi>k</mi></mrow><mo>)</mo></mrow><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo></mrow><msup><mi>p</mi><mi>k</mi></msup><msup><mrow><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><mo>)</mo></mrow><mrow><mi>n</mi><mo>−</mo><mi>k</mi></mrow></msup></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">k is the count of successes in n trials. The bracketed coefficient counts arrangements. p is the success probability on each trial.</p></details></div></header>
-<p class="learning-orientation"><strong>Constructed independent trials.</strong> Why do several success/failure arrangements contribute to the same success count?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="p">Success probability p: <output id="p-value" for="p">0.5</output></label><div class="range-pair"><input type="range" id="p" min="0" max="1" step="0.01" value="0.5"><label class="visually-hidden" for="p-number">Exact value: Success probability p</label><input type="number" class="range-number" data-range="p" id="p-number" min="0" max="1" step="0.01" value="0.5"></div><span class="range-bounds" aria-hidden="true">0 to 1</span></div><div class="control-field"><label for="n">Number of trials n: <output id="n-value" for="n">3</output></label><div class="range-pair"><input type="range" id="n" min="1" max="30" step="1" value="3"><label class="visually-hidden" for="n-number">Exact value: Number of trials n</label><input type="number" class="range-number" data-range="n" id="n-number" min="1" max="30" step="1" value="3"></div><span class="range-bounds" aria-hidden="true">1 to 30</span></div><div class="control-field"><label for="k">Inspect success count k: <output id="k-value" for="k">2</output></label><div class="range-pair"><input type="range" id="k" min="0" max="30" step="1" value="2"><label class="visually-hidden" for="k-number">Exact value: Inspect success count k</label><input type="number" class="range-number" data-range="k" id="k-number" min="0" max="30" step="1" value="2"></div><span class="range-bounds" aria-hidden="true">0 to 30</span></div><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">One success/failure sequence is one outcome. A count can represent many sequences. Multiply the number of sequences by the probability of each sequence.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"></div></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">1 · Number of arrangements C(n,k)</h2><div class="plot-frame"><canvas id="coeffChart" class="chart-canvas" role="img" aria-label="1 · Number of arrangements C(n,k)"></canvas></div><p class="chart-explanation" id="coeffChart-explanation">For each possible count k, the bar counts the arrangements of successes and failures. These counts are not probabilities.</p></figure><figure class="chart-container"><h2 class="chart-title">2 · Probability of each arrangement</h2><div class="plot-frame"><canvas id="probTermChart" class="chart-canvas" role="img" aria-label="2 · Probability of each arrangement"></canvas></div><p class="chart-explanation" id="probTermChart-explanation">Each bar gives the probability of one particular arrangement with k successes. It does not yet account for all the different arrangements.</p></figure><figure class="chart-container"><h2 class="chart-title">3 · Binomial probabilities</h2><div class="plot-frame"><canvas id="fullDistChart" class="chart-canvas" role="img" aria-label="3 · Binomial probabilities"></canvas></div><p class="chart-explanation" id="fullDistChart-explanation">Multiply each arrangement count by its probability. The resulting bars give the exact probability of each possible count of successes.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>The coefficient counts the arrangements with k successes. The factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each arrangement. Their product is P(X = k). The probabilities in the final plot add to 1. The first two plots show the separate factors used in that multiplication.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/binomial-components-explorer.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See why a probability term must be multiplied by the number of arrangements."
+    />
+    <title>Building the binomial · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="binomial-components-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p><a href="binomial-normal-explorer.html">Binomial & normal</a></p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>Building the binomial</h1>
+          <p class="lede applet-introduction">
+            See why a probability term must be multiplied by the number of
+            arrangements.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              Several arrangements can give the same count of successes. With
+              two trials, success followed by failure and failure followed by
+              success both give one success. The binomial formula multiplies the
+              probability of one arrangement by the number of possible
+              arrangements. Change p and compare the three plots.
+            </p>
+            <p class="context-status" id="context-status">
+              One success/failure sequence is one outcome. A count can represent
+              many sequences. Multiply the number of sequences by the
+              probability of each sequence.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="P(X = k) = C(n,k) pᵏ(1 − p)ⁿ⁻ᵏ"
+              ><mrow
+                ><mi>P</mi
+                ><mrow
+                  ><mo>(</mo><mrow><mi>X</mi><mo>=</mo><mi>k</mi></mrow
+                  ><mo>)</mo></mrow
+                ><mo>=</mo
+                ><mrow
+                  ><mo>(</mo
+                  ><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac
+                  ><mo>)</mo></mrow
+                ><msup><mi>p</mi><mi>k</mi></msup
+                ><msup
+                  ><mrow
+                    ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                    ><mo>)</mo></mrow
+                  ><mrow><mi>n</mi><mo>−</mo><mi>k</mi></mrow></msup
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              k is the count of successes in n trials. The bracketed coefficient
+              counts arrangements. p is the success probability on each trial.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Constructed independent trials.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="p"
+                >Success probability p:
+                <output id="p-value" for="p">0.5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="p"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.5"
+                /><label class="visually-hidden" for="p-number"
+                  >Exact value: Success probability p</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="p"
+                  id="p-number"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 1</span>
+            </div>
+            <div class="control-field">
+              <label for="n"
+                >Number of trials n:
+                <output id="n-value" for="n">3</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="n"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value="3"
+                /><label class="visually-hidden" for="n-number"
+                  >Exact value: Number of trials n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="n"
+                  id="n-number"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value="3"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 30</span>
+            </div>
+            <div class="control-field">
+              <label for="k"
+                >Inspect success count k:
+                <output id="k-value" for="k">2</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="k"
+                  min="0"
+                  max="30"
+                  step="1"
+                  value="2"
+                /><label class="visually-hidden" for="k-number"
+                  >Exact value: Inspect success count k</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="k"
+                  id="k-number"
+                  min="0"
+                  max="30"
+                  step="1"
+                  value="2"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 30</span>
+            </div>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">1 · Number of arrangements C(n,k)</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="coeffChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="1 · Number of arrangements C(n,k)"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="coeffChart-explanation">
+                For each possible count k, the bar counts the arrangements of
+                successes and failures. These counts are not probabilities.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">2 · Probability of each arrangement</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="probTermChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="2 · Probability of each arrangement"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="probTermChart-explanation">
+                Each bar gives the probability of one particular arrangement
+                with k successes. It does not yet account for all the different
+                arrangements.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">3 · Binomial probabilities</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="fullDistChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="3 · Binomial probabilities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="fullDistChart-explanation">
+                Multiply each arrangement count by its probability. The
+                resulting bars give the exact probability of each possible count
+                of successes.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              The coefficient counts the arrangements with k successes. The
+              factor pᵏ(1 − p)ⁿ⁻ᵏ gives the probability of each arrangement.
+              Their product is P(X = k). The probabilities in the final plot add
+              to 1. The first two plots show the separate factors used in that
+              multiplication.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/binomial-components-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

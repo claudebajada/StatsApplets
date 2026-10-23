@@ -41,7 +41,10 @@ test("the mean-test workspace keeps plots near the controls and aligns its resul
       .getBoundingClientRect();
     const values = [
       ...document.querySelectorAll(".result-card .metric strong"),
-    ].map((el) => ({row:el.closest(".metric").getBoundingClientRect().top,bottom:el.getBoundingClientRect().bottom}));
+    ].map((el) => ({
+      row: el.closest(".metric").getBoundingClientRect().top,
+      bottom: el.getBoundingClientRect().bottom,
+    }));
     return {
       width: innerWidth,
       chartTop: chart.top,
@@ -56,12 +59,12 @@ test("the mean-test workspace keeps plots near the controls and aligns its resul
     expect(layout.chartLeft).toBeGreaterThan(layout.controlsRight);
   else expect(layout.chartTop).toBeGreaterThan(layout.controlsBottom);
   const resultRows = new Map();
-  for(const value of layout.values) {
-    const row=Math.round(value.row);
-    resultRows.set(row,[...(resultRows.get(row)||[]),value.bottom]);
+  for (const value of layout.values) {
+    const row = Math.round(value.row);
+    resultRows.set(row, [...(resultRows.get(row) || []), value.bottom]);
   }
-  for(const values of resultRows.values())
-    expect(Math.max(...values)-Math.min(...values)).toBeLessThan(2);
+  for (const values of resultRows.values())
+    expect(Math.max(...values) - Math.min(...values)).toBeLessThan(2);
   await page.locator(".symbol-details > summary").click();
   await expect(page.locator(".symbol-key")).toBeVisible();
   await page.locator(".calculation-details > summary").click();

@@ -48,7 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
     const log = get("log-axis").checked;
     chart.data.datasets[1].fill = log ? false : "origin";
-    chart.data.datasets[1].label = log ? "Upper tail (screen area is not probability)" : "Upper 5% rejection region";
+    chart.data.datasets[1].label = log
+      ? "Upper tail (screen area is not probability)"
+      : "Upper 5% rejection region";
     chart.options.scales.x.type = log ? "logarithmic" : "linear";
     chart.options.scales.x.min = log ? points[0].x : 0;
     chart.options.scales.x.max = max;

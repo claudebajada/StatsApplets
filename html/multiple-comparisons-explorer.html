@@ -1,10 +1,406 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="See how testing many hypotheses increases the chance of false positives."><title>Multiple comparisons · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
-<body class="applet" data-applet="multiple-comparisons-explorer"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>Hypothesis testing</span></div></nav>
-<main id="main"><nav class="learning-route" aria-label="Suggested learning route"><a href="../index.html#learning-route">Suggested starting route</a><span>Related: <a href="power-explorer.html">Statistical power</a> · <a href="anova-explorer.html">One-way ANOVA</a></span></nav><header class="page-header"><div class="title-block"><h1>Multiple comparisons</h1><p class="lede applet-introduction">Testing several hypotheses increases the chance of false positives. Start with every null true, then add real effects. Compare adjustments using the chance of any false discovery, the average false fraction, and the correct discoveries.</p></div><div class="formula-block"><div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Independent null tests: FWER = 1 − (1 − α)ᵐ"><mrow><mi>FWER</mi><mo>=</mo><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow><mo>)</mo></mrow><mi>m</mi></msup></mrow></math></div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">For m independent tests of true null hypotheses, each at significance level α, FWER is the chance of at least one false rejection without adjustment.</p></details></div></header>
-<p class="learning-orientation"><strong>Simulated independent hypotheses with known truth.</strong> How does a testing procedure trade discoveries against different false-positive targets?</p><div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Parameters</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters"><div class="control-field"><label for="tests">Independent tests per family m: <output id="tests-value" for="tests">20</output></label><div class="range-pair"><input type="range" id="tests" min="1" max="100" step="1" value="20"><label class="visually-hidden" for="tests-number">Exact value: Independent tests per family m</label><input type="number" class="range-number" data-range="tests" id="tests-number" min="1" max="100" step="1" value="20"></div><span class="range-bounds" aria-hidden="true">1 to 100</span></div><div class="control-field"><label for="repetitions">Simulated families: <output id="repetitions-value" for="repetitions">1000</output></label><div class="range-pair"><input type="range" id="repetitions" min="100" max="2000" step="100" value="1000"><label class="visually-hidden" for="repetitions-number">Exact value: Simulated families</label><input type="number" class="range-number" data-range="repetitions" id="repetitions-number" min="100" max="2000" step="100" value="1000"></div><span class="range-bounds" aria-hidden="true">100 to 2000</span></div><div class="control-field"><label for="alpha">Error-rate threshold α: <output id="alpha-value" for="alpha">0.05</output></label><div class="range-pair"><input type="range" id="alpha" min="0.01" max="0.2" step="0.01" value="0.05"><label class="visually-hidden" for="alpha-number">Exact value: Error-rate threshold α</label><input type="number" class="range-number" data-range="alpha" id="alpha-number" min="0.01" max="0.2" step="0.01" value="0.05"></div><span class="range-bounds" aria-hidden="true">0.01 to 0.2</span></div><div class="control-field"><label for="signalFraction">Proportion of hypotheses with a real effect: <output id="signalFraction-value" for="signalFraction">0</output></label><div class="range-pair"><input type="range" id="signalFraction" min="0" max="1" step="0.05" value="0"><label class="visually-hidden" for="signalFraction-number">Exact value: Proportion of hypotheses with a real effect</label><input type="number" class="range-number" data-range="signalFraction" id="signalFraction-number" min="0" max="1" step="0.05" value="0"></div><span class="range-bounds" aria-hidden="true">0 to 1</span></div><div class="control-field"><label for="signalEffect">True effect d for real effects: <output id="signalEffect-value" for="signalEffect">0.5</output></label><div class="range-pair"><input type="range" id="signalEffect" min="0.05" max="1.5" step="0.05" value="0.5"><label class="visually-hidden" for="signalEffect-number">Exact value: True effect d for real effects</label><input type="number" class="range-number" data-range="signalEffect" id="signalEffect-number" min="0.05" max="1.5" step="0.05" value="0.5"></div><span class="range-bounds" aria-hidden="true">0.05 to 1.5</span></div><div class="control-field"><label for="signalN">Observations per signal test: <output id="signalN-value" for="signalN">30</output></label><div class="range-pair"><input type="range" id="signalN" min="2" max="100" step="1" value="30"><label class="visually-hidden" for="signalN-number">Exact value: Observations per signal test</label><input type="number" class="range-number" data-range="signalN" id="signalN-number" min="2" max="100" step="1" value="30"></div><span class="range-bounds" aria-hidden="true">2 to 100</span></div><div class="control-field"><label for="correction">Adjustment</label><select id="correction"><option value="none" selected>None</option><option value="bonferroni">Bonferroni, controls FWER</option><option value="holm">Holm, controls FWER</option><option value="bh">Benjamini-Hochberg, controls FDR</option></select></div><details class="wide seed-details"><summary>Reproduce this experiment</summary><div class="control-field"><label for="seed">Random seed</label><input type="number" id="seed" min="0" max="2147483647" step="1" value="42"></div><p class="small">The same seed and settings reproduce the same simulated values.</p></details><details class="wide context-controls"><summary>Research examples</summary><div class="control-field"><label for="context">Worked context</label><select id="context"><option value="abstract" selected>Abstract example</option><option value="medicine">Medicine</option><option value="cognition">Cognitive science</option></select></div><p class="small" id="context-description">All research examples use fictional data.</p></details></section><p class="small context-status" id="context-status">FWER is the chance of at least one false rejection. FDR is the average false fraction among discoveries, with zero assigned to families with no discoveries. Real effects make these targets differ.</p><p id="input-warning" class="notice" role="status" hidden></p></aside>
-<div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics"></div></section><p id="scale-note" class="small" role="status"></p>
-<section class="container" aria-label="Interactive plots"><figure class="chart-container"><h2 class="chart-title">Families with at least one false discovery</h2><div class="plot-frame"><canvas id="familyChart" class="chart-canvas" role="img" aria-label="Families with at least one false discovery"></canvas></div><p class="chart-explanation" id="familyChart-explanation">The first bar gives the calculated probability of at least one false rejection without adjustment. The second gives the proportion of simulated families with a false rejection under your chosen method. The vertical axis runs from 0 to 1.</p></figure><figure class="chart-container"><h2 class="chart-title">False discoveries in each simulated family</h2><div class="plot-frame"><canvas id="discoveryChart" class="chart-canvas" role="img" aria-label="False discoveries in each simulated family"></canvas></div><p class="chart-explanation" id="discoveryChart-explanation">Bars count families by their number of false or correct discoveries. A false discovery rejects a true null. A correct discovery detects one of the simulated real effects.</p></figure></section><details class="prediction-panel info" id="prediction-panel"><summary>Predict, then try the change</summary><div id="prediction-experiment"></div></details><details class="guided-lab info" id="guided-lab"><summary id="guided-title">Build the idea step by step</summary><div id="guided-content"></div></details><details class="calculation-details info"><summary>Read the calculation</summary><p id="calculation" aria-live="polite"></p></details><details class="info"><summary>Model, assumptions and interpretation</summary><p>With the real-effect proportion set to zero, every null hypothesis is true. Null p-values are independent uniform values. Non-null p-values come from independent two-sided known-SD z tests at the chosen true effect and sample size. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. With every null true, FDR equals FWER. With real effects, the simulation counts true and false discoveries separately and estimates FDR by averaging the false-discovery proportion across all simulated families. All tests are independent.</p></details></div></div>
-</main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script><script src="../javascript/extensions.js"></script><script src="../javascript/learning.js"></script>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how testing many hypotheses increases the chance of false positives."
+    />
+    <title>Multiple comparisons · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="multiple-comparisons-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <nav class="learning-route" aria-label="Suggested learning route">
+        <a href="../index.html#learning-route">Suggested starting route</a>
+        <details class="related-ideas">
+          <summary>Related ideas</summary>
+          <p>
+            <a href="power-explorer.html">Statistical power</a> ·
+            <a href="anova-explorer.html">One-way ANOVA</a>
+          </p>
+        </details>
+      </nav>
+      <header class="page-header">
+        <div class="title-block">
+          <h1>Multiple comparisons</h1>
+          <p class="lede applet-introduction">
+            See how testing many hypotheses increases the chance of false
+            positives.
+          </p>
+          <details class="intro-details">
+            <summary>How this explorer works</summary>
+            <p>
+              Testing several hypotheses increases the chance of false
+              positives. Start with every null true, then add real effects.
+              Compare adjustments using the chance of any false discovery, the
+              average false fraction, and the correct discoveries.
+            </p>
+            <p class="context-status" id="context-status">
+              FWER is the chance of at least one false rejection. FDR is the
+              average false fraction among discoveries, with zero assigned to
+              families with no discoveries. Real effects make these targets
+              differ.
+            </p>
+          </details>
+        </div>
+        <div class="formula-block">
+          <div class="equation">
+            <math
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"
+              aria-label="Independent null tests: FWER = 1 − (1 − α)ᵐ"
+              ><mrow
+                ><mi>FWER</mi><mo>=</mo><mn>1</mn><mo>−</mo
+                ><msup
+                  ><mrow
+                    ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow
+                    ><mo>)</mo></mrow
+                  ><mi>m</mi></msup
+                ></mrow
+              ></math
+            >
+          </div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              For m independent tests of true null hypotheses, each at
+              significance level α, FWER is the chance of at least one false
+              rejection without adjustment.
+            </p>
+          </details>
+        </div>
+      </header>
+      <p class="learning-orientation">
+        <strong>Simulated independent hypotheses with known truth.</strong>
+      </p>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Parameters</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="tests"
+                >Independent tests per family m:
+                <output id="tests-value" for="tests">20</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="tests"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="20"
+                /><label class="visually-hidden" for="tests-number"
+                  >Exact value: Independent tests per family m</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="tests"
+                  id="tests-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="20"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="repetitions"
+                >Simulated families:
+                <output id="repetitions-value" for="repetitions"
+                  >1000</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="repetitions"
+                  min="100"
+                  max="2000"
+                  step="100"
+                  value="1000"
+                /><label class="visually-hidden" for="repetitions-number"
+                  >Exact value: Simulated families</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="repetitions"
+                  id="repetitions-number"
+                  min="100"
+                  max="2000"
+                  step="100"
+                  value="1000"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">100 to 2000</span>
+            </div>
+            <div class="control-field">
+              <label for="alpha"
+                >Threshold α (FWER) or q (FDR):
+                <output id="alpha-value" for="alpha">0.05</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="alpha"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                /><label class="visually-hidden" for="alpha-number"
+                  >Exact value: Threshold α (FWER) or q (FDR)</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="alpha"
+                  id="alpha-number"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.01 to 0.2</span>
+            </div>
+            <div class="control-field">
+              <label for="signalFraction"
+                >Proportion of hypotheses with a real effect:
+                <output id="signalFraction-value" for="signalFraction"
+                  >0</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="signalFraction"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value="0"
+                /><label class="visually-hidden" for="signalFraction-number"
+                  >Exact value: Proportion of hypotheses with a real
+                  effect</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="signalFraction"
+                  id="signalFraction-number"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 1</span>
+            </div>
+            <div class="control-field">
+              <label for="signalEffect"
+                >True effect d for real effects:
+                <output id="signalEffect-value" for="signalEffect"
+                  >0.5</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="signalEffect"
+                  min="0.05"
+                  max="1.5"
+                  step="0.05"
+                  value="0.5"
+                /><label class="visually-hidden" for="signalEffect-number"
+                  >Exact value: True effect d for real effects</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="signalEffect"
+                  id="signalEffect-number"
+                  min="0.05"
+                  max="1.5"
+                  step="0.05"
+                  value="0.5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.05 to 1.5</span>
+            </div>
+            <div class="control-field">
+              <label for="signalN"
+                >Observations per signal test:
+                <output id="signalN-value" for="signalN">30</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="signalN"
+                  min="2"
+                  max="100"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="signalN-number"
+                  >Exact value: Observations per signal test</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="signalN"
+                  id="signalN-number"
+                  min="2"
+                  max="100"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">2 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="correction">Adjustment</label
+              ><select id="correction">
+                <option value="none" selected>None</option>
+                <option value="bonferroni">Bonferroni, controls FWER</option>
+                <option value="holm">Holm, controls FWER</option>
+                <option value="bh">Benjamini-Hochberg, controls FDR</option>
+              </select>
+            </div>
+            <details class="wide seed-details">
+              <summary>Reproduce this experiment</summary>
+              <div class="control-field">
+                <label for="seed">Random seed</label
+                ><input
+                  type="number"
+                  id="seed"
+                  min="0"
+                  max="2147483647"
+                  step="1"
+                  value="42"
+                />
+              </div>
+              <p class="small">
+                The same seed and settings reproduce the same simulated values.
+              </p>
+            </details>
+            <details class="wide context-controls">
+              <summary>Research examples</summary>
+              <div class="control-field">
+                <label for="context">Worked context</label
+                ><select id="context">
+                  <option value="abstract" selected>Abstract example</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="cognition">Cognitive science</option>
+                </select>
+              </div>
+              <p class="small" id="context-description">
+                All research examples use fictional data.
+              </p>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Families with at least one false discovery
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="familyChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Families with at least one false discovery"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="familyChart-explanation">
+                The first bar gives the calculated probability of at least one
+                false rejection without adjustment. The second gives the
+                proportion of simulated families with a false rejection under
+                your chosen method. The vertical axis runs from 0 to 1.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                False discoveries in each simulated family
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="discoveryChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="False discoveries in each simulated family"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="discoveryChart-explanation">
+                Bars count families by their number of false or correct
+                discoveries. A false discovery rejects a true null. A correct
+                discovery detects one of the simulated real effects.
+              </p>
+            </figure>
+          </section>
+          <details class="prediction-panel info" id="prediction-panel">
+            <summary>Predict, then try the change</summary>
+            <div id="prediction-experiment"></div>
+          </details>
+          <details class="guided-lab info" id="guided-lab">
+            <summary id="guided-title">Build the idea step by step</summary>
+            <div id="guided-content"></div>
+          </details>
+          <details class="calculation-details info">
+            <summary>Read the calculation</summary>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <details class="info">
+            <summary>Model, assumptions and interpretation</summary>
+            <p>
+              With the real-effect proportion set to zero, every null hypothesis
+              is true. Null p-values are independent uniform values. Non-null
+              p-values come from independent two-sided known-SD z tests at the
+              chosen true effect and sample size. This represents continuous
+              tests whose null p-values follow that distribution. The
+              family-wise error rate, or FWER, is the chance of any false
+              rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ.
+              Bonferroni and Holm control FWER even for dependent tests.
+              Benjamini-Hochberg controls the false discovery rate, or FDR,
+              under independence or suitable positive dependence. FDR is the
+              expected proportion of false rejections among all rejections,
+              counting the proportion as zero if there are none. With every null
+              true, FDR equals FWER. With real effects, the simulation counts
+              true and false discoveries separately and estimates FDR by
+              averaging the false-discovery proportion across all simulated
+              families. All tests are independent.
+            </p>
+          </details>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

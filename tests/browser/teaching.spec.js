@@ -96,7 +96,7 @@ test("correlation handles more than two observations and malformed pairs", async
   page,
 }) => {
   await page.goto("/html/correlation.html");
-  await page.locator(".input-details summary").click();
+  await page.locator(".input-details > summary").click();
   await page.locator("#dataMode").selectOption("manual");
   await page.locator("#pairs").fill("1,1\n2,3\n3,2");
   await expect(page.locator("#data-pearson-value")).toHaveText("0.5000");

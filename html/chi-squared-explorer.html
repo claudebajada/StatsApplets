@@ -1,59 +1,288 @@
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chi-Squared Test Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-
-</head>
-
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet visualizes the chi-squared test for goodness of fit. Adjust category counts to see how the statistic and distribution respond.</p>
-</details>
-
-<div class="slider-container">
-  <label for="categories">Number of Categories: <span id="categories-value">0</span></label>
-  <input type="range" id="categories" min="2" max="10" step="1" value="5">
-
-  <label for="total-observations">Total Observations: <span id="total-observations-value">0</span></label>
-  <input type="range" id="total-observations" min="10" max="1000" step="10" value="100">
-
-  <label for="skew">Change Observed Frequencies: <span id="skew-value"></span></label>
-  <input type="range" id="skew" min="0" max="10" step="0.1">
-</div>
-
-<div class="stats-container">
-  <div class="stat-item">
-    <label>Effect Size (Cramer's V): <span id="effect-size-value">0</span></label>
-  </div>
-  <div class="stat-item">
-    <label>Chi-Squared Statistic: <span id="chi-squared-value">0</span></label>
-  </div>
-  <div class="stat-item">
-    <label>p Value: <span id="p-value">0</span></label>
-  </div>
-</div>
-
-
-
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">Observed vs Expected Frequencies</h3>
-    <canvas id="frequencyChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Chi-Squared Distribution</h3>
-    <canvas id="chiSquaredChart" class="chart-canvas"></canvas>
-  </div>
-</div>
-
-<script src="../javascript/common.js"></script>
-<script src="../javascript/chi-squared-explorer.js"></script>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare observed category counts with equal expected counts."
+    />
+    <title>Chi-squared goodness of fit · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="chi-squared-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>Chi-squared goodness of fit</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            The same proportions can be stronger evidence
+          </h2>
+          <p>
+            Under the null, five outcome categories are equally common. Our
+            constructed observations have proportions 0%, 10%, 20%, 30% and 40%.
+          </p>
+          <p class="comparison-instruction">
+            Multiply the total count by ten without changing those proportions.
+            Compare the effect size with the chi-squared statistic and p-value.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="categories"
+                >Number of categories k:
+                <output id="categories-value" for="categories">5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="categories"
+                  min="2"
+                  max="10"
+                  step="1"
+                  value="5"
+                /><label class="visually-hidden" for="categories-number"
+                  >Exact value: Number of categories k</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="categories"
+                  id="categories-number"
+                  min="2"
+                  max="10"
+                  step="1"
+                  value="5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">2 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="total-observations"
+                >Total observations N:
+                <output id="total-observations-value" for="total-observations"
+                  >100</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="total-observations"
+                  min="10"
+                  max="1000"
+                  step="10"
+                  value="100"
+                /><label class="visually-hidden" for="total-observations-number"
+                  >Exact value: Total observations N</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="total-observations"
+                  id="total-observations-number"
+                  min="10"
+                  max="1000"
+                  step="10"
+                  value="100"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">10 to 1000</span>
+            </div>
+            <div class="control-field">
+              <label for="skew"
+                >Departure in proportions (0 = uniform):
+                <output id="skew-value" for="skew">5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="skew"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  value="5"
+                /><label class="visually-hidden" for="skew-number"
+                  >Exact value: Departure in proportions (0 = uniform)</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="skew"
+                  id="skew-number"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  value="5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 10</span>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Effect size, Cohen's w</span
+                ><strong id="effect-size-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>χ² statistic</span
+                ><strong id="chi-squared-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Upper-tail p</span><strong id="p-value">...</strong>
+              </div>
+            </div>
+            <p id="validity-warning" class="notice" role="status"></p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Observed integer counts & uniform expected counts
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="frequencyChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Observed integer counts & uniform expected counts"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="frequencyChart-explanation">
+                Compare the observed count in each category with the count
+                predicted by a uniform null model. Both sets of counts add to
+                the selected N. Holding the departure control fixed holds the
+                underlying category proportions fixed.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Null χ² sampling distribution</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="chiSquaredChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null χ² sampling distribution"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="chiSquaredChart-explanation">
+                This curve approximates the distribution of χ² from repeated
+                studies under the null model. The line marks this example's
+                statistic. The shaded area is the probability of a value at
+                least as large when the null is true.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="χ² = Σ(Oᵢ − Eᵢ)²/Eᵢ; df = k − 1; w = √(χ²/N)"
+                  ><mrow
+                    ><msup><mi>χ</mi><mn>2</mn></msup
+                    ><mo>=</mo><mo>∑</mo
+                    ><mfrac
+                      ><msup
+                        ><mrow
+                          ><mo>(</mo
+                          ><mrow
+                            ><msub><mi>O</mi><mi>i</mi></msub
+                            ><mo>−</mo><msub><mi>E</mi><mi>i</mi></msub></mrow
+                          ><mo>)</mo></mrow
+                        ><mn>2</mn></msup
+                      ><msub><mi>E</mi><mi>i</mi></msub></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  Oᵢ is the observed count in category i; Eᵢ is its expected
+                  count under the null. Add the contributions across all
+                  categories.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              The null gives each category the same probability. The test
+              estimates no parameters from the counts, so it has k − 1 degrees
+              of freedom. The applet constructs whole-number counts from fixed
+              category proportions and rounds them while preserving N. It does
+              not draw random samples. The departure control is dimensionless,
+              so increasing N keeps the underlying proportions fixed; integer
+              rounding can cause small effect-size changes. If N is not
+              divisible by k, the observed counts cannot all be equal. Cohen's w
+              = √(χ²/N) measures departure from the null probabilities and can
+              exceed 1. Discrepancies in either direction increase χ², so the
+              p-value uses the upper tail.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="binomial-components-explorer.html"
+                >Building the binomial</a
+              >
+              ·
+              <a href="multiple-comparisons-explorer.html"
+                >Multiple comparisons</a
+              >
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/chi-squared-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

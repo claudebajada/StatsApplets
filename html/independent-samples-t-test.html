@@ -1,80 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Independent Samples t-Test Explorer</title>
-  <script src="../lib/chart.min.js"></script>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/mathjax/tex-mml-chtml.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-
-
-</head>
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet explores the independent samples t test. Adjust group parameters to see how the t statistic and p-values respond.</p>
-</details>
-
-<div class="page-title">Independent Sample t-Test Explorer</div>
-
-<!-- Sliders for Population Distribution -->
-<div class="slider-container">
-  <label for="mu1">Estimated Population 1 Mean (\( \hat{\mu_1} \)): <span id="mu1-value">0</span></label>
-  <input type="range" id="mu1" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="mu2">Estimated Population 2 Mean (\( \hat{\mu_2} \)): <span id="mu2-value">0</span></label>
-  <input type="range" id="mu2" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="sigma">Estimated (Common) Standard Deviation (\( \hat{\sigma} \)): <span id="sigma-value">1</span></label>
-  <input type="range" id="sigma" class="slider" min="0.1" max="5" step="0.1" value="1">
-
-  <label for="N">Sample Size 1 (\( N_1 \)): <span id="N1-value">30</span></label>
-  <input type="range" id="N1" class="slider" min="5" max="100" step="1" value="30">
-  <label for="N">Sample Size 2 (\( N_2 \)): <span id="N2-value">30</span></label>
-  <input type="range" id="N2" class="slider" min="5" max="100" step="1" value="30">
-  
-<div class="cohen-d-container">
-  Effect Size (Cohen's d): <span id="cohen-d-value">0</span>
-</div>
-<div class="degrees-of-freedom-container">
-  Degrees of freedom (df): <span id="df-value">0</span>
-</div>
-
-<div class="t-value-container">
-  t statistic: <span id="t-value">0</span>
-</div>   
-<div class="p-value-container">
-  One (Right) Tailed p Value: <span id="one-tailed-p-value">0</span>
-</div> 
-<div class="p-value-container">
-  Two Tailed p Value: <span id="two-tailed-p-value">0</span>
-</div>
-
-</div>
-
-<!-- Containers for Charts -->
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">Estimated Population Distributions</h3>
-    <canvas id="populationChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Estimated Standard Error of the Mean</h3>
-    <canvas id="stderrChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">t Statistic Sampling Distribution</h3>
-    <canvas id="tChart" class="chart-canvas"></canvas>
-  </div>
-</div>
-
-<script src="../javascript/common.js"></script>
-<script src="../javascript/independent-samples-t-test.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare two independent group means under an equal-variance model."
+    />
+    <title>Independent t test · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="independent-samples-t-test">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>Independent t test</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            A difference between groups has uncertainty too
+          </h2>
+          <p>
+            Two separate groups of 25 people have mean blood-pressure reductions
+            of 6 and 3 mmHg. Both sample SDs are 6 mmHg. The estimated
+            difference is therefore 3 mmHg.
+          </p>
+          <p class="comparison-instruction">
+            Keep both means and SDs fixed. Increase each group to 100 people and
+            compare the uncertainty of the same difference.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="mu1"
+                >Sample 1 mean x̄₁:
+                <output id="mu1-value" for="mu1">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu1"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu1-number"
+                  >Exact value: Sample 1 mean x̄₁</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu1"
+                  id="mu1-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="mu2"
+                >Sample 2 mean x̄₂:
+                <output id="mu2-value" for="mu2">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu2"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu2-number"
+                  >Exact value: Sample 2 mean x̄₂</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu2"
+                  id="mu2-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="sigma"
+                >Common sample SD s₁ = s₂ = s:
+                <output id="sigma-value" for="sigma">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sigma"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                /><label class="visually-hidden" for="sigma-number"
+                  >Exact value: Common sample SD s₁ = s₂ = s</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sigma"
+                  id="sigma-number"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.1 to 20</span>
+            </div>
+            <div class="control-field">
+              <label for="N1"
+                >Sample size n₁:
+                <output id="N1-value" for="N1">30</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="N1"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="N1-number"
+                  >Exact value: Sample size n₁</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="N1"
+                  id="N1-number"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">5 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="N2"
+                >Sample size n₂:
+                <output id="N2-value" for="N2">30</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="N2"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="N2-number"
+                  >Exact value: Sample size n₂</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="N2"
+                  id="N2-number"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">5 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="alternative">H₁: μ₁ − μ₂ is … 0</label
+              ><select id="alternative">
+                <option value="upper">greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided" selected>different from</option>
+              </select>
+            </div>
+            <details class="wide plot-controls">
+              <summary>Plot axes</summary>
+              <div class="control-field">
+                <label
+                  ><input id="lockScale" type="checkbox" checked /> Keep axes
+                  fixed for comparison</label
+                ><button id="fit-axes" type="button">
+                  Fit axes to current example
+                </button>
+              </div>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Estimated difference</span
+                ><strong id="estimate-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>95% confidence interval</span
+                ><strong id="ci-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Signed Cohen's d</span
+                ><strong id="cohen-d-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Selected p-value</span
+                ><strong id="p-value-selected">...</strong>
+              </div>
+            </div>
+            <p class="result-math">
+              t = <strong id="t-value">…</strong>; estimated SE =
+              <strong id="se-value">…</strong>
+            </p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                1 · Compare the sample estimate with the null value
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="meanEstimateChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="1 · Compare the sample estimate with the null value"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="meanEstimateChart-explanation">
+                The circle is the sample estimate. The diamond is the null
+                value. The blue horizontal bar extends one standard error on
+                either side of the estimate. The thinner teal bar is the
+                two-sided 95% confidence interval. The axis uses original
+                measurement units. A two-sided 95% interval corresponds to a
+                two-sided 5% test; directional tests use different rejection
+                regions.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                2 · Read the p-value under the null hypothesis
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="tChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="2 · Read the p-value under the null hypothesis"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="tChart-explanation">
+                Imagine repeating the study when the null hypothesis is true.
+                This curve shows the distribution of the resulting t scores, not
+                the distribution of individual measurements. The vertical line
+                marks your t score. The shaded area is the p-value for your
+                chosen alternative.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="t = (x̄₁ − x̄₂)/(sₚ√(1/n₁ + 1/n₂)); df = n₁ + n₂ − 2"
+                  ><mrow
+                    ><mi>t</mi><mo>=</mo
+                    ><mfrac
+                      ><mrow
+                        ><msub
+                          ><mover><mi>x</mi><mo>¯</mo></mover
+                          ><mn>1</mn></msub
+                        ><mo>−</mo
+                        ><msub
+                          ><mover><mi>x</mi><mo>¯</mo></mover
+                          ><mn>2</mn></msub
+                        ></mrow
+                      ><mrow
+                        ><msub><mi>s</mi><mi>p</mi></msub
+                        ><msqrt
+                          ><mrow
+                            ><mfrac
+                              ><mn>1</mn
+                              ><msub><mi>n</mi><mn>1</mn></msub></mfrac
+                            ><mo>+</mo
+                            ><mfrac
+                              ><mn>1</mn
+                              ><msub><mi>n</mi><mn>2</mn></msub></mfrac
+                            ></mrow
+                          ></msqrt
+                        ></mrow
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  x̄₁ and x̄₂ are sample means. sₚ is the pooled sample standard
+                  deviation. n₁ and n₂ are the sample sizes. The denominator
+                  estimates the standard error of the mean difference.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              This is the pooled equal-variance test for different participants
+              in the two groups. Repeated measurements on the same participants
+              require a paired approach. The applet gives both groups the same
+              sample SD for illustration; the pooled test in general does not
+              require identical sample SDs. Welch's test, which allows unequal
+              population variances, is outside this applet's model. Here the
+              pooled SD is s. The test has n₁ + n₂ − 2 degrees of freedom. Exact
+              p-values assume independent observations from normal populations
+              with equal variances. Plot 1 shows the observed mean difference
+              and its estimated standard error. Plot 2 shows the distribution of
+              t when the population means are equal. Choose the alternative
+              before looking at the data.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+            <details class="info">
+              <summary>Degrees of freedom and other tail probabilities</summary>
+              <div class="metrics">
+                <div class="metric">
+                  <span>Degrees of freedom</span
+                  ><strong id="df-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Lower-tail p</span
+                  ><strong id="p-value-lower">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Upper-tail p</span
+                  ><strong id="one-tailed-p-value">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Two-sided p</span
+                  ><strong id="two-tailed-p-value">...</strong>
+                </div>
+              </div>
+              <p>
+                The selected p-value above uses your chosen alternative
+                hypothesis. The other p-values use the alternatives shown here.
+                Divide the observed difference by the pooled sample standard
+                deviation to get the effect size. Its sign follows the order of
+                subtraction.
+              </p>
+            </details>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="clt-explorer.html">Central limit theorem</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              · <a href="power-explorer.html">Statistical power</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/mean-test-explorer.js"></script>
+    <script src="../javascript/independent-samples-t-test.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

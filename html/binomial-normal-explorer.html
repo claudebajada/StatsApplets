@@ -1,48 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Binomial and Normal Distribution Explorer</title>
-<script src="../lib/chart.min.js"></script>
-<link rel="stylesheet" href="../css/styles.css">
-
-</head>
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet compares the binomial distribution to a normal approximation. Adjust the parameters to see when the curves align.</p>
-</details>
-
-<div class="page-title">Binomial and Normal Distribution Explorer</div>
-
-
-<div class="slider-container">
-  <label for="theta">Theta (Probability of Success): <span id="theta-value">0.5</span></label>
-  <input type="range" id="theta" class="slider" min="0" max="1" step="0.01" value="0.5">
-
-  <label for="N">N (Number of Trials): <span id="N-value">15</span></label>
-  <input type="range" id="N" class="slider" min="0" max="30" step="1" value="15">
-</div>
-
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">The Binomial Distribution</h3>
-    <canvas id="binomialChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Normal Approximation to Binomial</h3>
-    <p>Mu: <span id="mu-value"></span></p>
-    <p>Sigma: <span id="sigma-value"></span></p>
-    <canvas id="normalChart" class="chart-canvas"></canvas>
-  </div>
-</div>
-
-<script src="../javascript/common.js"> </script>
-<script src="../javascript/binomial-normal-explorer.js"></script> <!-- Link to the specific applet JavaScript file -->
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare binomial probabilities with a normal approximation."
+    />
+    <title>Binomial &amp; normal · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="binomial-normal-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>Binomial & normal</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Can an area stand in for a bar?</h2>
+          <p>
+            Suppose an independent event has probability 0.05 on each trial.
+            With 30 trials, the expected number of successes is only 1.5, so a
+            symmetric normal curve is a poor match.
+          </p>
+          <p class="comparison-instruction">
+            Increase to 500 trials. Inspect the expected count, 25, and compare
+            its exact bar probability with the normal area from 24.5 to 25.5.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="theta"
+                >Success probability p:
+                <output id="theta-value" for="theta">0.5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="theta"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.5"
+                /><label class="visually-hidden" for="theta-number"
+                  >Exact value: Success probability p</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="theta"
+                  id="theta-number"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 1</span>
+            </div>
+            <div class="control-field">
+              <label for="N"
+                >Number of trials n:
+                <output id="N-value" for="N">15</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="N"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="15"
+                /><label class="visually-hidden" for="N-number"
+                  >Exact value: Number of trials n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="N"
+                  id="N-number"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="15"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 1000</span>
+            </div>
+            <div class="control-field">
+              <label for="k"
+                >Inspect success count k:
+                <output id="k-value" for="k">7</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="k"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="7"
+                /><label class="visually-hidden" for="k-number"
+                  >Exact value: Inspect success count k</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="k"
+                  id="k-number"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="7"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0 to 1000</span>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Population mean μ = np</span
+                ><strong id="mu-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Population SD σ</span
+                ><strong id="sigma-value">...</strong>
+              </div>
+            </div>
+            <p id="approximation-warning" class="notice" role="status"></p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">Exact binomial probabilities</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="binomialChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Exact binomial probabilities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="binomialChart-explanation">
+                Each bar is the exact probability of a whole-number count of
+                successes. All bar probabilities add to 1.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Normal approximation</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="normalChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Normal approximation"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="normalChart-explanation">
+                Areas under this normal curve approximate binomial
+                probabilities. To approximate the probability of k successes,
+                take the area between k − 0.5 and k + 0.5.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="X ∼ Bin(n,p); μ = np; σ² = np(1 − p)"
+                  ><mrow
+                    ><mi>μ</mi><mo>=</mo><mi>n</mi><mi>p</mi><mo>,</mo
+                    ><msup><mi>σ</mi><mn>2</mn></msup
+                    ><mo>=</mo><mi>n</mi><mi>p</mi
+                    ><mrow
+                      ><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow
+                      ><mo>)</mo></mrow
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  n is the number of trials. p is the success probability on
+                  each trial. μ and σ² are the mean and variance of the count of
+                  successes.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              Each binomial bar gives the probability of one count. The normal
+              curve is a probability density. Approximate P(X = k) using the
+              area between k − 0.5 and k + 0.5. This is the continuity
+              correction. Trials must be independent and have the same success
+              probability. Having both np ≥ 5 and n(1 − p) ≥ 5 is a rough check
+              on whether the approximation is suitable. It does not guarantee
+              accuracy.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="binomial-components-explorer.html"
+                >Building the binomial</a
+              >
+              · <a href="clt-explorer.html">Central limit theorem</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/binomial-normal-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

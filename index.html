@@ -1,26 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Statistics Applets</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <div class="nav-bar">
-    <button data-src="html/binomial-normal-explorer.html">Binomial & Normal Explorer</button>
-    <button data-src="html/binomial-components-explorer.html">Binomial Components</button>
-    <button data-src="html/chi-squared-explorer.html">Chi-Squared Explorer</button>
-    <button data-src="html/f-distribution-explorer.html">F Distribution Explorer</button>
-    <button data-src="html/correlation.html">Correlation</button>
-    <button data-src="html/one-sample-z-test.html">One-Sample Z Test</button>
-    <button data-src="html/one-sample-t-test.html">One-Sample t Test</button>
-    <button data-src="html/independent-samples-t-test.html">Independent Samples t Test</button>
-    <button data-src="html/t-distribution-explorer.html">t Distribution Explorer</button>
-  </div>
-  <div class="iframe-container">
-    <iframe id="appletFrame" src="html/binomial-normal-explorer.html"></iframe>
-  </div>
-  <script src="javascript/index.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Fifteen interactive statistics explorers for students learning about data, probability and inference."
+    />
+    <title>StatsApplets · Interactive statistics</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="landing">
+    <a class="skip-link" href="#main">Skip to explorers</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="index.html">StatsApplets</a
+      ><a href="#explorers">Browse applets</a>
+    </nav>
+    <main id="main">
+      <header class="hero">
+        <div>
+          <h1>Explore statistics</h1>
+          <p class="lede">
+            Use the controls to see how changing the data or assumptions affects
+            a calculation. Each applet explains the results beside its plots.
+          </p>
+        </div>
+        <figure
+          class="catalogue-demonstration"
+          aria-labelledby="demonstration-title"
+        >
+          <h2 id="demonstration-title">Three samples, three correlations</h2>
+          <div class="demonstration-plots" id="demonstration-plots"></div>
+          <figcaption>
+            Constructed examples with 14 observations each.
+            <a href="html/correlation.html">Explore correlation</a>.
+          </figcaption>
+        </figure>
+      </header>
+      <section
+        class="learning-start"
+        id="learning-route"
+        aria-labelledby="learning-start-title"
+      >
+        <h2 id="learning-start-title">
+          Start with data, means and uncertainty
+        </h2>
+        <p>
+          One observation is one measurement. A sample collects observations;
+          its mean estimates a population mean. Follow how repeated samples
+          create uncertainty, then use that idea to interpret tests.
+        </p>
+        <ol>
+          <li>
+            <a href="html/clt-explorer.html">Sampling and standard error</a>
+          </li>
+          <li>
+            <a href="html/confidence-interval-explorer.html"
+              >Confidence intervals</a
+            >
+          </li>
+          <li><a href="html/one-sample-t-test.html">A one-sample t test</a></li>
+          <li><a href="html/power-explorer.html">Planning with power</a></li>
+        </ol>
+        <p>
+          For relationships, begin with
+          <a href="html/correlation.html">correlation</a>, then explore
+          <a href="html/regression-explorer.html">regression</a>. The z-test
+          pages cover the special model where population SD is known.
+        </p>
+      </section>
+      <section id="explorers" aria-label="Find an explorer">
+        <div class="catalogue-tools">
+          <label for="search">Find a concept</label
+          ><input
+            id="search"
+            type="search"
+            placeholder="Try compare two groups or uncertainty"
+          />
+          <p id="catalogue-count" role="status"></p>
+        </div>
+        <div id="catalogue"></div>
+      </section>
+    </main>
+    <footer>
+      <span>StatsApplets by Claude J. Bajada</span>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="lib/jstat.min.js"></script>
+    <script src="javascript/statistics.js"></script>
+    <script src="javascript/teaching-statistics.js"></script>
+    <script src="javascript/catalogue.js"></script>
+    <script src="javascript/previews.js"></script>
+    <script src="javascript/learning-content.js"></script>
+    <script src="javascript/index.js"></script>
+  </body>
 </html>

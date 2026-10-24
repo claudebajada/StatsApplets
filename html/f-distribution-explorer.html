@@ -1,38 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>F Distribution Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-</head>
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet visualizes the F distribution. Observe how the curve changes as you adjust the numerator and denominator degrees of freedom.</p>
-</details>
-
-<div class="page-title">F Distribution Explorer</div>
-
-<div class="slider-container">
-  <label for="df1-slider">Degrees of Freedom 1 (df1): <span id="df1-value">1</span></label>
-  <input type="range" id="df1-slider" min="1" max="100" step="1" value="1">
-  <label for="df2-slider">Degrees of Freedom 2 (df2): <span id="df2-value">1</span></label>
-  <input type="range" id="df2-slider" min="1" max="100" step="1" value="1">
-</div>
-<div class="critical-value-container">
-  <label for="critical-value">Critical F-value for α=0.05: <span id="critical-value">N/A</span></label>
-</div>
-
-<div class="chart-container">
-  <canvas id="distributionChart"></canvas>
-</div>
-
-<script src="../javascript/common.js"></script>
-<script src="../javascript/f-distribution-explorer.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how the degrees of freedom affect the F distribution and its critical value."
+    />
+    <title>F distribution · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="f-distribution-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>F distribution</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">A noisy denominator makes a long tail</h2>
+          <p>
+            F compares two variability estimates. A denominator estimated with
+            few degrees of freedom can be unusually small, making the ratio
+            unusually large.
+          </p>
+          <p class="comparison-instruction">
+            Keep the numerator degrees of freedom at 2. Improve the denominator
+            estimate from 6 to 60 degrees of freedom and watch the upper 5%
+            boundary.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="df1-slider"
+                >Numerator df₁:
+                <output id="df1-value" for="df1-slider">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="df1-slider"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                /><label class="visually-hidden" for="df1-slider-number"
+                  >Exact value: Numerator df₁</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="df1-slider"
+                  id="df1-slider-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="df2-slider"
+                >Denominator df₂:
+                <output id="df2-value" for="df2-slider">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="df2-slider"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                /><label class="visually-hidden" for="df2-slider-number"
+                  >Exact value: Denominator df₂</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="df2-slider"
+                  id="df2-slider-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+            <div class="control-field">
+              <label
+                ><input type="checkbox" id="log-axis" /> Logarithmic F
+                axis</label
+              >
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Upper 5% critical F</span
+                ><strong id="critical-value">...</strong>
+              </div>
+            </div>
+            <p id="plot-note" class="notice" role="status"></p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">Null F density & rejection region</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="distributionChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null F density & rejection region"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="distributionChart-explanation">
+                The curve shows possible F values under the null hypothesis. The
+                dashed line marks the upper 5% critical value. Values to its
+                right make up the rejection region. This explorer shows a
+                critical value rather than a statistic calculated from observed
+                data.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="F = (U/df₁)/(V/df₂), for independent U ∼ χ²(df₁), V ∼ χ²(df₂)"
+                  ><mrow
+                    ><mi>F</mi><mo>=</mo
+                    ><mfrac
+                      ><mfrac
+                        ><mi>U</mi><msub><mi>df</mi><mn>1</mn></msub></mfrac
+                      ><mfrac
+                        ><mi>V</mi><msub><mi>df</mi><mn>2</mn></msub></mfrac
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  U and V are independent chi-squared variables, with df₁ and
+                  df₂ degrees of freedom. F is the ratio after dividing each by
+                  its own degrees of freedom.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              F is non-negative and has no upper limit. For an upper-tail
+              variance-ratio test or ANOVA, values above the critical value lead
+              to rejection of the null. When the numerator has fewer than two
+              degrees of freedom, the density grows without limit near zero. The
+              curve omits that endpoint. On a linear axis the shaded area ends
+              at the plot edge, while the critical value uses the full
+              distribution. On a logarithmic axis screen area is not
+              proportional to probability; the fill is removed. The probability
+              and critical value remain unchanged.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="anova-explorer.html">One-way ANOVA</a> ·
+              <a href="t-distribution-explorer.html">Student's t</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/f-distribution-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

@@ -74,7 +74,9 @@
     const means = Array.from({ length: repetitions }, (_, index) => {
       const sample = Array.from({ length: n }, () => draw(kind, random));
       if (index < 10) firstSamples.push(sample);
-      return mean(sample);
+      return kind === "bernoulli"
+        ? (sample.filter((x) => x > 0).length / n - 0.1) / 0.3
+        : mean(sample);
     });
     // Separate seed stream prevents display samples from changing the sampling experiment.
     const displayRandom = rng((seed + 1) >>> 0);
@@ -125,6 +127,7 @@
       low: sampleMean - margin,
       high: sampleMean + margin,
       margin,
+      width: 2 * margin,
       se,
       critical,
     };
@@ -155,7 +158,7 @@
     return {
       intervals,
       covered: intervals.filter((x) => x.covers).length,
-      averageWidth: mean(intervals.map((x) => x.high - x.low)),
+      averageWidth: mean(intervals.map((x) => x.width)),
     };
   }
   function power(n, d, alpha, direction) {
@@ -210,6 +213,29 @@
           "Enter one numeric x, y pair per line. Each value must be between −1,000,000 and 1,000,000.",
         );
       return parts.map(Number);
+    });
+  }
+  function parseGroups(text) {
+    const lines = text
+      .trim()
+      .split(/\n/)
+      .filter((line) => line.trim());
+    integer(lines.length, 2, 20);
+    return lines.map((line) => {
+      if (line.split(",").some((field) => !field.trim()))
+        throw new RangeError(
+          "Every comma-separated field must contain a number; remove empty fields and trailing commas.",
+        );
+      const values = line
+        .trim()
+        .split(/[,\s]+/)
+        .map(Number);
+      integer(values.length, 2, 1000);
+      if (values.some((x) => !Number.isFinite(x) || Math.abs(x) > 1e6))
+        throw new RangeError(
+          "Each group value must be a number between −1,000,000 and 1,000,000.",
+        );
+      return values;
     });
   }
   function regression(pairs) {
@@ -502,10 +528,27 @@
   }
   function histogram(values, bins = 25, density = false) {
     integer(bins, 1, 100);
+    if (!values.length) throw new RangeError("Empty histogram data");
+    values.forEach(finite);
     const min = Math.min(...values),
-      max = Math.max(...values),
-      width = (max > min ? max - min : 1) / bins,
-      start = max > min ? min : min - 0.5;
+      max = Math.max(...values);
+    if (
+      max - min <=
+      16 * Number.EPSILON * Math.max(1, Math.abs(min), Math.abs(max))
+    ) {
+      const x = mean(values),
+        width = Math.max(0.1, Math.abs(x) * 0.1);
+      return [
+        {
+          x,
+          y: density ? 1 / width : values.length,
+          xMin: x - width / 2,
+          xMax: x + width / 2,
+        },
+      ];
+    }
+    const width = (max - min) / bins,
+      start = min;
     const counts = Array(bins).fill(0);
     values.forEach(
       (v) =>
@@ -516,6 +559,25 @@
     return counts.map((count, i) => ({
       x: start + (i + 0.5) * width,
       y: density ? count / (values.length * width) : count,
+      xMin: start + i * width,
+      xMax: start + (i + 1) * width,
+    }));
+  }
+  function bernoulliMass(values, n = 1) {
+    integer(n, 1, 500);
+    if (!values.length) throw new RangeError("Empty mass data");
+    const counts = Array(n + 1).fill(0);
+    for (const value of values) {
+      finite(value);
+      const k = Math.round(n * (0.1 + 0.3 * value));
+      if (k < 0 || k > n || Math.abs(value - (k / n - 0.1) / 0.3) > 1e-10)
+        throw new RangeError("Value is outside the binary sample-mean support");
+      counts[k]++;
+    }
+    return counts.map((count, k) => ({
+      x: (k / n - 0.1) / 0.3,
+      y: count / values.length,
+      k,
     }));
   }
   return {
@@ -529,6 +591,7 @@
     coverage,
     power,
     parsePairs,
+    parseGroups,
     regression,
     regressionSample,
     correlationSample,
@@ -538,5 +601,6 @@
     adjustPValues,
     multipleComparisons,
     histogram,
+    bernoulliMass,
   };
 });

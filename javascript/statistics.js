@@ -181,6 +181,26 @@
       p: gammaSurvival(df / 2, statistic / 2),
     };
   }
+  function densityPlot(pdf, quantile, observed = 0) {
+    // Keep resolution in the reference distribution when an observed statistic
+    // extends the axis far into its tail. Log spacing also resolves singularities.
+    const low = quantile(1e-5),
+      core = quantile(0.995);
+    const max = Math.max(core, observed * 1.15);
+    const coordinates = new Set([observed, core, max]);
+    if (Number.isFinite(pdf(0))) coordinates.add(0);
+    const addRange = (a, b, count) => {
+      for (let i = 0; i <= count; i++)
+        coordinates.add(a * Math.exp((Math.log(b / a) * i) / count));
+    };
+    addRange(low, core, 1200);
+    if (max > core) addRange(core, max, 400);
+    const points = [...coordinates]
+      .sort((a, b) => a - b)
+      .map((x) => ({ x, y: pdf(x) }))
+      .filter((p) => Number.isFinite(p.y));
+    return { max, points };
+  }
   function fPlot(df1, df2) {
     positive(df1, "Numerator degrees of freedom");
     positive(df2, "Denominator degrees of freedom");
@@ -228,6 +248,7 @@
     generateFrequencies,
     chiSquared,
     fPlot,
+    densityPlot,
     dot,
     norm,
     center,

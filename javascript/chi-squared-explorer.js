@@ -81,14 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
     frequencyChart.data.datasets[0].data = expected;
     frequencyChart.data.datasets[1].data = observed;
     frequencyChart.update();
-    const max = Math.max(jStat.chisquare.inv(0.995, df), statistic * 1.15);
-    // χ² with df=1 has infinite density at zero. Start just above zero.
-    const points = curvePoints(max / 10000, max, (x) =>
-      jStat.chisquare.pdf(x, df),
+    const { max, points } = StatsMath.densityPlot(
+      (x) => jStat.chisquare.pdf(x, df),
+      (p) => jStat.chisquare.inv(p, df),
+      statistic,
     );
-    if (statistic > 0)
-      points.push({ x: statistic, y: jStat.chisquare.pdf(statistic, df) });
-    points.sort((a, b) => a.x - b.x);
     const height = Math.max(...points.map((p) => p.y));
     distribution.data.datasets[0].data = points;
     distribution.data.datasets[0].label = `H₀: χ² with df = ${df}`;

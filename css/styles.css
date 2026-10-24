@@ -1263,6 +1263,10 @@ body:is(
   width: 100%;
   height: auto;
 }
+.squared-errors {
+  max-height: 340px;
+  overflow: auto;
+}
 .learning-svg text {
   font: 14px var(--sans);
   fill: var(--ink);

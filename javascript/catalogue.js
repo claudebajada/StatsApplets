@@ -173,10 +173,10 @@
       "Does r = 0 mean the variables have no relationship?",
       "It means there is no linear association. The variables may still have a curved relationship.",
       [
-        ["Positive association", { association: 0.6 }],
-        ["Negative association", { association: -0.8 }],
-        ["No linear association", { association: 0 }],
-        ["Perfect straight line", { association: 1 }],
+        ["Positive association", { dataMode: "generated", association: 0.6 }],
+        ["Negative association", { dataMode: "generated", association: -0.8 }],
+        ["No linear association", { dataMode: "generated", association: 0 }],
+        ["Perfect straight line", { dataMode: "generated", association: 1 }],
         [
           "Curved relationship, r = 0",
           { dataMode: "manual", pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4" },
@@ -260,10 +260,22 @@
       "Can a high R² establish that x causes y?",
       "No. R² measures how much variation the fitted line accounts for in this sample. It cannot establish a causal relationship. Confounding can remain even when R² is high.",
       [
-        ["Null slope", { slope: 0, noise: 1, sampleSize: 30 }],
-        ["Strong signal", { slope: 2, noise: 0.4, sampleSize: 30 }],
-        ["Small sample", { slope: 1, noise: 1, sampleSize: 5 }],
-        ["Large sample", { slope: 1, noise: 1, sampleSize: 100 }],
+        [
+          "Null slope",
+          { dataMode: "generated", slope: 0, noise: 1, sampleSize: 30 },
+        ],
+        [
+          "Strong signal",
+          { dataMode: "generated", slope: 2, noise: 0.4, sampleSize: 30 },
+        ],
+        [
+          "Small sample",
+          { dataMode: "generated", slope: 1, noise: 1, sampleSize: 5 },
+        ],
+        [
+          "Large sample",
+          { dataMode: "generated", slope: 1, noise: 1, sampleSize: 100 },
+        ],
         [
           "Curvature in residuals",
           { dataMode: "manual", pairs: "-2,4\n-1,1\n0,0\n1,1\n2,4" },
@@ -293,11 +305,30 @@
       [
         [
           "Null population effect",
-          { separation: 0, withinSD: 1, sampleSize: 20 },
+          { dataMode: "generated", separation: 0, withinSD: 1, sampleSize: 20 },
         ],
-        ["Large effect", { separation: 2, withinSD: 1, sampleSize: 20 }],
-        ["Small samples", { separation: 0.5, withinSD: 1, sampleSize: 3 }],
-        ["Large samples", { separation: 0.5, withinSD: 1, sampleSize: 100 }],
+        [
+          "Large effect",
+          { dataMode: "generated", separation: 2, withinSD: 1, sampleSize: 20 },
+        ],
+        [
+          "Small samples",
+          {
+            dataMode: "generated",
+            separation: 0.5,
+            withinSD: 1,
+            sampleSize: 3,
+          },
+        ],
+        [
+          "Large samples",
+          {
+            dataMode: "generated",
+            separation: 0.5,
+            withinSD: 1,
+            sampleSize: 100,
+          },
+        ],
       ],
     ),
     item(

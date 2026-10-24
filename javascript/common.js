@@ -71,6 +71,33 @@ function lineDataset(label, data = [], color = chartPalette[0]) {
     fill: false,
   };
 }
+function histogramDataset(label, data, color = chartPalette[0]) {
+  return {
+    type: "bar",
+    label,
+    data,
+    histogram: true,
+    backgroundColor: color + "aa",
+    borderWidth: 0,
+    grouped: false,
+    categoryPercentage: 1,
+    barPercentage: 1,
+    inflateAmount: 0,
+  };
+}
+Chart.register({
+  id: "histogramGeometry",
+  beforeDatasetsUpdate(chart) {
+    for (const dataset of chart.data.datasets) {
+      if (!dataset.histogram || !dataset.data.length) continue;
+      const bin = dataset.data[0],
+        scale = chart.scales.x;
+      dataset.barThickness = Math.abs(
+        scale.getPixelForValue(bin.xMax) - scale.getPixelForValue(bin.xMin),
+      );
+    }
+  },
+});
 function watchControls(update) {
   document
     .querySelectorAll("#controls input,#controls select,#controls textarea")

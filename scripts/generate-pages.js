@@ -68,7 +68,7 @@ const captions = {
   fitChart:
     "Each dot is one x, y observation. The fitted line predicts y from x. Each vertical segment shows a residual, the observed y minus the predicted y.",
   residualChart:
-    "Each dot shows one fitted value and its residual. The horizontal zero line separates over-predictions from under-predictions.",
+    "Each dot shows one observed x value and its residual. The horizontal zero line separates over-predictions from under-predictions. Using x reveals curved patterns even when the fitted line is horizontal.",
   groupsChart:
     "Dots show individual observations in each group. Squares mark the sample means. Compare the separation between means with the variation within groups.",
   anovaChart:
@@ -391,7 +391,7 @@ pages["regression-explorer"] = {
   metrics: "",
   charts:
     chart("fitChart", "Observations, least-squares line & residual segments") +
-    chart("residualChart", "Residuals against fitted values"),
+    chart("residualChart", "Residuals against x"),
   method:
     "The simulated data use fixed x values and a population intercept of 1. The errors are independent normal values with the chosen standard deviation. The fitted line estimates the intercept and slope from the sample. Least squares minimises the sum of squared vertical residuals. This model includes an intercept. R² is undefined if y is constant, and the slope is undefined if x is constant. Fitting the line does not require normal errors. Tests and confidence intervals for its coefficients need further assumptions. The simulation controls have no effect on manual data.",
   scripts: ["extensions"],

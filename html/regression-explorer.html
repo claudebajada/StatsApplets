@@ -275,18 +275,20 @@
               </p>
             </figure>
             <figure class="chart-container">
-              <h2 class="chart-title">Residuals against fitted values</h2>
+              <h2 class="chart-title">Residuals against x</h2>
               <div class="plot-frame">
                 <canvas
                   id="residualChart"
                   class="chart-canvas"
                   role="img"
-                  aria-label="Residuals against fitted values"
+                  aria-label="Residuals against x"
                 ></canvas>
               </div>
               <p class="chart-explanation" id="residualChart-explanation">
-                Each dot shows one fitted value and its residual. The horizontal
-                zero line separates over-predictions from under-predictions.
+                Each dot shows one observed x value and its residual. The
+                horizontal zero line separates over-predictions from
+                under-predictions. Using x reveals curved patterns even when the
+                fitted line is horizontal.
               </p>
             </figure>
           </section>

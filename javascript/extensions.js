@@ -78,18 +78,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const n = num("sampleSize"),
         reps = num("repetitions"),
         result = T.clt(n, reps, value("population"), num("seed"));
+      const discrete = value("population") === "bernoulli";
+      population.options.scales.y.title.text = discrete
+        ? "Probability"
+        : "Probability density";
+      means.options.scales.y.title.text = discrete
+        ? "Probability"
+        : "Probability density";
       population.data.datasets = [
-        bars(
-          "Population sample histogram",
-          T.histogram(result.population, 30, true),
-        ),
+        discrete
+          ? bars(
+              "Observed binary probabilities",
+              T.bernoulliMass(result.population),
+            )
+          : histogramDataset(
+              "Population sample histogram",
+              T.histogram(result.population, 30, true),
+            ),
       ];
       population.update();
+      el("populationChart-explanation").textContent = discrete
+        ? "The two bars show observed probabilities of the standardised binary outcomes −1/3 and 3. Their heights add to 1."
+        : "Individual values are drawn from a population with mean 0 and SD 1. Each bar's area is its observed fraction; height is that fraction divided by bin width. Total histogram area is 1.";
       const shown = el("traceMode").checked
         ? Math.min(reps, num("traceCount"))
         : reps;
       const displayedMeans = result.means.slice(0, shown);
-      const data = T.histogram(displayedMeans, 30, true),
+      const data = discrete
+          ? T.bernoulliMass(displayedMeans, n)
+          : T.histogram(displayedMeans, 30, true),
         extent = Math.max(4 / Math.sqrt(n), ...data.map((p) => Math.abs(p.x)));
       means.data.datasets = [
         shown < 20
@@ -97,15 +114,28 @@ document.addEventListener("DOMContentLoaded", () => {
               "One point per study mean",
               displayedMeans.map((x) => xy(x, 0)),
             )
-          : bars("Repeated sample means", data),
-        lineDataset(
-          "Normal approximation",
-          curvePoints(-extent, extent, (x) =>
-            S.normalDensity(x, 0, result.theoreticalSE),
-          ),
-          chartPalette[1],
-        ),
+          : discrete
+            ? bars("Observed sample-mean probabilities", data)
+            : histogramDataset("Repeated sample means", data),
+        discrete
+          ? lineDataset(
+              "Normal interval probabilities",
+              data.map(({ x, k }) =>
+                xy(x, LearningMath.binomialSelection(n, 0.1, k).normalArea),
+              ),
+              chartPalette[1],
+            )
+          : lineDataset(
+              "Normal approximation",
+              curvePoints(-extent, extent, (x) =>
+                S.normalDensity(x, 0, result.theoreticalSE),
+              ),
+              chartPalette[1],
+            ),
       ];
+      means.options.scales.y.min = 0;
+      if (discrete) means.options.scales.y.max = 1;
+      else delete means.options.scales.y.max;
       if (el("lockScale").checked) {
         means.options.scales.x.min = -4;
         means.options.scales.x.max = 4;
@@ -115,7 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       means.update();
       el("scale-note").textContent = el("lockScale").checked
-        ? "The means use a fixed −4 to +4 axis. Increasing n makes their spread visibly narrower. Density heights may rescale."
+        ? "The means use a fixed −4 to +4 axis. Increasing n makes their spread visibly narrower. " +
+          (discrete
+            ? "Bar heights are probabilities."
+            : "Density heights may rescale.")
         : "The mean axis resizes. Compare tick values as well as the shape.";
       el("meansChart-explanation").textContent =
         "Showing " +
@@ -126,7 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
         (shown === 1
           ? "One mean cannot yet reveal a sampling distribution."
           : "As more studies accumulate, their sampling distribution becomes visible.") +
-        " The comparison curve uses the population mean and theoretical SE.";
+        (discrete
+          ? " Each bar height is an observed probability at an exact binary sample mean. The normal comparison uses continuity-corrected interval probabilities, not density heights; it may be poor for small n."
+          : " Bar areas are observed probabilities. The comparison density uses the population mean and theoretical SE.");
       resultMetrics([
         ["Population μ", 0],
         ["Population σ", 1],
@@ -218,7 +253,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ];
       intervals.options.scales.y.min = 0;
       intervals.options.scales.y.max = display.length + 1;
-      if (!intervalBounds) intervalBounds = [mu - 4 * sigma, mu + 4 * sigma];
+      if (!intervalBounds) {
+        const low = Math.min(mu, ...display.map((i) => i.low)),
+          high = Math.max(mu, ...display.map((i) => i.high)),
+          padding = Math.max((high - low) * 0.05, sigma * 0.05);
+        intervalBounds = [low - padding, high + padding];
+      }
       if (el("lockScale").checked) {
         intervals.options.scales.x.min = intervalBounds[0];
         intervals.options.scales.x.max = intervalBounds[1];
@@ -247,15 +287,19 @@ document.addEventListener("DOMContentLoaded", () => {
         : "Interval axis resizes; compare its tick values when changing sample size.";
       intervals.update();
       widths.data.datasets = [
-        bars(
+        histogramDataset(
           "All interval widths",
           T.histogram(
-            result.intervals.map((i) => i.high - i.low),
+            result.intervals.map((i) => i.width),
             25,
           ),
         ),
       ];
       widths.update();
+      el("widthChart-explanation").textContent =
+        method === "z"
+          ? "With known population SD and fixed n and confidence level, every interval has the same width. This single bar counts all simulated intervals."
+          : "These bars count interval widths. Estimated sample SD varies between studies, so t interval widths vary too.";
       resultMetrics([
         ["Confidence level", percent(level)],
         ["Observed coverage", percent(result.covered / reps)],
@@ -432,9 +476,22 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         return;
       }
+      const tryLine = el("tryLine").checked,
+        reveal = el("revealFit").checked,
+        candidate = LearningMath.candidateLine(
+          pairs,
+          num("candidateIntercept"),
+          num("candidateSlope"),
+        ),
+        activeFitted = tryLine
+          ? pairs.map(
+              ([x]) => num("candidateIntercept") + num("candidateSlope") * x,
+            )
+          : result.fitted,
+        activeResiduals = tryLine ? candidate.residuals : result.residuals;
       const segments = pairs.flatMap(([x, y], i) => [
         xy(x, y),
-        xy(x, result.fitted[i]),
+        xy(x, activeFitted[i]),
         xy(x, null),
       ]);
       fit.data.datasets.push(
@@ -450,20 +507,17 @@ document.addEventListener("DOMContentLoaded", () => {
           showLine: true,
         },
         {
-          ...lineDataset("Vertical residuals", segments, chartPalette[2]),
+          ...lineDataset(
+            tryLine ? "Candidate-line residuals" : "Least-squares residuals",
+            segments,
+            chartPalette[2],
+          ),
           borderDash: [2, 3],
           showLine: true,
         },
       );
-      const tryLine = el("tryLine").checked;
-      const reveal = el("revealFit").checked;
-      const candidate = LearningMath.candidateLine(
-        pairs,
-        num("candidateIntercept"),
-        num("candidateSlope"),
-      );
       fit.data.datasets[1].hidden = !reveal;
-      fit.data.datasets[2].hidden = !reveal;
+      fit.data.datasets[2].hidden = !(tryLine || reveal);
       if (tryLine)
         fit.data.datasets.push({
           ...lineDataset(
@@ -487,35 +541,33 @@ document.addEventListener("DOMContentLoaded", () => {
           borderDash: [3, 5],
         });
       fit.update();
-      const activeFitted = tryLine
-        ? pairs.map(
-            ([x]) => num("candidateIntercept") + num("candidateSlope") * x,
-          )
-        : result.fitted;
-      const activeResiduals = tryLine ? candidate.residuals : result.residuals;
-      const fittedMin = Math.min(...activeFitted),
-        fittedMax = Math.max(...activeFitted);
       residual.data.datasets = [
         point(
           tryLine ? "Candidate-line residuals" : "Least-squares residuals",
-          activeFitted.map((x, i) => xy(x, activeResiduals[i])),
+          xs.map((x, i) => xy(x, activeResiduals[i])),
         ),
         {
           ...lineDataset(
             "Zero residual",
-            [xy(fittedMin, 0), xy(fittedMax, 0)],
+            [xy(min, 0), xy(max, 0)],
             chartPalette[1],
           ),
           borderDash: [6, 4],
           showLine: true,
         },
       ];
+      residual.options.scales.x.title.text = "Observed x";
       residual.update();
       el("residualChart-explanation").textContent =
         (tryLine
           ? "This plot follows your candidate line. "
           : "This plot follows the least-squares fit. ") +
-        "Each point shows a predicted value and its vertical residual; the zero reference separates over-predictions from under-predictions.";
+        "Each point shows an observed x and its vertical residual. This reveals curved patterns even when the fitted line is horizontal. The zero reference separates over-predictions from under-predictions.";
+      el("fitChart-explanation").textContent =
+        "Each dot is one observed x, y pair. " +
+        (tryLine
+          ? "The candidate line and its vertical residual segments match the residual panel."
+          : "The least-squares line and its vertical residual segments match the residual panel.");
       resultMetrics(
         reveal
           ? [
@@ -585,16 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ]);
       let groups;
       if (manual) {
-        groups = value("groups")
-          .trim()
-          .split(/\n/)
-          .filter((s) => s.trim())
-          .map((line) =>
-            line
-              .trim()
-              .split(/[,\s]+/)
-              .map(Number),
-          );
+        groups = T.parseGroups(value("groups"));
       } else
         groups = T.groupSample(
           num("sampleSize"),
@@ -672,14 +715,11 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         return;
       }
-      const max = Math.max(
-          jStat.centralF.inv(0.995, result.dfBetween, result.dfWithin),
-          result.f * 1.15,
-        ),
-        pdf = (x) => jStat.centralF.pdf(x, result.dfBetween, result.dfWithin);
-      const points = curvePoints(max / 10000, max, pdf);
-      if (result.f > 0) points.push(xy(result.f, pdf(result.f)));
-      points.sort((a, b) => a.x - b.x);
+      const { max, points } = S.densityPlot(
+        (x) => jStat.centralF.pdf(x, result.dfBetween, result.dfWithin),
+        (p) => jStat.centralF.inv(p, result.dfBetween, result.dfWithin),
+        result.f,
+      );
       fChart.data.datasets = [
         lineDataset(`H₀: F(${result.dfBetween}, ${result.dfWithin})`, points),
         {

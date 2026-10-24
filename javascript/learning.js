@@ -626,10 +626,16 @@
         { id: "start-line-challenge" },
       );
       const text = add("p", null, root, { id: "candidate-working" });
-      const squares = add("div", null, root, { class: "learning-svg" });
+      const squares = add("div", null, root, {
+        class: "learning-svg squared-errors",
+        tabindex: "0",
+        role: "region",
+        "aria-label": "Squared residuals on a fixed area scale",
+      });
+      let squareDataKey, pixelsPerUnit;
       add(
         "p",
-        "Adjust Your slope and Your intercept in the controls. Reveal the least-squares line when ready. Each square below represents one squared vertical residual; its area, not its side length, represents that contribution. The horizontal layout is illustrative.",
+        "Adjust Your slope and Your intercept in the controls. Reveal the least-squares line when ready. Each square's area represents one squared vertical residual. The area scale stays fixed while you change the line for these observations. Scroll to inspect larger errors. Loading different observations sets a new scale.",
         root,
       );
       button(
@@ -650,22 +656,40 @@
           ? d.candidate
           : { sse: d.result.sse, residuals: d.result.residuals };
         text.textContent = `${d.tryLine ? "Your line" : "Fitted line"} SSE = ${fixed(target.sse)}. Minimum SSE = ${fixed(d.result.sse)}. ${d.tryLine ? "Each movement changes the squared vertical errors." : "Enable a candidate line to explore other choices."}`;
+        const dataKey = JSON.stringify(d.pairs);
+        if (dataKey !== squareDataKey) {
+          squareDataKey = dataKey;
+          const ys = d.pairs.map((p) => p[1]);
+          pixelsPerUnit =
+            22 /
+            Math.max(
+              1,
+              (Math.max(...ys) - Math.min(...ys)) / 2,
+              ...d.pairs.flat().map((v) => Math.abs(v) / 20),
+            );
+        }
         const shown = target.residuals.slice(0, 20),
-          max = Math.max(1e-12, ...shown.map(Math.abs));
+          sides = shown.map((r) => Math.abs(r) * pixelsPerUnit),
+          height = Math.max(130, ...sides.map((side) => side + 65));
+        let left = 10;
         let marks = "";
         shown.forEach((r, i) => {
-          const side = (Math.abs(r) / max) * 22;
-          marks += `<rect x="${10 + i * 29}" y="${80 - side}" width="${side}" height="${side}" fill="#006b69" fill-opacity="0.55" stroke="#006b69"/>`;
+          const side = sides[i];
+          marks += `<rect x="${left}" y="${height - 50 - side}" width="${side}" height="${side}" fill="#006b69" fill-opacity="0.55" stroke="#006b69"/>`;
+          left += Math.max(side, 20) + 9;
         });
-        marks +=
-          '<text x="10" y="110">Squared errors for the first 20 observations</text>';
+        marks += `<text x="10" y="${height - 20}">Squared errors for the first 20 observations</text>`;
+        const width = Math.max(600, left + 10);
         svg(
           squares,
           marks,
           "Areas proportional to squared residuals for the first twenty observations",
-          600,
-          130,
+          width,
+          height,
         );
+        squares.firstElementChild.style.width = width + "px";
+        squares.firstElementChild.style.height = height + "px";
+        squares.firstElementChild.style.maxWidth = "none";
       };
     } else if (id === "anova-explorer") {
       title.textContent =

@@ -8,6 +8,7 @@
       content="See how often confidence intervals from repeated samples contain the population mean."
     />
     <title>Confidence interval coverage · StatsApplets</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../css/styles.css" />
     <script src="../lib/chart.min.js"></script>
     <script src="../lib/jstat.min.js"></script>
@@ -25,15 +26,16 @@
       <header class="page-header"><h1>Confidence interval coverage</h1></header>
       <section class="worked-comparison" aria-labelledby="experiment-title">
         <div>
-          <h2 id="experiment-title">Greater confidence costs width</h2>
+          <h2 id="experiment-title">
+            Higher confidence produces wider intervals
+          </h2>
           <p>
             Repeat a study of 20 observations from a normal population with
             fixed mean 0 and SD 1. Each sample produces a different t interval.
           </p>
           <p class="comparison-instruction">
-            Keep the generated samples identical. Raise confidence from 95% to
-            99%: only the interval rule changes, not the observations or the
-            true mean.
+            Keep the generated samples identical and raise confidence from 95%
+            to 99%. Compare the interval widths and coverage.
           </p>
         </div>
         <div class="comparison-action">

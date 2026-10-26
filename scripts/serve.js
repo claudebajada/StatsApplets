@@ -7,6 +7,7 @@ const types = {
   ".html": "text/html",
   ".js": "application/javascript",
   ".css": "text/css",
+  ".svg": "image/svg+xml",
   ".woff": "font/woff",
   ".woff2": "font/woff2",
 };

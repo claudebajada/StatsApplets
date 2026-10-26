@@ -1,33 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>t Distribution Explorer</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/chart.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-</head>
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet plots the t distribution against the standard normal. Increase the degrees of freedom to watch the t curve approach normal.</p>
-</details>
-
-<div class="page-title">t Distribution Explorer</div>
-
-<div class="slider-container">
-  <label for="df-slider">Degrees of Freedom (df): <span id="df-value">1</span></label>
-  <input type="range" id="df-slider" min="1" max="100" step="1" value="1">
-</div>
-
-<div class="chart-container">
-  <canvas id="distributionChart"></canvas>
-</div>
-
-<script src="../javascript/common.js"></script>
-<script src="../javascript/t-distribution-explorer.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Compare the t and normal distributions as degrees of freedom change."
+    />
+    <title>Student's t · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="t-distribution-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Distributions</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>Student's t</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Estimating SD adds uncertainty</h2>
+          <p>
+            A t score divides by a sample SD. In a small sample, that SD can
+            underestimate the population spread and inflate the score. The
+            heavier tails account for this extra uncertainty.
+          </p>
+          <p class="comparison-instruction">
+            Compare five observations (4 degrees of freedom) with 101
+            observations (100 degrees of freedom). Watch the t curve approach
+            the normal curve.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="df-slider"
+                >Degrees of freedom:
+                <output id="df-value" for="df-slider">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="df-slider"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                /><label class="visually-hidden" for="df-slider-number"
+                  >Exact value: Degrees of freedom</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="df-slider"
+                  id="df-slider-number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">1 to 100</span>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Standard normal & Student's t densities
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="distributionChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Standard normal & Student's t densities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="distributionChart-explanation">
+                Both curves describe possible standardised scores. At small
+                degrees of freedom, the t curve assigns more probability to
+                extreme scores. As the degrees of freedom increase, it
+                approaches the standard normal curve.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="t = (x̄ − μ₀)/(s/√n); df = n − 1"
+                  ><mrow
+                    ><mi>t</mi><mo>=</mo
+                    ><mfrac
+                      ><mrow
+                        ><mover><mi>x</mi><mo>¯</mo></mover
+                        ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                      ><mfrac
+                        ><mi>s</mi><msqrt><mi>n</mi></msqrt></mfrac
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  x̄ is the sample mean and μ₀ is the null mean. s is the sample
+                  standard deviation and n is the sample size. The one-sample t
+                  statistic has n − 1 degrees of freedom.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              Both curves are probability densities centred at zero. The t curve
+              gives the distribution of the one-sample t statistic under the
+              null for independent observations from a normal population. Both
+              distributions extend beyond the plotted range. With one degree of
+              freedom, t has no defined mean or finite variance. With two
+              degrees of freedom, its variance is still not finite.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="one-sample-t-test.html">One-sample t test</a> ·
+              <a href="clt-explorer.html">Central limit theorem</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/t-distribution-explorer.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

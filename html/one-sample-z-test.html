@@ -1,75 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Sample Z-Test Explorer</title>
-  <script src="../lib/chart.min.js"></script>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="../lib/mathjax/tex-mml-chtml.min.js"></script>
-  <script src="../lib/jstat.min.js"></script>
-
-
-</head>
-<body>
-
-<details class="info">
-  <summary>What does this show?</summary>
-  <p>This applet demonstrates the one-sample z test. Experiment with the sample mean and size to see changes in the z statistic and p-values.</p>
-</details>
-
-<div class="page-title">One Sample Z-Test Explorer</div>
-
-<!-- Sliders for Population Distribution -->
-<div class="slider-container">
-  <label for="mu">Estimated Population Mean (\(\hat{ \mu }\)): <span id="mu-value">0</span></label>
-  <input type="range" id="mu" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="mu0">Hypothesized Mean (\( \mu_0 \)): <span id="mu0-value">0</span></label>
-  <input type="range" id="mu0" class="slider" min="-10" max="10" step="0.1" value="0">
-
-  <label for="sigma">Population Standard Deviation (\( \sigma \)): <span id="sigma-value">1</span></label>
-  <input type="range" id="sigma" class="slider" min="0.1" max="5" step="0.1" value="1">
-
-  <label for="N">Sample Size (\( N \)): <span id="N-value">30</span></label>
-  <input type="range" id="N" class="slider" min="5" max="100" step="1" value="30">
-  
-<div class="cohen-d-container">
-  Effect Size (Cohen's d): <span id="cohen-d-value">0</span>
-</div>
-
-<div class="z-value-container">
-  z statistic: <span id="z-value">0</span>
-</div>    
-<div class="p-value-container">
-  One (right) Tailed p Value: <span id="p-value">0</span>
-</div>
-<div class="p-value-container">
-  Two Tailed p Value: <span id="p-value-2">0</span>
-</div>
-
-</div>
-
-<!-- Containers for Charts -->
-<div class="container">
-  <div class="chart-container">
-    <h3 class="chart-title">Population Distribution</h3>
-    <canvas id="populationChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Standard Error of the Mean</h3>
-    <canvas id="stderrChart" class="chart-canvas"></canvas>
-  </div>
-
-  <div class="chart-container">
-    <h3 class="chart-title">Z Statistic Sampling Distribution</h3>
-    <canvas id="zChart" class="chart-canvas"></canvas>
-  </div>
-</div>
-
-<script src="../javascript/common.js"></script>
-<script src="../javascript/one-sample-z-test.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Test a claim about a population mean when its standard deviation is known."
+    />
+    <title>One-sample z test · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="one-sample-z-test">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a><span>Hypothesis testing</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>One-sample z test</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">
+            What changes when the population SD is known?
+          </h2>
+          <p>
+            Use an invented blood-pressure study with a mean reduction of 3
+            mmHg. Here we assume the population SD is known to be 6 mmHg; the z
+            test relies on that assumption.
+          </p>
+          <p class="comparison-instruction">
+            Keep the mean reduction and known SD fixed. Compare 25 with 100
+            people and watch the standard error change.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="mu"
+                >Sample mean x̄: <output id="mu-value" for="mu">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu-number"
+                  >Exact value: Sample mean x̄</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu"
+                  id="mu-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="mu0"
+                >Null population mean μ₀:
+                <output id="mu0-value" for="mu0">0</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="mu0"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                /><label class="visually-hidden" for="mu0-number"
+                  >Exact value: Null population mean μ₀</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="mu0"
+                  id="mu0-number"
+                  min="-10"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-10 to 10</span>
+            </div>
+            <div class="control-field">
+              <label for="sigma"
+                >Known population SD σ:
+                <output id="sigma-value" for="sigma">1</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sigma"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                /><label class="visually-hidden" for="sigma-number"
+                  >Exact value: Known population SD σ</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sigma"
+                  id="sigma-number"
+                  min="0.1"
+                  max="20"
+                  step="0.1"
+                  value="1"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.1 to 20</span>
+            </div>
+            <div class="control-field">
+              <label for="N"
+                >Sample size n: <output id="N-value" for="N">30</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="N"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="N-number"
+                  >Exact value: Sample size n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="N"
+                  id="N-number"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">5 to 100</span>
+            </div>
+            <div class="control-field">
+              <label for="alternative">H₁: μ is … μ₀</label
+              ><select id="alternative">
+                <option value="upper">greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided" selected>different from</option>
+              </select>
+            </div>
+            <details class="wide plot-controls">
+              <summary>Plot axes</summary>
+              <div class="control-field">
+                <label
+                  ><input id="lockScale" type="checkbox" checked /> Keep axes
+                  fixed for comparison</label
+                ><button id="fit-axes" type="button">
+                  Fit axes to current example
+                </button>
+              </div>
+            </details>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics">
+              <div class="metric">
+                <span>Estimated mean</span
+                ><strong id="estimate-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>95% confidence interval</span
+                ><strong id="ci-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Standardised difference (σ)</span
+                ><strong id="cohen-d-value">...</strong>
+              </div>
+              <div class="metric">
+                <span>Selected p-value</span
+                ><strong id="p-value-selected">...</strong>
+              </div>
+            </div>
+            <p class="result-math">
+              z = <strong id="z-value">…</strong>; known SE =
+              <strong id="se-value">…</strong>
+            </p>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                1 · Compare the sample estimate with the null value
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="meanEstimateChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="1 · Compare the sample estimate with the null value"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="meanEstimateChart-explanation">
+                The circle is the sample estimate. The diamond is the null
+                value. The blue horizontal bar extends one standard error on
+                either side of the estimate. The thinner teal bar is the
+                two-sided 95% confidence interval. The axis uses original
+                measurement units. A two-sided 95% interval corresponds to a
+                two-sided 5% test; directional tests use different rejection
+                regions.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                2 · Read the p-value under the null hypothesis
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="zChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="2 · Read the p-value under the null hypothesis"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="zChart-explanation">
+                Imagine repeating the study when the null hypothesis is true.
+                This curve shows the distribution of the resulting z scores, not
+                the distribution of individual measurements. The vertical line
+                marks your z score. The shaded area is the p-value for your
+                chosen alternative.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="z = (x̄ − μ₀)/(σ/√n), with known population σ"
+                  ><mrow
+                    ><mi>z</mi><mo>=</mo
+                    ><mfrac
+                      ><mrow
+                        ><mover><mi>x</mi><mo>¯</mo></mover
+                        ><mo>−</mo><msub><mi>μ</mi><mn>0</mn></msub></mrow
+                      ><mfrac
+                        ><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac
+                      ></mfrac
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  x̄ is the sample mean and μ₀ is the null population mean. σ is
+                  the known population standard deviation and n is the sample
+                  size. The denominator is the standard error, or SE.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              The test assumes independent observations and a normal sampling
+              distribution of the mean. The standard error σ/√n describes how
+              sample means vary across repeated studies. The z score gives the
+              observed difference from μ₀ in standard errors. Choose the
+              alternative before looking at the data.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+            <details class="info">
+              <summary>Degrees of freedom and other tail probabilities</summary>
+              <div class="metrics">
+                <div class="metric">
+                  <span>Lower-tail p</span
+                  ><strong id="p-value-lower">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Upper-tail p</span
+                  ><strong id="p-value-one-sided">...</strong>
+                </div>
+                <div class="metric">
+                  <span>Two-sided p</span
+                  ><strong id="p-value-two-sided">...</strong>
+                </div>
+              </div>
+              <p>
+                The selected p-value above uses your chosen alternative
+                hypothesis. The other p-values use the alternatives shown here.
+                Divide the observed difference by the known population standard
+                deviation to get the effect size. Its sign follows the order of
+                subtraction.
+              </p>
+            </details>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="clt-explorer.html">Central limit theorem</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              · <a href="power-explorer.html">Statistical power</a>
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/mean-test-explorer.js"></script>
+    <script src="../javascript/one-sample-z-test.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
 </html>
-

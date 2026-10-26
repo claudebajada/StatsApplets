@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how sample size and the true effect change a test's power."
+    />
+    <title>Statistical power · StatsApplets</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body class="applet" data-applet="power-explorer">
+    <a class="skip-link" href="#main">Skip to applet</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="../index.html" class="brand">StatsApplets</a>
+      <div class="nav-context">
+        <a href="../index.html">All applets</a
+        ><span>Sampling &amp; uncertainty</span>
+      </div>
+    </nav>
+    <main id="main">
+      <header class="page-header"><h1>Statistical power</h1></header>
+      <section class="worked-comparison" aria-labelledby="experiment-title">
+        <div>
+          <h2 id="experiment-title">Plan for an effect you might miss</h2>
+          <p>
+            Imagine planning a study where the true mean is half a population SD
+            above the null value (d = 0.5). This is an assumed true effect, not
+            an effect estimated after seeing data.
+          </p>
+          <p class="comparison-instruction">
+            Keep the effect and 5% significance level fixed. Compare studies
+            with 20 and 80 observations; look for the alternative distribution
+            inside the rejection regions.
+          </p>
+        </div>
+        <div class="comparison-action">
+          <button type="button" id="experiment-action" class="primary-action">
+            Load this comparison</button
+          ><a href="#guided-lab">Follow the maths</a>
+        </div>
+      </section>
+      <div class="applet-workspace">
+        <aside class="experiment" aria-labelledby="parameters-heading">
+          <h2 id="parameters-heading">Explore the values</h2>
+          <div id="scenario-toolbar"></div>
+          <section class="controls-panel" id="controls" aria-label="Parameters">
+            <div class="control-field">
+              <label for="sampleSize"
+                >Sample size n:
+                <output id="sampleSize-value" for="sampleSize"
+                  >30</output
+                ></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="sampleSize"
+                  min="2"
+                  max="300"
+                  step="1"
+                  value="30"
+                /><label class="visually-hidden" for="sampleSize-number"
+                  >Exact value: Sample size n</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="sampleSize"
+                  id="sampleSize-number"
+                  min="2"
+                  max="300"
+                  step="1"
+                  value="30"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">2 to 300</span>
+            </div>
+            <div class="control-field">
+              <label for="effect"
+                >True signed standardised effect d:
+                <output id="effect-value" for="effect">0.5</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="effect"
+                  min="-2"
+                  max="2"
+                  step="0.05"
+                  value="0.5"
+                /><label class="visually-hidden" for="effect-number"
+                  >Exact value: True signed standardised effect d</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="effect"
+                  id="effect-number"
+                  min="-2"
+                  max="2"
+                  step="0.05"
+                  value="0.5"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">-2 to 2</span>
+            </div>
+            <div class="control-field">
+              <label for="alpha"
+                >Significance level α:
+                <output id="alpha-value" for="alpha">0.05</output></label
+              >
+              <div class="range-pair">
+                <input
+                  type="range"
+                  id="alpha"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                /><label class="visually-hidden" for="alpha-number"
+                  >Exact value: Significance level α</label
+                ><input
+                  type="number"
+                  class="range-number"
+                  data-range="alpha"
+                  id="alpha-number"
+                  min="0.01"
+                  max="0.2"
+                  step="0.01"
+                  value="0.05"
+                />
+              </div>
+              <span class="range-bounds" aria-hidden="true">0.01 to 0.2</span>
+            </div>
+            <div class="control-field">
+              <label for="alternative">H₁: μ is … μ₀</label
+              ><select id="alternative">
+                <option value="upper">greater than</option>
+                <option value="lower">less than</option>
+                <option value="twoSided" selected>different from</option>
+              </select>
+            </div>
+          </section>
+          <p id="input-warning" class="notice" role="status" hidden></p>
+        </aside>
+        <div class="analysis">
+          <section class="result-card" aria-label="Current results">
+            <div class="metrics"></div>
+          </section>
+          <p id="scale-note" class="small" role="status"></p>
+          <section class="container" aria-label="Interactive plots">
+            <figure class="chart-container">
+              <h2 class="chart-title">
+                Null & specified alternative sampling densities
+              </h2>
+              <div class="plot-frame">
+                <canvas
+                  id="powerChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Null & specified alternative sampling densities"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="powerChart-explanation">
+                The null curve describes z scores when the null is true. The
+                other curve describes z scores for the chosen true effect. The
+                shaded area under that second curve is power. It is the
+                probability of rejecting the null for that effect.
+              </p>
+            </figure>
+            <figure class="chart-container">
+              <h2 class="chart-title">Power as sample size changes</h2>
+              <div class="plot-frame">
+                <canvas
+                  id="powerCurveChart"
+                  class="chart-canvas"
+                  role="img"
+                  aria-label="Power as sample size changes"
+                ></canvas>
+              </div>
+              <p class="chart-explanation" id="powerCurveChart-explanation">
+                Each point gives the chance of rejecting the null at that sample
+                size, holding the true effect, significance level and
+                alternative fixed.
+              </p>
+            </figure>
+          </section>
+          <div class="comparison-reading">
+            <h3 id="experiment-position">Worked comparison</h3>
+            <p id="experiment-reading" role="status"></p>
+          </div>
+          <section
+            class="guided-lab"
+            id="guided-lab"
+            aria-labelledby="guided-title"
+          >
+            <h2 id="guided-title">Follow the calculation</h2>
+            <div class="formula-block">
+              <div class="equation">
+                <math
+                  xmlns="http://www.w3.org/1998/Math/MathML"
+                  display="block"
+                  aria-label="Z ∼ N(d√n, 1) under the specified alternative; power = P(reject H₀)"
+                  ><mrow
+                    ><mi>Power</mi><mo>=</mo><mi>P</mi
+                    ><mrow
+                      ><mo>(</mo
+                      ><mrow
+                        ><mtext>reject </mtext><msub><mi>H</mi><mn>0</mn></msub
+                        ><mo>|</mo><mi>μ</mi><mo>=</mo
+                        ><msub><mi>μ</mi><mn>1</mn></msub></mrow
+                      ><mo>)</mo></mrow
+                    ></mrow
+                  ></math
+                >
+              </div>
+              <details class="symbol-details">
+                <summary>What the symbols mean</summary>
+                <p class="symbol-key">
+                  H₀ is the null hypothesis. d is the true difference between
+                  the population mean and the null mean, divided by the
+                  population standard deviation. Power is the probability of
+                  rejecting H₀ for that effect.
+                </p>
+              </details>
+            </div>
+            <div id="guided-content"></div>
+          </section>
+          <details class="calculation-details info">
+            <summary>Assumptions and full calculation</summary>
+            <p>
+              The calculation assumes a one-sample z test with a known
+              population standard deviation and independent normal observations.
+              The effect d = (μ − μ₀)/σ describes the population. The z
+              statistic has standard deviation 1 and mean d√n under that effect.
+              The null distribution determines the rejection region. Power is
+              the area of the alternative distribution inside that region. A
+              one-sided test can have power below α when the true effect points
+              in the opposite direction. These calculations apply to z tests. A
+              t test needs a different power calculation.
+            </p>
+            <p id="calculation" aria-live="polite"></p>
+          </details>
+          <nav class="related-learning" aria-label="Related concepts">
+            <h2>Continue exploring</h2>
+            <p>
+              <a href="one-sample-z-test.html">One-sample z test</a> ·
+              <a href="confidence-interval-explorer.html"
+                >Confidence interval coverage</a
+              >
+              ·
+              <a href="multiple-comparisons-explorer.html"
+                >Multiple comparisons</a
+              >
+            </p>
+            <a href="../index.html#learning-route">Suggested starting route</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/extensions.js"></script>
+    <script src="../javascript/learning.js"></script>
+  </body>
+</html>

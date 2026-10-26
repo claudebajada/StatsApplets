@@ -1,0 +1,38 @@
+{
+  "name": "statsapplets",
+  "version": "1.0.0",
+  "description": "Lightweight static statistics teaching applets",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "check": "node scripts/check.js",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "playwright test",
+    "test:all": "npm run check && npm test && npm run test:browser",
+    "pages": "node scripts/generate-pages.js",
+    "vendor": "node scripts/vendor.js",
+    "test:chromium": "playwright test --project=desktop --project=mobile",
+    "format": "prettier --write \"javascript/*.js\" \"scripts/*.js\" \"tests/**/*.js\" \"css/*.css\" \"*.html\" \"*.md\" \"playwright.config.js\"",
+    "format:check": "prettier --check \"javascript/*.js\" \"scripts/*.js\" \"tests/**/*.js\" \"css/*.css\" \"*.html\" \"*.md\" \"playwright.config.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claudebajada/StatsApplets.git"
+  },
+  "license": "BSD-3-Clause",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/claudebajada/StatsApplets/issues"
+  },
+  "homepage": "https://github.com/claudebajada/StatsApplets#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "chart.js": "4.5.1",
+    "jstat": "1.9.6",
+    "prettier": "3.9.10"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  }
+}

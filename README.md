@@ -127,7 +127,7 @@ Upstream references: [Chart.js v4 migration](https://www.chartjs.org/docs/latest
 
 ## Static deployment
 
-Copy `index.html`, `html/`, `javascript/`, `css/` and `lib/` to a static host, preserving paths. No Node/Python server, npm install or build command is required in production. Links are relative, so repository-subdirectory hosting works. The existing `Videos/` assets remain available and are optional.
+Copy `index.html`, `favicon.svg`, `html/`, `javascript/`, `css/`, `fonts/`, `lib/` and `LICENSE` to a static host, preserving paths. Keep the font and library licence files with the deployed assets. No Node/Python server, npm install or build command is required in production. Links are relative, so repository-subdirectory hosting works. The existing `Videos/` assets remain available and are optional.
 
 Do not deploy or merge without approval. BSD-3-Clause; see [LICENSE](LICENSE). Third-party notices are in `lib/`.
 

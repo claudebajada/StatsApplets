@@ -175,6 +175,9 @@ test("invalid URL state falls back and dependent inspection bounds are clamped",
   await expect(page.locator("#input-warning")).toBeHidden();
   await page.locator(".seed-details > summary").click();
   await page.locator("#seed").fill("43");
+  await page.locator("#seed").fill("42.5");
+  await expect(page.locator("#input-warning")).toContainText("Using seed 43");
+  expect(new URL(page.url()).searchParams.get("seed")).toBe("43");
   await page.locator("#seed").fill("");
   await expect(page.locator("#input-warning")).toContainText(
     "Using default seed 42",
@@ -227,4 +230,19 @@ test("keyboard map selection and 320px layouts keep controls and formulae access
   ).toBe(true);
   await page.getByRole("link", { name: "Back to the map" }).click();
   await expect(connector).toBeVisible();
+  await page.locator('[data-relationship="gof"]').click();
+  const reference = page.locator(".guided-lab .formula-block .equation");
+  await reference.focus();
+  await expect(reference).toBeFocused();
+  // Native MathML has different widths across engines; scroll only when needed.
+  if (await reference.evaluate((el) => el.scrollWidth > el.clientWidth)) {
+    await reference.press("ArrowRight");
+    await expect
+      .poll(() => reference.evaluate((el) => el.scrollLeft))
+      .toBeGreaterThan(0);
+  }
+  const accessibility = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(accessibility.violations.map((v) => v.id)).toEqual([]);
 });

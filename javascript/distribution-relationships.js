@@ -79,11 +79,33 @@ document.addEventListener("DOMContentLoaded", () => {
     AppletPage.apply(patch);
     AppletPage.sync();
   };
+  function equation(element, markup, label) {
+    element.innerHTML = markup;
+    element.tabIndex = 0;
+    element.setAttribute("role", "region");
+    element.setAttribute("aria-label", label);
+    // Mobile Chromium does not natively scroll focused regions with arrow keys.
+    element.onkeydown = (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)
+        return;
+      if (
+        ["ArrowLeft", "ArrowRight"].includes(event.key) &&
+        element.scrollWidth > element.clientWidth
+      ) {
+        event.preventDefault();
+        element.scrollLeft += event.key === "ArrowRight" ? 40 : -40;
+      }
+    };
+  }
   function theory(kind) {
     const mode = modes[kind];
     get("guided-title").textContent = "Why this relationship works";
-    document.querySelector(".guided-lab .equation").innerHTML =
-      mode.steps[3].math;
+    const referenceEquation = document.querySelector(".guided-lab .equation");
+    equation(
+      referenceEquation,
+      mode.steps[3].math,
+      "Reference distribution equation",
+    );
     document.querySelector(".symbol-key").textContent = mode.symbols;
     get("guided-content").replaceChildren();
     for (const [i, step] of mode.steps.entries()) {
@@ -92,12 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       node("h3", `${i + 1}. ${step.title}`, section);
       node("p", step.text, section);
-      node("div", null, section, {
-        class: "equation",
-        tabindex: "0",
-        role: "region",
-        "aria-label": `${step.title} equation`,
-      }).innerHTML = step.math;
+      equation(
+        node("div", null, section, { class: "equation" }),
+        step.math,
+        `${step.title} equation`,
+      );
     }
     const follow = node("nav", null, get("guided-content"), {
       class: "derivation-links",
@@ -630,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const seedInput = get("seed");
     const seedWarning =
       seedInput.value === "" || !seedInput.checkValidity()
-        ? `Enter a whole-number seed from 0 to 2147483647. Using default seed ${M.defaults.seed} until the input is valid.`
+        ? `Enter a whole-number seed from 0 to 2147483647. Using ${c.seed === M.defaults.seed ? "default " : ""}seed ${c.seed} until the input is valid.`
         : "";
     inputWarning([warning, seedWarning].filter(Boolean).join(" "));
     const interpretation = `${mode.type}: ${mode.recipe}. ${state.shown} displayed repetitions; the inspected value is ${fmt(record.value)}. ${c.relationship === "normalLimit" ? "Finite-df t is exact; the dashed normal curve is its limit as degrees of freedom grow." : c.relationship === "gof" ? "The histogram shows finite categorical samples, while the χ² curve is an asymptotic reference." : "Changing repetitions reveals the same law; changing the number of ingredients changes its degrees of freedom."}`;

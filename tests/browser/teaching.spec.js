@@ -47,7 +47,7 @@ for (const item of catalogue) {
     expect(await state(page)).toEqual(configured);
     expect(await chartData(page)).toEqual(data);
     await expect(page.locator("#lecturer, #lecturer-panel")).toHaveCount(0);
-    await expect(page.locator(".guided-lab math")).toBeVisible();
+    await expect(page.locator(".guided-lab math").first()).toBeVisible();
     await page.locator("#reset").click();
     expect(await state(page)).toEqual(initial);
     await expect(page.locator("#input-warning")).toBeHidden();

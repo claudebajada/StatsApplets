@@ -26,6 +26,53 @@
   });
   return [
     item(
+      "distribution-relationships",
+      "How distributions connect",
+      "Distributions",
+      "Build χ², t and F from normal draws, then follow their test statistics.",
+      "Select a recipe on the map. Follow one repetition through the arithmetic, then repeat to reveal its distribution. Exact constructions, limits and approximations have distinct labels.",
+      "Z ∼ N(0,1); Z² ∼ χ²(1)",
+      "Does squaring any normal draw produce a central χ² variable?",
+      "First standardise it using the population mean and SD. Independent squared standard normals add to χ²; estimating the mean from the same sample changes the degrees of freedom.",
+      [
+        ["One squared normal", { relationship: "squares", df1: 1 }],
+        [
+          "Four independent squares",
+          { relationship: "squares", df1: 4, shown: 1000 },
+        ],
+        [
+          "A ratio of scaled χ² variables",
+          { relationship: "f", df1: 4, df2: 6, shown: 1000 },
+        ],
+        [
+          "t approaches normal",
+          { relationship: "normalLimit", df2: 100, shown: 1000 },
+        ],
+        [
+          "Two groups: F equals pooled t²",
+          { relationship: "anova", groups: 2, shown: 1000 },
+        ],
+        [
+          "Sparse category counts",
+          {
+            relationship: "gof",
+            categories: 10,
+            observations: 10,
+            shown: 1000,
+          },
+        ],
+        [
+          "Larger expected counts",
+          {
+            relationship: "gof",
+            categories: 10,
+            observations: 1000,
+            shown: 1000,
+          },
+        ],
+      ],
+    ),
+    item(
       "binomial-normal-explorer",
       "Binomial & normal",
       "Distributions",

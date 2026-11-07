@@ -53,6 +53,26 @@
       left + ((x - min) / (max - min)) * (right - left);
     const scaleY = (y, max) => bottom - (y / max) * (bottom - top);
     line(left, bottom, right, bottom, "#cdd7e1");
+    if (id === "distribution-relationships") {
+      const xs = [width * 0.18, width * 0.8],
+        ys = [height * 0.22, height * 0.72];
+      for (const y of ys) line(xs[0] + 10, y, xs[1] - 10, y, blue);
+      for (const x of xs) line(x, ys[0] + 8, x, ys[1] - 8, muted);
+      ["N", "χ²", "t", "F"].forEach((label, i) => {
+        const x = xs[i % 2],
+          y = ys[Math.floor(i / 2)];
+        const text = element("text", {
+          x,
+          y: y + 4,
+          "text-anchor": "middle",
+          fill: blue,
+          "font-size": 14,
+        });
+        text.textContent = label;
+        svg.append(text);
+      });
+      return svg;
+    }
     if (id === "correlation" || id === "regression-explorer") {
       const pairs =
         id === "correlation"

@@ -466,6 +466,12 @@ pages["multiple-comparisons-explorer"] = {
     "With the real-effect proportion set to zero, every null hypothesis is true. Null p-values are independent uniform values. Non-null p-values come from independent two-sided known-SD z tests at the chosen true effect and sample size. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. With every null true, FDR equals FWER. With real effects, the simulation counts true and false discoveries separately and estimates FDR by averaging the false-discovery proportion across all simulated families. All tests are independent.",
   scripts: ["extensions"],
 };
+pages["distribution-relationships"] = require("./relationship-page.js")({
+  range,
+  select,
+  seed,
+  chart,
+});
 async function generate() {
   for (const meta of catalogue) {
     const p = pages[meta.id];
@@ -474,14 +480,28 @@ async function generate() {
     const relatedLinks = lesson.related
       .map((id) => {
         const entry = catalogue.find((a) => a.id === id);
-        return `<a href="${id}.html">${entry.title}</a>`;
+        const selectedRelationship = {
+          "t-distribution-explorer": "t",
+          "f-distribution-explorer": "f",
+          "chi-squared-explorer": "gof",
+          "one-sample-z-test": "oneSampleT",
+          "one-sample-t-test": "oneSampleT",
+          "independent-samples-t-test": "pooledT",
+          "anova-explorer": "anova",
+          "confidence-interval-explorer": "oneSampleT",
+        }[meta.id];
+        const query =
+          id === "distribution-relationships" && selectedRelationship
+            ? `?relationship=${selectedRelationship}`
+            : "";
+        return `<a href="${id}.html${query}">${entry.title}</a>`;
       })
       .join(" · ");
     const html = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
 <main id="main"><header class="page-header"><h1>${meta.title}</h1></header>
-<section class="worked-comparison" aria-labelledby="experiment-title"><div><h2 id="experiment-title">${escape(lesson.experiment.heading)}</h2><p>${escape(lesson.experiment.story)}</p><p class="comparison-instruction">${escape(lesson.experiment.instruction)}</p></div><div class="comparison-action"><button type="button" id="experiment-action" class="primary-action">Load this comparison</button><a href="#guided-lab">Follow the maths</a></div></section>
+${p.beforeWorkspace ? p.beforeWorkspace + "\n" : ""}<section class="worked-comparison" aria-labelledby="experiment-title"><div><h2 id="experiment-title">${escape(lesson.experiment.heading)}</h2><p>${escape(lesson.experiment.story)}</p><p class="comparison-instruction">${escape(lesson.experiment.instruction)}</p></div><div class="comparison-action"><button type="button" id="experiment-action" class="primary-action">Load this comparison</button><a href="#guided-lab">Follow the maths</a></div></section>
 <div class="applet-workspace"><aside class="experiment" aria-labelledby="parameters-heading"><h2 id="parameters-heading">Explore the values</h2><div id="scenario-toolbar"></div><section class="controls-panel" id="controls" aria-label="Parameters">${p.controls}</section><p id="input-warning" class="notice" role="status" hidden></p></aside>
 <div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.resultMath || ""}${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
 ${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><div class="comparison-reading"><h3 id="experiment-position">Worked comparison</h3><p id="experiment-reading" role="status"></p></div><section class="guided-lab" id="guided-lab" aria-labelledby="guided-title"><h2 id="guided-title">Follow the calculation</h2><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div><div id="guided-content"></div></section><details class="calculation-details info"><summary>Assumptions and full calculation</summary><p>${p.method}</p><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<nav class="related-learning" aria-label="Related concepts"><h2>Continue exploring</h2><p>${relatedLinks}</p><a href="../index.html#learning-route">Suggested starting route</a></nav></div></div>

@@ -50,6 +50,7 @@
   font-synthesis: none;
   font-optical-sizing: auto;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -1490,4 +1491,200 @@ body:is(
     display: grid;
     gap: 10px;
   }
+}
+
+/* A map of recipes, followed by inspectable calculations. */
+.distribution-map {
+  border-block: 1px solid var(--line);
+  padding-block: 24px;
+  margin-bottom: 32px;
+}
+.distribution-map > p {
+  max-width: 76ch;
+}
+.map-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 1.15fr) minmax(0, 1fr);
+  gap: 16px 24px;
+  align-items: stretch;
+  margin-block: 24px;
+}
+.distribution-nodes,
+.relationship-connectors {
+  display: contents;
+}
+.distribution-node {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background: var(--panel);
+  border-block: 2px solid var(--accent);
+  padding: 16px;
+  text-decoration: none;
+}
+.distribution-node strong {
+  font: 600 30px var(--serif);
+}
+.distribution-node span {
+  color: var(--muted);
+  font-size: 14px;
+}
+.node-normal {
+  grid-area: 1 / 1;
+}
+.node-chi {
+  grid-area: 1 / 3;
+}
+.node-t {
+  grid-area: 3 / 1;
+}
+.node-f {
+  grid-area: 3 / 3;
+}
+.connector-squares {
+  grid-area: 1 / 2;
+}
+.connector-t {
+  grid-area: 2 / 1;
+}
+.connector-f {
+  grid-area: 2 / 3;
+}
+.connector-square-t {
+  grid-area: 3 / 2;
+}
+.connector-limit {
+  grid-area: 4 / 1 / 5 / 4;
+}
+.relationship-connectors li {
+  list-style: none;
+  min-width: 0;
+}
+[data-relationship] {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  height: 100%;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+[data-relationship] > span:last-child {
+  color: var(--muted);
+  font-size: 14px;
+}
+[data-relationship][aria-pressed="true"] {
+  border-color: var(--accent);
+  border-inline-start: 4px solid var(--accent);
+  padding-left: 13px;
+  background: var(--panel);
+}
+.relationship-kind {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.test-pathways {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.relationship-parameter {
+  min-width: 0;
+}
+.relationship-trace {
+  scroll-margin-top: 24px;
+}
+.relationship-trace .table-scroll {
+  max-height: 300px;
+}
+.trace-navigation,
+.derivation-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-block: 16px;
+}
+.trace-navigation input {
+  width: 90px;
+  min-height: 44px;
+}
+.relationship-trace button,
+.derivation-links button {
+  min-height: 44px;
+}
+.relationship-derivation {
+  margin-block: 24px;
+}
+[data-applet="distribution-relationships"] .equation {
+  overflow-x: auto;
+}
+[data-applet="distribution-relationships"] .learning-svg text {
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .map-grid {
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 1fr) minmax(0, 1fr);
+  }
+  .test-pathways {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  [data-applet="distribution-relationships"]
+    .controls-panel
+    .relationship-parameter
+    .control-field {
+    margin: 0;
+  }
+}
+@media (max-width: 600px) {
+  .map-grid {
+    display: block;
+  }
+  .distribution-nodes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .distribution-node {
+    grid-area: auto;
+    padding: 12px 8px;
+  }
+  .distribution-node strong {
+    font-size: 26px;
+  }
+  .relationship-connectors {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding-left: 24px;
+  }
+  .relationship-connectors li {
+    grid-area: auto;
+    list-style: decimal;
+  }
+  .test-pathways {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .connector-limit button {
+    min-height: 80px;
+  }
+}
+
+[data-applet="distribution-relationships"] .container {
+  grid-template-columns: minmax(0, 1fr);
 }

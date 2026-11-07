@@ -29,7 +29,13 @@ for (const item of catalogue) {
     const initial = await state(page);
     for (let i = 0; i < item.presets.length; i++) {
       await page.locator("#preset").selectOption(String(i));
-      await expect(page.locator("#input-warning")).toBeHidden();
+      const sparseGOF =
+        item.id === "distribution-relationships" &&
+        item.presets[i][1].relationship === "gof" &&
+        item.presets[i][1].observations / item.presets[i][1].categories < 5;
+      if (sparseGOF)
+        await expect(page.locator("#input-warning")).toContainText("below 5");
+      else await expect(page.locator("#input-warning")).toBeHidden();
       const current = await state(page);
       for (const [key, v] of Object.entries(item.presets[i][1]))
         expect(String(current[key])).toBe(String(v));
@@ -79,7 +85,7 @@ test("catalogue accessibility and search are usable", async ({ page }) => {
   expect(result.violations.map((v) => v.id)).toEqual([]);
   await page.locator("#search").fill("not-a-statistical-topic");
   await expect(page.locator(".applet-entry")).toHaveCount(0);
-  await expect(page.locator("#catalogue-count")).toContainText("0 of 15");
+  await expect(page.locator("#catalogue-count")).toContainText("0 of 16");
 });
 test("seeded new samples change the experiment, reset restores it", async ({
   page,

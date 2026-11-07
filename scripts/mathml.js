@@ -27,6 +27,17 @@ const meanTest = (z = false) =>
     frac(row(x, minus, mu0), frac(mi(z ? "σ" : "s"), root(n))),
   );
 const formulas = {
+  "distribution-relationships": row(
+    mi("Z"),
+    op("∼"),
+    mi("N"),
+    par(row(mn(0), op(","), mn(1))),
+    op(";"),
+    sup(mi("Z"), mn(2)),
+    op("∼"),
+    sup(mi("χ"), mn(2)),
+    par(mn(1)),
+  ),
   "one-sample-z-test": meanTest(true),
   "one-sample-t-test": meanTest(),
   "t-distribution-explorer": meanTest(),

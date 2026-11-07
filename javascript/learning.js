@@ -90,6 +90,7 @@
     function readExperiment() {
       const d = latest;
       if (!d) return "";
+      if (id === "distribution-relationships") return d.interpretation;
       if (id.includes("sample") && id.includes("test")) {
         return `The estimated reduction${d.independent ? " difference" : ""} is ${fixed(d.estimate)} mmHg. ${d.knownSigma ? "Known-SD" : "Estimated"} SE = ${fixed(d.result.se)} mmHg, so ${d.knownSigma ? "z" : "t"} = ${fixed(d.estimate)} / ${fixed(d.result.se)} = ${fixed(d.result.statistic)}. The two-sided p-value is ${probability(d.result.tails.twoSided)}. More people make the estimate more precise; the estimated reduction has not grown.`;
       }
@@ -144,9 +145,10 @@
         : started
           ? "Starting example"
           : "Worked comparison";
-      reading.textContent = active
-        ? readExperiment()
-        : "Load this comparison to connect the question to the controls and plots. You can also explore your own settings below.";
+      reading.textContent =
+        active || id === "distribution-relationships"
+          ? readExperiment()
+          : "Load this comparison to connect the question to the controls and plots. You can also explore your own settings below.";
       for (const [chartId, axes] of Object.entries(experiment.axes)) {
         const chart = Chart.getChart(chartId);
         if (!chart) continue;
@@ -425,6 +427,8 @@
             "The selected binomial bar is highlighted. The shaded normal area uses the same success-count interval. Compare probabilities, rather than comparing a bar's height with a density's height.";
         }
       };
+    } else if (id === "distribution-relationships") {
+      // The map controller supplies the selected relationship's derivation.
     } else if (id === "t-distribution-explorer") {
       title.textContent = "See what estimating SD does to the same sample";
       let index = 0,

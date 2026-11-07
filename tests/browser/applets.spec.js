@@ -41,7 +41,9 @@ for (const file of applets)
       failed = [];
     page.on("pageerror", (e) => errors.push(e.message));
     page.on("console", (m) => {
-      if (m.type() === "error") consoleErrors.push(m.text());
+      // Match the response check below: the optional favicon is not an applet asset.
+      if (m.type() === "error" && !m.location().url.endsWith("/favicon.ico"))
+        consoleErrors.push(m.text());
     });
     page.on("response", (r) => {
       if (r.status() >= 400 && !r.url().endsWith("/favicon.ico"))
@@ -239,15 +241,15 @@ test("undefined correlations have mathematical explanations and recover after in
   await expect(page.locator("#data-pearson-value")).toHaveText("1.0000");
   await assertFiniteCharts(page);
 });
-test("landing catalogue groups and links all fifteen explorers", async ({
+test("landing catalogue groups and links all sixteen explorers", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".applet-entry")).toHaveCount(15);
+  await expect(page.locator(".applet-entry")).toHaveCount(16);
   const links = await page
     .locator(".applet-entry")
     .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
-  expect(new Set(links).size).toBe(15);
+  expect(new Set(links).size).toBe(16);
   for (const href of links) {
     await page.goto("/" + href);
     await expect(page.locator("canvas").first()).toBeVisible();

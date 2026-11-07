@@ -123,7 +123,7 @@ test("mixed-truth experiments distinguish FDR, FWER and correct discoveries", ()
   assert.equal(allSignals.nulls, 0);
 });
 test("every applet has one worked comparison shared by all learners", () => {
-  assert.equal(Object.keys(C).length, 15);
+  assert.equal(Object.keys(C).length, 16);
   for (const lesson of Object.values(C)) {
     assert.ok(
       lesson.role && lesson.question && lesson.plain && lesson.related.length,

@@ -58,3 +58,9 @@ The audience is students who can reason about research but have limited mathemat
 The reading order is question, controlled change, controls and plots, interpretation, derivation, then related concepts. One primary blue button changes the example and returns to its starting state. The starting controls already match the example; students do not need to load it before learning. Free exploration and other presets remain available. After manual changes, the primary action clearly offers to reload the worked comparison.
 
 Keep the main mathematical explanation visible. Use disclosure for assumptions, reference calculations, reproducibility and specialised extensions. Remove duplicate introductions, navigation choices and quiz staging. A correct calculation and a passing accessibility scan do not establish that students can follow the explanation.
+
+## Distribution relationship map
+
+The distribution map leads with normal, χ², t and F nodes and selectable recipes. Every multi-input recipe names both ingredients and their independence condition. Exact constructions, exact null-model test laws, limits and asymptotic approximations have visible text labels. On phones the connectors become an ordered list beneath the four distribution links. Map buttons and the native relationship selector control the same validated state.
+
+One numerical trace precedes the histogram; a four-part algebraic explanation follows it. Full observations for grouped calculations remain inspectable. Repetition controls use explicit actions without automatic playback, and keyboard selection moves focus to the trace heading. Chart tables and CSV exports complement the diagrams. A separate results CSV preserves outcomes outside the chart extent.

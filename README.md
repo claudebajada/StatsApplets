@@ -36,7 +36,7 @@ Every interactive lesson has a learning objective, equation, current-value expla
 
 ### Distribution relationships
 
-The **Distribution connections** homepage section links to a short [overview](html/distribution-relationships.html), five connection lessons and five test derivations. Start with Normal → χ², then build t from independent normal and χ² ingredients, then F from two independent scaled χ² variables. Further lessons cover t² → F and the normal limit of t.
+The **Distribution connections** homepage section links to a short [overview](html/distribution-relationships.html). The overview groups five connection lessons and five test derivations. Start with Normal → χ², then build t from independent normal and χ² ingredients, then F from two independent scaled χ² variables. Further lessons cover t² → F and the normal limit of t.
 
 The derivation lessons cover sample variance, one-sample t, pooled t, ANOVA and categorical goodness of fit. Each page fixes its relationship and leads with a numerical example before its explanation and MathML. Connections start with random ingredients; derivations start with observations and a statistic. Four steps preserve the current data, with focus following the new step heading. Repeated sampling appears at the final step, or immediately for saved links with multiple displayed results. Examples, seeds, full conditions, coordinate proofs, detailed calculations, the family map and exports are available in expandable sections. Links from existing explorers open the relevant lesson directly.
 

@@ -1,4 +1,5 @@
 const root = document.getElementById("catalogue");
+const catalogueEntries = AppletCatalogue.filter((entry) => !entry.relationship);
 function renderCatalogue() {
   const query = document.getElementById("search").value.trim().toLowerCase();
   const terms = query.split(/\s+/).filter(Boolean);
@@ -11,7 +12,7 @@ function renderCatalogue() {
     "Distribution connections",
     "Hypothesis testing",
   ]) {
-    const entries = AppletCatalogue.filter(
+    const entries = catalogueEntries.filter(
       (a) =>
         a.group === group &&
         terms.every((term) =>
@@ -43,45 +44,24 @@ function renderCatalogue() {
     number.textContent = entries.length + " explorers";
     if (group === "Distribution connections") {
       section.id = "distribution-connections";
-      const lessonCount = entries.filter((entry) => entry.relationship).length;
-      number.textContent =
-        (lessonCount ? `${lessonCount} lessons` : "") +
-        (entries.some((entry) => entry.overview)
-          ? `${lessonCount ? " + " : ""}overview`
-          : "");
+      number.textContent = "1 overview";
     }
     heading.append(h2, number);
     section.append(heading);
     const grid = document.createElement("div");
     grid.className = "applet-list";
-    let previousSection = "";
     for (const entry of entries) {
-      if (entry.relationship && entry.section !== previousSection) {
-        const label = document.createElement("h3");
-        label.className = "connection-group-label";
-        label.textContent =
-          entry.section === "Connections"
-            ? "Build distributions"
-            : "From data to test statistics";
-        grid.append(label);
-        previousSection = entry.section;
-      }
       const a = document.createElement("a");
       a.className = "applet-entry";
       a.href = `html/${entry.id}.html`;
-      const h3 = document.createElement(entry.relationship ? "h4" : "h3");
+      const h3 = document.createElement("h3");
       h3.textContent = entry.title;
-      if (entry.overview)
-        h3.textContent = "Overview: How distributions connect";
       const p = document.createElement("p");
       p.textContent = entry.objective;
       const text = document.createElement("div");
       text.append(h3);
-      if (!entry.relationship) text.append(p);
-      if (entry.relationship || entry.overview) {
-        a.classList.add("connection-entry");
-        a.append(text);
-      } else a.append(AppletPreviews.plot(entry.id), text);
+      text.append(p);
+      a.append(AppletPreviews.plot(entry.id), text);
       grid.append(a);
     }
     section.append(grid);
@@ -95,7 +75,7 @@ function renderCatalogue() {
     root.append(empty);
   }
   document.getElementById("catalogue-count").textContent =
-    `${count} of ${AppletCatalogue.length} pages`;
+    `${count} of ${catalogueEntries.length} pages`;
 }
 document.getElementById("search").addEventListener("input", renderCatalogue);
 renderCatalogue();

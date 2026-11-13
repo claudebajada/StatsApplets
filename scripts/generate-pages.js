@@ -478,7 +478,7 @@ async function generate() {
       })
       .join(" · ");
     const html = `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="${escape(meta.objective)}"><title>${escape(meta.title)} · StatsApplets</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../css/styles.css"><script src="../lib/chart.min.js"></script><script src="../lib/jstat.min.js"></script></head>
 <body class="applet" data-applet="${meta.id}"><a class="skip-link" href="#main">Skip to applet</a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" class="brand">StatsApplets</a><div class="nav-context"><a href="../index.html">All applets</a><span>${meta.group.replaceAll("&", "&amp;")}</span></div></nav>
 <main id="main"><header class="page-header"><h1>${meta.title}</h1></header>
 <section class="worked-comparison" aria-labelledby="experiment-title"><div><h2 id="experiment-title">${escape(lesson.experiment.heading)}</h2><p>${escape(lesson.experiment.story)}</p><p class="comparison-instruction">${escape(lesson.experiment.instruction)}</p></div><div class="comparison-action"><button type="button" id="experiment-action" class="primary-action">Load this comparison</button><a href="#guided-lab">Follow the maths</a></div></section>

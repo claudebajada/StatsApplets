@@ -47,11 +47,11 @@
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
     experiment: {
-      heading: "More people, the same mean change",
+      heading: "Increase the sample size",
       story:
-        "An invented blood-pressure study has 25 people: mean reduction 3 mmHg, sample SD 6 mmHg. Test a population mean reduction of zero.",
+        "An invented blood-pressure study has 25 people, a mean reduction of 3 mmHg and a sample SD of 6 mmHg. Test a population mean reduction of zero.",
       instruction:
-        "Keep the mean and SD fixed. Compare 25 with 100 people: the uncertainty bars shrink while the estimated reduction stays at 3 mmHg.",
+        "Keep the mean and SD fixed. Compare 25 with 100 people. The uncertainty bars shrink while the estimated reduction stays at 3 mmHg.",
       action: "Compare with 100 people",
       baseline: {
         mu: 3,
@@ -278,11 +278,11 @@
     keywords:
       "confidence uncertainty precision interval coverage estimate mean",
     experiment: {
-      heading: "Greater confidence costs width",
+      heading: "Higher confidence produces wider intervals",
       story:
         "Repeat a study of 20 observations from a normal population with fixed mean 0 and SD 1. Each sample produces a different t interval.",
       instruction:
-        "Keep the generated samples identical. Raise confidence from 95% to 99%: only the interval rule changes, not the observations or the true mean.",
+        "Keep the generated samples identical and raise confidence from 95% to 99%. Compare the interval widths and coverage.",
       action: "Raise confidence to 99%",
       baseline: {
         populationMean: 0,
@@ -312,7 +312,7 @@
     ],
     keywords: "sample size planning detect effect power false negative",
     experiment: {
-      heading: "Plan for an effect you might miss",
+      heading: "Compare power at two sample sizes",
       story:
         "Imagine planning a study where the true mean is half a population SD above the null value (d = 0.5). This is an assumed true effect, not an effect estimated after seeing data.",
       instruction:
@@ -339,9 +339,9 @@
     keywords:
       "association relationship pearson covariance scatter plot outlier",
     experiment: {
-      heading: "Zero correlation can hide a perfect pattern",
+      heading: "A curved relationship with zero correlation",
       story:
-        "Start with five pairs lying on y = x. Every increase in x is matched by an increase in y, so Pearson’s r is 1.",
+        "Start with five pairs lying on y = x. Every increase in x is matched by an increase in y, so Pearson's r is 1.",
       instruction:
         "Replace y with x². The relationship is still exact, but upward and downward contributions cancel. Follow the centred products below to see why r becomes zero.",
       action: "Replace y with x²",

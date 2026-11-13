@@ -75,7 +75,10 @@
         if (el.type === "checkbox") el.checked = value;
         else el.value = value;
       }
-    if (notify) document.dispatchEvent(new Event("applet:state"));
+    if (notify)
+      document.dispatchEvent(
+        new CustomEvent("applet:state", { detail: { state } }),
+      );
   }
   assign(initial, false);
   const toolbar = document.getElementById("scenario-toolbar");
@@ -110,6 +113,7 @@
         "Rerun " + (read().repetitions || 1000) + " test families",
       "regression-explorer": "Draw another study",
       "anova-explorer": "Draw another set of groups",
+      "distribution-relationships": "New sampling sequence",
       correlation: "New pattern",
     };
     document.getElementById("resample").textContent =

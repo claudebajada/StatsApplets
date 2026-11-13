@@ -21,6 +21,69 @@ async function chartData(page) {
     ),
   );
 }
+const expectedRelationshipEquations = {
+  squares: [
+    "Independent Zi follow N(0,1)",
+    "Z squared follows chi squared with 1 degree of freedom",
+    "U equals the sum of k independent squared standard normals",
+    "U follows chi squared with k degrees of freedom",
+  ],
+  t: [
+    "Z follows N(0,1), U follows chi squared nu, independently",
+    "Expected U over nu equals 1",
+    "T equals Z divided by square root of U over nu",
+    "T follows t with nu degrees of freedom",
+  ],
+  f: [
+    "U follows chi squared d1 and V follows chi squared d2 independently",
+    "Expected U over d1 and V over d2 both equal 1",
+    "F equals U over d1 divided by V over d2",
+    "F follows F with d1 and d2 degrees of freedom",
+  ],
+  tSquared: [
+    "T equals Z divided by square root of U over nu",
+    "T squared equals Z squared divided by U over nu",
+    "T squared equals Z squared over 1 divided by U over nu",
+    "T nu squared follows F 1 nu",
+  ],
+  normalLimit: [
+    "T nu equals Z divided by square root of U over nu",
+    "Variance of U over nu equals 2 over nu",
+    "U over nu converges in probability to 1",
+    "T nu converges in distribution to N 0 1",
+  ],
+  sampleVariance: [
+    "Sum of Xi minus sample mean equals 0",
+    "Sum of squared standardised centred residuals equals sum of n minus 1 squared independent A coordinates",
+    "U equals n minus 1 times S squared over sigma squared",
+    "U follows chi squared n minus 1",
+  ],
+  oneSampleT: [
+    "Z equals sample mean minus null mean over sigma divided by square root n",
+    "U equals n minus 1 times S squared over sigma squared and follows chi squared n minus 1",
+    "T equals Z over square root U over n minus 1 equals sample mean minus null mean over S divided by square root n",
+    "T follows t with n minus 1 degrees of freedom under H0",
+  ],
+  pooledT: [
+    "Z equals difference of sample means over sigma times square root 1 over n1 plus 1 over n2",
+    "U equals sum of within group squares over sigma squared and follows chi squared nu",
+    "Pooled t equals difference of sample means over pooled SD times square root 1 over n1 plus 1 over n2",
+    "T follows t nu and T squared equals the two group ANOVA F",
+  ],
+  anova: [
+    "Total sum of squares equals between plus within sum of squares",
+    "Between over sigma squared follows chi squared g minus 1, within over sigma squared follows chi squared N minus g independently",
+    "Between sum is sum nj times squared group mean minus grand mean, F is ratio of mean squares",
+    "F follows F g minus 1 N minus g under H0",
+  ],
+  gof: [
+    "Expected count Ei equals N over c",
+    "Ri equals Oi minus Ei over square root Ei, sum Ri equals zero",
+    "Q equals sum of Ri squared equals sum of c minus 1 contrast coordinates squared",
+    "Q equals sum squared observed minus expected over expected, approximately chi squared c minus 1",
+  ],
+};
+
 for (const item of catalogue) {
   test(`${item.id}: presets, reset and student URL settings round-trip`, async ({
     page,
@@ -29,7 +92,13 @@ for (const item of catalogue) {
     const initial = await state(page);
     for (let i = 0; i < item.presets.length; i++) {
       await page.locator("#preset").selectOption(String(i));
-      await expect(page.locator("#input-warning")).toBeHidden();
+      const sparseGOF =
+        item.id === "distribution-relationships" &&
+        item.presets[i][1].relationship === "gof" &&
+        item.presets[i][1].observations / item.presets[i][1].categories < 5;
+      if (sparseGOF)
+        await expect(page.locator("#input-warning")).toContainText("below 5");
+      else await expect(page.locator("#input-warning")).toBeHidden();
       const current = await state(page);
       for (const [key, v] of Object.entries(item.presets[i][1]))
         expect(String(current[key])).toBe(String(v));
@@ -41,7 +110,10 @@ for (const item of catalogue) {
     expect(await state(page)).toEqual(configured);
     expect(await chartData(page)).toEqual(data);
     await expect(page.locator("#lecturer, #lecturer-panel")).toHaveCount(0);
-    await expect(page.locator(".guided-lab math")).toBeVisible();
+    const equations = page.locator(".guided-lab math");
+    expect(await equations.count()).toBeGreaterThan(0);
+    for (const equation of await equations.all())
+      await expect(equation).toBeVisible();
     await page.locator("#reset").click();
     expect(await state(page)).toEqual(initial);
     await expect(page.locator("#input-warning")).toBeHidden();
@@ -71,6 +143,44 @@ for (const item of catalogue) {
     );
   });
 }
+test("all ten distribution relationships retain their full MathML derivations", async ({
+  page,
+}) => {
+  await page.goto("/html/distribution-relationships.html");
+  for (const [relationship, stepLabels] of Object.entries(
+    expectedRelationshipEquations,
+  )) {
+    await page.locator("#relationship").selectOption(relationship);
+    await expect(page.locator("#relationship")).toHaveValue(relationship);
+    const equations = page.locator(".guided-lab math");
+    const expectedLabels = [stepLabels[stepLabels.length - 1], ...stepLabels];
+    await expect(equations).toHaveCount(expectedLabels.length);
+    await expect(
+      page.locator("#guided-content .relationship-derivation .equation math"),
+    ).toHaveCount(stepLabels.length);
+    await expect(equations.first()).toHaveAttribute(
+      "aria-label",
+      expectedLabels[0],
+    );
+    const contents = await equations.evaluateAll((elements) =>
+      elements.map((element) => ({
+        label: element.getAttribute("aria-label"),
+        namespace: element.namespaceURI,
+        text: element.textContent.trim(),
+        children: element.children.length,
+      })),
+    );
+    expect(contents.map((equation) => equation.label)).toEqual(expectedLabels);
+    for (const content of contents) {
+      expect(content.namespace).toBe("http://www.w3.org/1998/Math/MathML");
+      expect(content.text).not.toBe("");
+      expect(content.children).toBeGreaterThan(0);
+    }
+    for (const equation of await equations.all())
+      await expect(equation).toBeVisible();
+  }
+});
+
 test("catalogue accessibility and search are usable", async ({ page }) => {
   await page.goto("/");
   const result = await new AxeBuilder({ page })
@@ -79,7 +189,7 @@ test("catalogue accessibility and search are usable", async ({ page }) => {
   expect(result.violations.map((v) => v.id)).toEqual([]);
   await page.locator("#search").fill("not-a-statistical-topic");
   await expect(page.locator(".applet-entry")).toHaveCount(0);
-  await expect(page.locator("#catalogue-count")).toContainText("0 of 15");
+  await expect(page.locator("#catalogue-count")).toContainText("0 of 16");
 });
 test("seeded new samples change the experiment, reset restores it", async ({
   page,

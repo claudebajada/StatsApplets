@@ -7,8 +7,8 @@ test("catalogue diagrams load and the three displayed samples have their labelle
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.locator(".applet-entry")).toHaveCount(15);
-  await expect(page.locator(".applet-entry svg")).toHaveCount(15);
+  await expect(page.locator(".applet-entry")).toHaveCount(16);
+  await expect(page.locator(".applet-entry svg")).toHaveCount(16);
   const correlations = await page.evaluate(() =>
     [...document.querySelectorAll("#demonstration-plots svg")].map((svg) => {
       const dots = [...svg.querySelectorAll("circle")];
@@ -24,7 +24,7 @@ test("catalogue diagrams load and the three displayed samples have their labelle
     "clear the search",
   );
   await page.locator("#search").fill("");
-  await expect(page.locator(".applet-entry")).toHaveCount(15);
+  await expect(page.locator(".applet-entry")).toHaveCount(16);
   expect(errors).toEqual([]);
 });
 

@@ -3,13 +3,45 @@
   if (typeof module === "object" && module.exports) module.exports = factory();
   else root.LearningContent = factory();
 })(typeof globalThis !== "undefined" ? globalThis : this, () => ({
+  "distribution-relationships": {
+    role: "Constructions from independent draws; test reference laws",
+    question: "What operation turns one distribution into another?",
+    plain:
+      "More repetitions reveal a distribution. The number of independent ingredients controls its degrees of freedom. Exact constructions, limits and approximations are different kinds of relationships.",
+    related: [
+      "t-distribution-explorer",
+      "f-distribution-explorer",
+      "chi-squared-explorer",
+      "one-sample-t-test",
+      "independent-samples-t-test",
+      "anova-explorer",
+    ],
+    keywords:
+      "normal chi squared chi-square chisquare t F map family relationships square sum ratio variance degrees freedom distribution derivation goodness fit",
+    experiment: {
+      heading: "Square a normal draw, then add independent squares",
+      story:
+        "A standard normal draw can be positive or negative. Its square is always non-negative and follows χ² with one degree of freedom. Adding independent squares increases the degrees of freedom.",
+      instruction:
+        "Trace one draw, then compare one square with a sum of four. Use repeated sampling to compare the histogram with its theoretical curve.",
+      action: "Sum four independent squares",
+      baseline: { relationship: "squares", df1: 1 },
+      change: { df1: 4 },
+      axes: {},
+    },
+  },
   "one-sample-z-test": {
     role: "Observed summary; population SD assumed known",
     question:
       "How far is this sample mean from the reference value, relative to its uncertainty?",
     plain:
       "SD describes differences between individual observations. SE describes variation of the estimated mean or mean difference between repeated studies. These controls set summary statistics; changing n does not recruit or resample participants.",
-    related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
+    related: [
+      "distribution-relationships",
+      "clt-explorer",
+      "confidence-interval-explorer",
+      "power-explorer",
+    ],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
     experiment: {
@@ -43,7 +75,12 @@
       "How far is this sample mean from the reference value, relative to its uncertainty?",
     plain:
       "SD describes differences between individual observations. SE describes variation of the estimated mean or mean difference between repeated studies. These controls set summary statistics; changing n does not recruit or resample participants.",
-    related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
+    related: [
+      "distribution-relationships",
+      "clt-explorer",
+      "confidence-interval-explorer",
+      "power-explorer",
+    ],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
     experiment: {
@@ -77,7 +114,12 @@
       "How large is the difference between two independent groups, relative to its uncertainty?",
     plain:
       "SD describes differences between individual observations. SE describes variation of the estimated mean or mean difference between repeated studies. These controls set summary statistics; changing n does not recruit or resample participants.",
-    related: ["clt-explorer", "confidence-interval-explorer", "power-explorer"],
+    related: [
+      "distribution-relationships",
+      "clt-explorer",
+      "confidence-interval-explorer",
+      "power-explorer",
+    ],
     keywords:
       "compare two groups average difference significance treatment control standard error mean",
     experiment: {
@@ -167,7 +209,11 @@
       "Why does estimating SD produce more extreme standardised scores?",
     plain:
       "The population SD is fixed at 1 in the sampling experiment. A sample SD can be smaller or larger. Dividing by an underestimated SD stretches the magnitude of the t score.",
-    related: ["one-sample-t-test", "clt-explorer"],
+    related: [
+      "distribution-relationships",
+      "one-sample-t-test",
+      "clt-explorer",
+    ],
     keywords: "student t degrees freedom tails estimate standard deviation",
     experiment: {
       heading: "Estimating SD adds uncertainty",
@@ -191,7 +237,11 @@
       "How unusual would a ratio of variability estimates be under the null?",
     plain:
       "F is a non-negative ratio. Its numerator and denominator degrees of freedom both affect its reference distribution. The 5% boundary is calculated from the full tail.",
-    related: ["anova-explorer", "t-distribution-explorer"],
+    related: [
+      "distribution-relationships",
+      "anova-explorer",
+      "t-distribution-explorer",
+    ],
     keywords: "variance ratio critical value anova",
     experiment: {
       heading: "A noisy denominator makes a long tail",
@@ -217,7 +267,11 @@
       "How far do observed category proportions depart from an equal-probability model?",
     plain:
       "The departure control fixes proportions before integer rounding. Increasing N scales those proportions, allowing a comparison at approximately fixed effect size.",
-    related: ["binomial-components-explorer", "multiple-comparisons-explorer"],
+    related: [
+      "distribution-relationships",
+      "binomial-components-explorer",
+      "multiple-comparisons-explorer",
+    ],
     keywords: "counts categories categorical goodness fit equal frequencies",
     experiment: {
       heading: "The same proportions can be stronger evidence",
@@ -274,7 +328,12 @@
       "What varies across studies: the population mean or the interval?",
     plain:
       "The population mean is fixed in this experiment. Each study supplies a new sample mean, estimated SD and interval. Coverage describes the repeated procedure.",
-    related: ["clt-explorer", "one-sample-t-test", "power-explorer"],
+    related: [
+      "distribution-relationships",
+      "clt-explorer",
+      "one-sample-t-test",
+      "power-explorer",
+    ],
     keywords:
       "confidence uncertainty precision interval coverage estimate mean",
     experiment: {
@@ -393,6 +452,7 @@
     plain:
       "Group differences can coexist with noisy individual observations. ANOVA partitions total squared deviations into within-group and between-group contributions.",
     related: [
+      "distribution-relationships",
       "f-distribution-explorer",
       "independent-samples-t-test",
       "multiple-comparisons-explorer",

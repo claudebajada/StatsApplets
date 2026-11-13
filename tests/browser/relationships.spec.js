@@ -161,7 +161,7 @@ for (const lesson of lessons) {
     expect(errors).toEqual([]);
   });
 }
-test("overview offers two lesson groups without experiment controls; homepage search includes the lessons", async ({
+test("homepage links only the overview, which offers all ten lessons in two groups", async ({
   page,
 }) => {
   await page.goto(overview);
@@ -189,10 +189,21 @@ test("overview offers two lesson groups without experiment controls; homepage se
   );
   await expect(
     page.locator("#distribution-connections .applet-entry"),
-  ).toHaveCount(11);
-  await page.locator("#search").fill("pooled derivation");
+  ).toHaveCount(1);
+  await expect(page.locator("#catalogue-count")).toHaveText("16 of 16 pages");
+  const homepageLinks = await page
+    .locator(".applet-entry")
+    .evaluateAll((links) => links.map((link) => link.getAttribute("href")));
+  for (const lesson of lessons)
+    expect(homepageLinks).not.toContain(`html/${lesson.id}.html`);
+  await page.locator("#search").fill("distributions connect");
   await expect(page.locator(".applet-entry")).toHaveCount(1);
   await page.locator(".applet-entry").click();
+  await expect(page.locator("h1")).toHaveText("How distributions connect");
+  await expect(page.locator(".lesson-list a")).toHaveCount(10);
+  await page
+    .locator(`.lesson-list a[href="${byMode.pooledT.id}.html"]`)
+    .click();
   await expect(page.locator("h1")).toHaveText(byMode.pooledT.title);
 });
 test("legacy links preserve every mode and recognised state; invalid relationships stay on the overview", async ({

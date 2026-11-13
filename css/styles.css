@@ -1687,10 +1687,6 @@ body:is(
 .connection-page .related-learning {
   margin-top: 32px;
 }
-.connection-group-label {
-  grid-column: 1 / -1;
-  margin-block: 12px 0;
-}
 .connection-page .nav-context {
   flex-wrap: wrap;
 }
@@ -1847,15 +1843,6 @@ body:is(
 .related-derivations .derivation-links {
   flex-direction: column;
   align-items: start;
-}
-.connection-entry {
-  display: block;
-  min-height: 0;
-  padding-block: 12px;
-}
-.connection-entry h4 {
-  font-size: 16px;
-  margin: 0;
 }
 @media (max-width: 700px) {
   .lesson-intro {

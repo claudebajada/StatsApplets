@@ -269,8 +269,8 @@
           row(op("∑"), par(row(sub(v("X"), v("i")), minus, xm)), eq, num(0)),
         ),
         step(
-          "Rotate the residual directions",
-          "The n raw residuals are dependent. An orthonormal change of coordinates preserves their squared length and gives n − 1 independent standard normal coordinates after division by σ. Gaussian noise in the mean direction is independent of these residual directions. The numeric trace uses Helmert contrasts to exhibit them.",
+          "Account for the fitted mean",
+          "Centring fixes the sum of the residuals at zero, leaving n − 1 free directions. Under normal sampling, their scaled sum of squares follows χ²(n − 1) and is independent of the sample mean. The optional proof shows the independent directions.",
           "Sum of squared standardised centred residuals equals sum of n minus 1 squared independent A coordinates",
           row(
             op("∑"),
@@ -531,8 +531,8 @@
           ),
         ),
         step(
-          "Rotate to c − 1 limiting normal directions",
-          "As N grows with fixed category probabilities, the joint residual distribution approaches a Gaussian on the sum-zero subspace. Its covariance is the identity within that subspace. An orthonormal rotation gives c − 1 approximately independent standard normal coordinates. Rotation preserves the sum of squares. Sparse counts can be far from this Gaussian approximation.",
+          "Account for the fixed total",
+          "The counts must add to N, leaving c − 1 free directions. When the expected counts are large, the squared discrepancies behave approximately like the sum of c − 1 independent standard normal squares. The optional proof shows the change of coordinates. Sparse counts can be far from this approximation.",
           "Q equals sum of Ri squared equals sum of c minus 1 contrast coordinates squared",
           row(
             v("Q"),
@@ -563,5 +563,205 @@
       ],
     },
   };
-  return { modes, math };
+  const recipes = {
+    squares: [
+      "Independent standard normals → square → add → χ²",
+      "Use independent standard normal values (mean 0, SD 1).",
+    ],
+    t: [
+      "Standard normal + independent χ² → scale and divide → t",
+      "The normal numerator and χ² denominator must be independent.",
+    ],
+    f: [
+      "Two independent χ² values → scale each → divide → F",
+      "Scale each independent χ² value by its own degrees of freedom.",
+    ],
+    tSquared: [
+      "t score → square → F(1, ν)",
+      "The F denominator has the same degrees of freedom as t.",
+    ],
+    normalLimit: [
+      "t → increase degrees of freedom → standard normal",
+      "Finite degrees of freedom still give t; normal is the limit.",
+    ],
+    sampleVariance: [
+      "Normal observations → sample variance → χ²",
+      "Independent normal observations; one fitted mean leaves n − 1 degrees of freedom.",
+    ],
+    oneSampleT: [
+      "Normal observations → sample mean and SD → t",
+      "Independent normal observations, with the null mean true.",
+    ],
+    pooledT: [
+      "Two normal samples → mean difference and pooled SD → t",
+      "Independent normal groups, equal population variances and equal means under H₀.",
+    ],
+    anova: [
+      "Normal groups → between and within variation → F",
+      "Independent normal groups, equal population variances and equal means under H₀.",
+    ],
+    gof: [
+      "Category counts → squared discrepancies → approximate χ²",
+      "Fixed category probabilities and sufficiently large expected counts; this is an approximation.",
+    ],
+  };
+  const lessons = [
+    [
+      "squares",
+      "normal-to-chi-squared",
+      "Normal → χ²",
+      "What happens when you square and add normal values?",
+      [
+        ["One squared normal", { df1: 1 }],
+        ["Four independent squares", { df1: 4 }],
+        ["Ten independent squares", { df1: 10 }],
+        ["Twenty independent squares", { df1: 20 }],
+      ],
+    ],
+    [
+      "t",
+      "normal-chi-squared-to-t",
+      "Normal + independent χ² → t",
+      "Why does a random scale give heavier tails?",
+      [
+        ["Very uncertain scale", { df2: 1 }],
+        ["Four denominator degrees of freedom", { df2: 4 }],
+        ["More stable scale", { df2: 30 }],
+        ["Almost stable scale", { df2: 100 }],
+      ],
+    ],
+    [
+      "f",
+      "chi-squared-to-f",
+      "Two independent χ² → F",
+      "What happens when you compare two scaled sums of squares?",
+      [
+        ["One degree of freedom each", { df1: 1, df2: 1 }],
+        ["Balanced ingredients", { df1: 4, df2: 4 }],
+        ["A stable denominator", { df1: 4, df2: 60 }],
+        ["A noisy denominator", { df1: 30, df2: 2 }],
+      ],
+    ],
+    [
+      "tSquared",
+      "t-squared-to-f",
+      "t² → F",
+      "Where does a t score go when you remove its sign?",
+      [
+        ["One denominator degree of freedom", { df2: 1 }],
+        ["Four denominator degrees of freedom", { df2: 4 }],
+        ["Thirty denominator degrees of freedom", { df2: 30 }],
+        ["One hundred denominator degrees of freedom", { df2: 100 }],
+      ],
+    ],
+    [
+      "normalLimit",
+      "t-to-normal",
+      "t → Normal",
+      "Why does t approach normal as degrees of freedom increase?",
+      [
+        ["Heavy tails", { df2: 1 }],
+        ["Small sample scale", { df2: 4 }],
+        ["More stable scale", { df2: 30 }],
+        ["Near the normal limit", { df2: 100 }],
+      ],
+    ],
+    [
+      "sampleVariance",
+      "sample-variance-to-chi-squared",
+      "Sample variance → χ²",
+      "Why does estimating the mean cost one degree of freedom?",
+      [
+        ["Two observations", { sampleSize: 2 }],
+        ["Five observations", { sampleSize: 5 }],
+        ["Twenty observations", { sampleSize: 20 }],
+        ["One hundred observations", { sampleSize: 100 }],
+      ],
+    ],
+    [
+      "oneSampleT",
+      "one-sample-t-derivation",
+      "Deriving the one-sample t test",
+      "How does estimating the population SD produce a t statistic?",
+      [
+        ["Two observations", { sampleSize: 2 }],
+        ["Five observations", { sampleSize: 5 }],
+        ["Twenty observations", { sampleSize: 20 }],
+        ["One hundred observations", { sampleSize: 100 }],
+      ],
+    ],
+    [
+      "pooledT",
+      "pooled-t-derivation",
+      "Deriving the pooled t test",
+      "How do two independent groups share a variance estimate?",
+      [
+        ["Two small groups", { sampleSize: 2, sampleSize2: 2 }],
+        ["Two balanced groups", { sampleSize: 5, sampleSize2: 5 }],
+        ["Unequal group sizes", { sampleSize: 5, sampleSize2: 20 }],
+        ["Two larger groups", { sampleSize: 30, sampleSize2: 30 }],
+      ],
+    ],
+    [
+      "anova",
+      "anova-f-derivation",
+      "Deriving ANOVA’s F statistic",
+      "Why does comparing between-group and within-group variation give F?",
+      [
+        ["Two groups: F equals pooled t²", { groups: 2, sampleSize: 5 }],
+        ["Three groups", { groups: 3, sampleSize: 5 }],
+        ["Six groups", { groups: 6, sampleSize: 5 }],
+        ["Larger groups", { groups: 3, sampleSize: 30 }],
+      ],
+    ],
+    [
+      "gof",
+      "goodness-of-fit-derivation",
+      "Why goodness of fit uses χ²",
+      "When do category-count discrepancies behave like a sum of normal squares?",
+      [
+        ["Five categories", { categories: 5, observations: 100 }],
+        ["Sparse counts", { categories: 10, observations: 10 }],
+        ["Larger expected counts", { categories: 10, observations: 1000 }],
+        ["Two categories", { categories: 2, observations: 100 }],
+      ],
+    ],
+  ].map(([relationship, id, title, question, presets], order) => {
+    const mode = modes[relationship];
+    return {
+      relationship,
+      id,
+      title,
+      question,
+      recipe: recipes[relationship][0],
+      condition: recipes[relationship][1],
+      presets,
+      order,
+      group: "Distribution connections",
+      section: order < 5 ? "Connections" : "Test derivations",
+      objective: mode.recipe + ".",
+      introduction: mode.steps[0].text,
+      equation: mode.title,
+      answer: mode.steps[3].text,
+      baseline: {
+        relationship,
+        df1: 1,
+        df2: 4,
+        sampleSize: 5,
+        sampleSize2: 5,
+        groups: 3,
+        categories: 5,
+        observations: 100,
+        seed: 42,
+        repetitions: 1000,
+        shown: 1,
+        inspected: 1,
+        traceStep: 1,
+      },
+    };
+  });
+  const byMode = Object.fromEntries(
+    lessons.map((lesson) => [lesson.relationship, lesson]),
+  );
+  return { modes, math, lessons, byMode };
 });

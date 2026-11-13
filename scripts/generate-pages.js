@@ -466,14 +466,31 @@ pages["multiple-comparisons-explorer"] = {
     "With the real-effect proportion set to zero, every null hypothesis is true. Null p-values are independent uniform values. Non-null p-values come from independent two-sided known-SD z tests at the chosen true effect and sample size. This represents continuous tests whose null p-values follow that distribution. The family-wise error rate, or FWER, is the chance of any false rejection in a family. Without adjustment it is 1 − (1 − α)ᵐ. Bonferroni and Holm control FWER even for dependent tests. Benjamini-Hochberg controls the false discovery rate, or FDR, under independence or suitable positive dependence. FDR is the expected proportion of false rejections among all rejections, counting the proportion as zero if there are none. With every null true, FDR equals FWER. With real effects, the simulation counts true and false discoveries separately and estimates FDR by averaging the false-discovery proportion across all simulated families. All tests are independent.",
   scripts: ["extensions"],
 };
-pages["distribution-relationships"] = require("./relationship-page.js")({
+const relationshipPages = require("./relationship-page.js")({
   range,
-  select,
   seed,
   chart,
 });
 async function generate() {
   for (const meta of catalogue) {
+    const custom = meta.overview
+      ? relationshipPages.overview()
+      : meta.relationship
+        ? relationshipPages.lesson(meta)
+        : null;
+    if (custom) {
+      const formatted = await require("prettier").format(custom, {
+        parser: "html",
+      });
+      if (process.argv.includes("--check"))
+        require("node:assert/strict").equal(
+          fs.readFileSync(`html/${meta.id}.html`, "utf8"),
+          formatted,
+          meta.id + " needs regeneration",
+        );
+      else fs.writeFileSync(`html/${meta.id}.html`, formatted);
+      continue;
+    }
     const p = pages[meta.id];
     if (!p) throw Error("Missing page " + meta.id);
     const lesson = learning[meta.id];
@@ -490,11 +507,13 @@ async function generate() {
           "anova-explorer": "anova",
           "confidence-interval-explorer": "oneSampleT",
         }[meta.id];
-        const query =
+        const target =
           id === "distribution-relationships" && selectedRelationship
-            ? `?relationship=${selectedRelationship}`
-            : "";
-        return `<a href="${id}.html${query}">${entry.title}</a>`;
+            ? require("../javascript/relationship-content.js").byMode[
+                selectedRelationship
+              ]
+            : entry;
+        return `<a href="${target.id}.html">${target.title}</a>`;
       })
       .join(" · ");
     const html = `<!DOCTYPE html>
@@ -506,7 +525,7 @@ ${p.beforeWorkspace ? p.beforeWorkspace + "\n" : ""}<section class="worked-compa
 <div class="analysis"><section class="result-card" aria-label="Current results"><div class="metrics">${p.metrics}</div>${p.resultMath || ""}${p.notice ? `<p id="${p.notice}" class="notice" role="status"></p>` : ""}</section><p id="scale-note" class="small" role="status"></p>
 ${p.beforePlots || ""}<section class="container" aria-label="Interactive plots">${p.charts}</section><div class="comparison-reading"><h3 id="experiment-position">Worked comparison</h3><p id="experiment-reading" role="status"></p></div><section class="guided-lab" id="guided-lab" aria-labelledby="guided-title"><h2 id="guided-title">Follow the calculation</h2><div class="formula-block"><div class="equation">${math.equation(meta.id, meta.equation)}</div><details class="symbol-details"><summary>What the symbols mean</summary><p class="symbol-key">${p.symbolKey || symbolKeys[meta.id]}</p></details></div><div id="guided-content"></div></section><details class="calculation-details info"><summary>Assumptions and full calculation</summary><p>${p.method}</p><p id="calculation" aria-live="polite"></p>${p.extraResults || ""}</details>${p.after || ""}<nav class="related-learning" aria-label="Related concepts"><h2>Continue exploring</h2><p>${relatedLinks}</p><a href="../index.html#learning-route">Suggested starting route</a></nav></div></div>
 </main><footer><a href="https://github.com/claudebajada/StatsApplets">Source code and documentation</a></footer>
-<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}<script src="../javascript/learning.js"></script>
+<script src="../javascript/statistics.js"></script><script src="../javascript/teaching-statistics.js"></script><script src="../javascript/relationship-content.js"></script><script src="../javascript/catalogue.js"></script><script src="../javascript/state.js"></script><script src="../javascript/learning-math.js"></script><script src="../javascript/learning-content.js"></script><script src="../javascript/common.js"></script><script src="../javascript/shell.js"></script>${p.scripts.map((s) => `<script src="../javascript/${s}.js"></script>`).join("")}<script src="../javascript/learning.js"></script>
 </body></html>\n`;
     const formatted = await require("prettier").format(html, {
       parser: "html",

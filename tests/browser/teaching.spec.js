@@ -84,7 +84,9 @@ const expectedRelationshipEquations = {
   ],
 };
 
-for (const item of catalogue) {
+for (const item of catalogue.filter(
+  (item) => !item.overview && !item.relationship,
+)) {
   test(`${item.id}: presets, reset and student URL settings round-trip`, async ({
     page,
   }) => {
@@ -146,38 +148,32 @@ for (const item of catalogue) {
 test("all ten distribution relationships retain their full MathML derivations", async ({
   page,
 }) => {
-  await page.goto("/html/distribution-relationships.html");
+  const { byMode } = require("../../javascript/relationship-content.js");
   for (const [relationship, stepLabels] of Object.entries(
     expectedRelationshipEquations,
   )) {
-    await page.locator("#relationship").selectOption(relationship);
-    await expect(page.locator("#relationship")).toHaveValue(relationship);
-    const equations = page.locator(".guided-lab math");
-    const expectedLabels = [stepLabels[stepLabels.length - 1], ...stepLabels];
-    await expect(equations).toHaveCount(expectedLabels.length);
-    await expect(
-      page.locator("#guided-content .relationship-derivation .equation math"),
-    ).toHaveCount(stepLabels.length);
-    await expect(equations.first()).toHaveAttribute(
-      "aria-label",
-      expectedLabels[0],
-    );
-    const contents = await equations.evaluateAll((elements) =>
-      elements.map((element) => ({
-        label: element.getAttribute("aria-label"),
-        namespace: element.namespaceURI,
-        text: element.textContent.trim(),
-        children: element.children.length,
-      })),
-    );
-    expect(contents.map((equation) => equation.label)).toEqual(expectedLabels);
-    for (const content of contents) {
+    await page.goto(`/html/${byMode[relationship].id}.html`);
+    for (const [index, label] of stepLabels.entries()) {
+      const proofStep =
+        (relationship === "sampleVariance" && index === 1) ||
+        (relationship === "gof" && index === 2);
+      if (proofStep) await page.locator("#trace-proof > summary").click();
+      const equation = page.locator(
+        proofStep ? "#trace-proof math" : ".guided-lab math",
+      );
+      await expect(equation).toHaveCount(1);
+      await expect(equation).toHaveAttribute("aria-label", label);
+      const content = await equation.evaluate((el) => ({
+        namespace: el.namespaceURI,
+        text: el.textContent.trim(),
+        children: el.children.length,
+      }));
       expect(content.namespace).toBe("http://www.w3.org/1998/Math/MathML");
       expect(content.text).not.toBe("");
       expect(content.children).toBeGreaterThan(0);
-    }
-    for (const equation of await equations.all())
       await expect(equation).toBeVisible();
+      if (index < 3) await page.locator("#next-step").click();
+    }
   }
 });
 
@@ -189,7 +185,7 @@ test("catalogue accessibility and search are usable", async ({ page }) => {
   expect(result.violations.map((v) => v.id)).toEqual([]);
   await page.locator("#search").fill("not-a-statistical-topic");
   await expect(page.locator(".applet-entry")).toHaveCount(0);
-  await expect(page.locator("#catalogue-count")).toContainText("0 of 16");
+  await expect(page.locator("#catalogue-count")).toContainText("0 of 26");
 });
 test("seeded new samples change the experiment, reset restores it", async ({
   page,

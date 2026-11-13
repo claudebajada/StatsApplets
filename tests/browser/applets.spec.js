@@ -1,6 +1,9 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("node:fs");
-const applets = fs.readdirSync("html").filter((f) => f.endsWith(".html"));
+const catalogue = require("../../javascript/catalogue.js");
+const applets = catalogue
+  .filter((item) => !item.overview && !item.relationship)
+  .map((item) => item.id + ".html");
 async function move(page, id, value) {
   await page.locator(`[id="${id}"]`).evaluate((el, v) => {
     el.value = v;
@@ -241,18 +244,27 @@ test("undefined correlations have mathematical explanations and recover after in
   await expect(page.locator("#data-pearson-value")).toHaveText("1.0000");
   await assertFiniteCharts(page);
 });
-test("landing catalogue groups and links all sixteen explorers", async ({
+test("landing catalogue groups and links all explorers and focused lessons", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".applet-entry")).toHaveCount(16);
+  await expect(page.locator(".applet-entry")).toHaveCount(26);
   const links = await page
     .locator(".applet-entry")
     .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
-  expect(new Set(links).size).toBe(16);
+  expect(new Set(links).size).toBe(26);
   for (const href of links) {
     await page.goto("/" + href);
-    await expect(page.locator("canvas").first()).toBeVisible();
+    await expect(page.locator("h1")).toBeVisible();
+    if (href.endsWith("distribution-relationships.html"))
+      await expect(page.locator("canvas")).toHaveCount(0);
+    else if (
+      catalogue.find((item) => href === `html/${item.id}.html`)?.relationship
+    ) {
+      await expect(page.locator("#worked-example")).toBeVisible();
+      await expect(page.locator("#trace-calculation table")).toBeAttached();
+      await expect(page.locator("#repeated-sampling")).toBeHidden();
+    } else await expect(page.locator("canvas").first()).toBeVisible();
   }
   await page.goto("/");
   await page.locator("#search").fill("correlation");

@@ -1,6 +1,6 @@
 # StatsApplets
 
-Sixteen interactive statistics explorers for students, built with plain HTML, CSS and JavaScript. Change parameters, inspect current calculations, compare graphs and share the exact example. Everything runs on a static host, without accounts, a backend or a production build step.
+Interactive statistics explorers and ten focused distribution lessons for students, built with plain HTML, CSS and JavaScript. Change parameters, inspect current calculations, compare graphs and share the exact example. Everything runs on a static host, without accounts, a backend or a production build step.
 
 ## Run locally
 
@@ -15,7 +15,7 @@ Use Node.js 22 or newer, then open http://127.0.0.1:4173. Alternatively run `pyt
 
 | Category               | Explorer                                                               | Model and focus                                                                     |
 | ---------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Distributions          | [How distributions connect](html/distribution-relationships.html)      | Interactive normal/χ²/t/F map, constructions and test derivations                   |
+| Distributions          | [How distributions connect](html/distribution-relationships.html)      | Overview of ten focused connection and test-derivation lessons                      |
 | Distributions          | [Binomial & normal](html/binomial-normal-explorer.html)                | Exact binomial probabilities, continuous approximation and zero-variance limits     |
 | Distributions          | [Building the binomial](html/binomial-components-explorer.html)        | Arrangements × probability factors = point probabilities                            |
 | Distributions          | [Student's t](html/t-distribution-explorer.html)                       | Reference density, degrees of freedom and heavy tails                               |
@@ -32,15 +32,17 @@ Use Node.js 22 or newer, then open http://127.0.0.1:4173. Alternatively run `pyt
 | Sampling & uncertainty | [Confidence interval coverage](html/confidence-interval-explorer.html) | Repeated normal-population t/z intervals and empirical coverage                     |
 | Sampling & uncertainty | [Statistical power](html/power-explorer.html)                          | Exact known-σ one-sample z power, directional effects and sample-size curve         |
 
-Every page has a learning objective, equation, current-value explanation, assumptions, at least four presets and reset. Result formatting distinguishes small probabilities from floating-point underflow. The static catalogue groups applets by topic and supports text search.
+Every interactive lesson has a learning objective, equation, current-value explanation, assumptions, at least four presets and reset. Result formatting distinguishes small probabilities from floating-point underflow. The static catalogue groups applets by topic and supports text search.
 
 ### Distribution relationships
 
-Select a connector on the map to trace a single repetition, then add repetitions to compare its histogram with the reference density. The map includes normal squares and sums, independent normal/χ² and χ²/χ² ratios, t² = F(1,ν), and the normal limit of t. The test pathways derive sample variance, one-sample t, pooled t and ANOVA from independent normal observations under H₀. Two-group ANOVA and pooled t use the same observations to demonstrate F = t².
+The **Distribution connections** homepage section links to a short [overview](html/distribution-relationships.html), five connection lessons and five test derivations. Start with Normal → χ², then build t from independent normal and χ² ingredients, then F from two independent scaled χ² variables. Further lessons cover t² → F and the normal limit of t.
 
-The goodness-of-fit pathway is separately labelled an **asymptotic approximation**. It simulates categorical counts, exposes their fixed-total constraint and dependent residuals, and rotates them into c−1 contrast directions. Those directions become independent standard normals only in the large-count limit. Sparse expected counts produce a warning.
+The derivation lessons cover sample variance, one-sample t, pooled t, ANOVA and categorical goodness of fit. Each page fixes its relationship and leads with a numerical example before its explanation and MathML. Connections start with random ingredients; derivations start with observations and a statistic. Four steps preserve the current data, with focus following the new step heading. Repeated sampling appears at the final step, or immediately for saved links with multiple displayed results. Examples, seeds, full conditions, coordinate proofs, detailed calculations, the family map and exports are available in expandable sections. Links from existing explorers open the relevant lesson directly.
 
-Controls distinguish observations within a repetition from the number of repetitions. The seed, selected relationship, parameters, displayed count, inspected repetition and arithmetic step round-trip through shared URLs. Adding repetitions preserves earlier draws. Changing the model parameters or seed restarts the trace; reset restores the initial squared-normal example. The simulation-results CSV retains every displayed outcome, including values beyond the central plotted range. Undefined denominators are retained rather than redrawn. Histogram density uses the full displayed count; cropped plots are not renormalised. Tests of heavy tails compare empirical CDFs with independent quantiles rather than moments that may not exist.
+Goodness of fit is explicitly an **asymptotic approximation**. It exposes the fixed-total constraint, dependent count residuals and c−1 contrast directions. Sparse expected counts produce a warning; more repetitions do not repair the approximation.
+
+Settings round-trip through shared URLs. Legacy overview links with simulation settings redirect to the corresponding lesson. Adding repetitions preserves earlier draws; model or seed changes restart the trace. CSV exports retain results outside the plotted range and undefined denominators. Histogram density uses the full displayed count without renormalising cropped plots. The mathematical engine and independent SciPy references are unchanged.
 
 ### Teaching distinctions
 
@@ -88,7 +90,7 @@ npm run test:all               # checks + units + complete browser suite
 
 An existing Chromium executable can be supplied using `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chromium`; this affects only the Chromium projects. Standard CI installs all browser engines normally. Firefox and WebKit are real browser engines in automation, not emulated by Chromium; mobile viewport testing remains emulation.
 
-The browser suite covers every explorer's initialisation, slider bounds and keyboard input, finite chart datasets/axes, every preset, reset and URL round-trip, MathML fraction layout, absence of lecturer controls, malformed data, manual regression/ANOVA references, seeded resampling, CSV export, estimate/error-bar positions, geometric angle/length/projection checks, every walkthrough step and automated accessibility checks. The catalogue test visits all sixteen direct pages.
+The browser suite covers every explorer's initialisation, slider bounds and keyboard input, finite chart datasets/axes, every preset, reset and URL round-trip, MathML fraction layout, absence of lecturer controls, malformed data, manual regression/ANOVA references, seeded resampling, CSV export, estimate/error-bar positions, geometric angle/length/projection checks, every walkthrough step and automated accessibility checks. The catalogue test visits every direct page.
 
 Numerical references were generated independently with **SciPy 1.17.0** and, for multiplicity corrections, **statsmodels 0.14.6**. Tests include both statistic signs, zero and extreme tails, low/large df, unequal group sizes, binomial boundaries, F quantiles, interval endpoints, regression, ANOVA and adjusted p-values. Tiny probability tests use relative error so an incorrect zero cannot pass a loose absolute tolerance. Near-zero interval endpoints allow 5e-8 absolute error from the upstream incomplete-beta calculation.
 

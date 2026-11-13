@@ -59,8 +59,12 @@ The reading order is question, controlled change, controls and plots, interpreta
 
 Keep the main mathematical explanation visible. Use disclosure for assumptions, reference calculations, reproducibility and specialised extensions. Remove duplicate introductions, navigation choices and quiz staging. A correct calculation and a passing accessibility scan do not establish that students can follow the explanation.
 
-## Distribution relationship map
+## Distribution connections and derivations
 
-The distribution map leads with normal, χ², t and F nodes and selectable recipes. Every multi-input recipe names both ingredients and their independence condition. Exact constructions, exact null-model test laws, limits and asymptotic approximations have visible text labels. On phones the connectors become an ordered list beneath the four distribution links. Map buttons and the native relationship selector control the same validated state.
+A short overview offers two routes: **Build distributions** and **From data to test statistics**. Five connection lessons begin with random ingredients and an operation; five derivation lessons begin with observations and the calculated statistic. The homepage uses compact text links for these lessons instead of repeating the same miniature map.
 
-One numerical trace precedes the histogram; a four-part algebraic explanation follows it. Full observations for grouped calculations remain inspectable. Repetition controls use explicit actions without automatic playback, and keyboard selection moves focus to the trace heading. Chart tables and CSV exports complement the diagrams. A separate results CSV preserves outcomes outside the chart extent.
+Each lesson leads with its question, a one-line recipe and a numerical example from the actual seeded simulation. Relevant controls sit beside the example on desktop and follow it on mobile. A short condition remains visible. The explanation and MathML follow the example; full assumptions, detailed numbers, proof coordinates and the family map use disclosures. Independent residual directions remain available as an optional proof rather than interrupting the one-sample t calculation.
+
+The four steps preserve the current values. Back and Next move focus and the viewport to the new heading. Repeated sampling appears at the last step, or immediately when restoring a multi-repetition link. One primary onward action continues the connection route or opens the corresponding test explorer. Links into test derivations are secondary to the connection route.
+
+All multi-input recipes state the ingredients and their independence. Exact constructions, exact null-model laws, limits and approximations retain visible labels. The mathematical engine, deterministic sequences, plotted-data alternatives and complete simulation CSV are shared across lessons. Legacy all-in-one links redirect to the relevant page with their settings.

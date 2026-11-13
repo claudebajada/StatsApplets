@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="What happens when you compare two scaled sums of squares?"
+    />
+    <title>Two independent χ² → F · StatsApplets</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../lib/chart.min.js"></script>
+    <script src="../lib/jstat.min.js"></script>
+  </head>
+  <body
+    class="applet connection-page"
+    data-applet="chi-squared-to-f"
+    data-relationship-lesson="f"
+    data-lesson-type="connection"
+  >
+    <a class="skip-link" href="#main">Skip to lesson</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="../index.html">StatsApplets</a
+      ><a href="../index.html#distribution-connections">All applets</a>
+    </nav>
+    <main id="main">
+      <nav class="lesson-breadcrumbs" aria-label="Breadcrumb">
+        <a href="distribution-relationships.html">Distribution connections</a
+        ><span aria-hidden="true">›</span
+        ><span aria-current="page">Two independent χ² → F</span>
+      </nav>
+      <header class="lesson-intro">
+        <p class="eyebrow">
+          Build distributions ·
+          <span id="relationship-classification">Exact</span>
+        </p>
+        <h1>Two independent χ² → F</h1>
+        <p class="lede">
+          What happens when you compare two scaled sums of squares?
+        </p>
+        <p class="active-recipe">
+          Two independent χ² values → scale each → divide → F
+        </p>
+      </header>
+      <section
+        class="relationship-trace"
+        id="relationship-trace"
+        aria-labelledby="trace-title"
+      >
+        <p class="step-progress" id="trace-position" role="status"></p>
+        <h2 id="trace-title">Build two independent sums of squares</h2>
+        <div class="example-workspace">
+          <div class="example-main">
+            <div
+              id="worked-example"
+              class="worked-example"
+              role="status"
+              aria-label="Worked example"
+            ></div>
+            <div id="trace-diagram" class="learning-svg"></div>
+            <p class="essential-condition">
+              Scale each independent χ² value by its own degrees of freedom.
+            </p>
+          </div>
+          <aside class="experiment" aria-labelledby="parameters-heading">
+            <h3 id="parameters-heading">Change the ingredients</h3>
+            <section
+              id="controls"
+              class="controls-panel"
+              aria-label="Parameters"
+            >
+              <select id="relationship" aria-label="Lesson relationship" hidden>
+                <option value="f" selected>Two independent χ² → F</option>
+              </select>
+              <div class="relationship-parameter" data-parameter="df1">
+                <div class="control-field">
+                  <label for="df1"
+                    >Numerator degrees of freedom:
+                    <output id="df1-value" for="df1">1</output></label
+                  >
+                  <div class="range-pair">
+                    <input
+                      type="range"
+                      id="df1"
+                      min="1"
+                      max="100"
+                      step="1"
+                      value="1"
+                    /><label class="visually-hidden" for="df1-number"
+                      >Exact value: Numerator degrees of freedom</label
+                    ><input
+                      type="number"
+                      class="range-number"
+                      data-range="df1"
+                      id="df1-number"
+                      min="1"
+                      max="100"
+                      step="1"
+                      value="1"
+                    />
+                  </div>
+                  <span class="range-bounds" aria-hidden="true">1 to 100</span>
+                </div>
+              </div>
+              <div class="relationship-parameter" data-parameter="df2">
+                <div class="control-field">
+                  <label for="df2"
+                    >Denominator degrees of freedom:
+                    <output id="df2-value" for="df2">4</output></label
+                  >
+                  <div class="range-pair">
+                    <input
+                      type="range"
+                      id="df2"
+                      min="1"
+                      max="100"
+                      step="1"
+                      value="4"
+                    /><label class="visually-hidden" for="df2-number"
+                      >Exact value: Denominator degrees of freedom</label
+                    ><input
+                      type="number"
+                      class="range-number"
+                      data-range="df2"
+                      id="df2-number"
+                      min="1"
+                      max="100"
+                      step="1"
+                      value="4"
+                    />
+                  </div>
+                  <span class="range-bounds" aria-hidden="true">1 to 100</span>
+                </div>
+              </div>
+              <details class="wide lesson-options">
+                <summary>Other examples and settings</summary>
+                <div id="scenario-toolbar"></div>
+                <div class="control-field">
+                  <label for="repetitions"
+                    >Repetitions available:
+                    <output id="repetitions-value" for="repetitions"
+                      >1000</output
+                    ></label
+                  >
+                  <div class="range-pair">
+                    <input
+                      type="range"
+                      id="repetitions"
+                      min="100"
+                      max="5000"
+                      step="100"
+                      value="1000"
+                    /><label class="visually-hidden" for="repetitions-number"
+                      >Exact value: Repetitions available</label
+                    ><input
+                      type="number"
+                      class="range-number"
+                      data-range="repetitions"
+                      id="repetitions-number"
+                      min="100"
+                      max="5000"
+                      step="100"
+                      value="1000"
+                    />
+                  </div>
+                  <span class="range-bounds" aria-hidden="true"
+                    >100 to 5000</span
+                  >
+                </div>
+                <details class="wide seed-details">
+                  <summary>Reproduce this experiment</summary>
+                  <div class="control-field">
+                    <label for="seed">Random seed</label
+                    ><input
+                      type="number"
+                      id="seed"
+                      min="0"
+                      max="2147483647"
+                      step="1"
+                      value="42"
+                    />
+                  </div>
+                  <p class="small">
+                    The same seed and settings reproduce the same simulated
+                    values.
+                  </p>
+                </details>
+              </details>
+              <input
+                type="number"
+                id="shown"
+                min="1"
+                max="5000"
+                step="1"
+                value="1"
+                hidden
+              /><input
+                type="number"
+                id="inspected"
+                min="1"
+                max="5000"
+                step="1"
+                value="1"
+                hidden
+              /><input
+                type="number"
+                id="traceStep"
+                min="1"
+                max="4"
+                step="1"
+                value="1"
+                hidden
+              />
+            </section>
+            <p id="input-warning" class="notice" role="status" hidden></p>
+          </aside>
+        </div>
+        <p id="trace-instruction"></p>
+        <div class="guided-lab" id="guided-lab">
+          <div class="equation"></div>
+          <details class="symbol-details">
+            <summary>What the symbols mean</summary>
+            <p class="symbol-key">
+              U and V are independent χ² variables. d₁ and d₂ are their
+              respective degrees of freedom. F divides U/d₁ by V/d₂.
+            </p>
+          </details>
+        </div>
+        <details id="trace-numbers" class="trace-numbers">
+          <summary>Inspect the numbers</summary>
+          <div id="trace-calculation"></div>
+          <p id="trace-working" role="status"></p>
+        </details>
+        <details id="trace-proof" hidden>
+          <summary>Why are these squared directions χ²?</summary>
+          <p id="proof-explanation"></p>
+          <div id="proof-calculation"></div>
+          <p id="proof-working"></p>
+        </details>
+        <details id="trace-input-details" hidden>
+          <summary>Inspect all observations in this repetition</summary>
+          <div id="trace-inputs"></div>
+        </details>
+        <details class="assumption-details">
+          <summary>Full conditions and assumptions</summary>
+          <p id="calculation">
+            Both χ² variables are central and independent. Their underlying
+            normal draws are separate. A bare ratio U/V has an extra scale
+            factor unless d₁ = d₂.
+          </p>
+        </details>
+        <div class="trace-navigation">
+          <button type="button" id="previous-step">Back</button
+          ><button type="button" id="next-step" class="primary-action">
+            Next step
+          </button>
+        </div>
+      </section>
+      <section
+        id="repeated-sampling"
+        class="repeated-sampling"
+        aria-labelledby="sampling-title"
+        hidden
+      >
+        <h2 id="sampling-title">Repeat to reveal the distribution</h2>
+        <p>
+          Each repetition contributes one final result. More repetitions reveal
+          the same law; they do not change its degrees of freedom.
+        </p>
+        <div class="lab-actions">
+          <button type="button" id="all-repetitions" class="primary-action">
+            Simulate 1,000 repetitions</button
+          ><button type="button" id="add-repetitions">
+            Add 100 repetitions
+          </button>
+        </div>
+        <section class="result-card" aria-label="Current results">
+          <div class="metrics"></div>
+        </section>
+        <figure class="chart-container">
+          <h2 class="chart-title">
+            Repeated results and their reference distribution
+          </h2>
+          <div class="plot-frame">
+            <canvas
+              id="relationshipChart"
+              class="chart-canvas"
+              role="img"
+              aria-label="Repeated results and their reference distribution"
+            ></canvas>
+          </div>
+          <p class="chart-explanation" id="relationshipChart-explanation">
+            Bars collect the final statistic from each displayed repetition.
+            Height is density, not a count. The solid curve is the reference
+            distribution; the inspected result is marked when it lies in the
+            plotted range.
+          </p>
+        </figure>
+        <div class="trace-navigation">
+          <label for="inspect-repetition">Inspect repetition</label
+          ><input
+            type="number"
+            id="inspect-repetition"
+            min="1"
+            max="1"
+            value="1"
+          /><button type="button" id="next-draw">Next draw</button
+          ><a href="#relationship-trace">Follow this result’s calculation</a>
+        </div>
+        <details class="plot-details">
+          <summary>Plotting details and simulated results</summary>
+          <p id="scale-note" class="small" role="status"></p>
+          <p>
+            Results outside the plotted range remain in the CSV. A zero
+            denominator is undefined and is never redrawn. More repetitions keep
+            earlier values from the same seeded sequence.
+          </p>
+          <button type="button" id="download-repetitions">
+            Download simulated results
+          </button>
+        </details>
+      </section>
+      <nav class="related-learning" aria-label="Continue learning">
+        <h2>Continue exploring</h2>
+        <p class="next-lesson">
+          <a class="primary-action" href="t-squared-to-f.html"
+            >Next connection: t² → F</a
+          >
+        </p>
+        <details class="related-derivations">
+          <summary>Use this connection in a test</summary>
+          <div class="derivation-links">
+            <a href="anova-f-derivation.html"
+              >Derive the ANOVA variance ratio</a
+            >
+          </div>
+        </details>
+        <p><a href="f-distribution-explorer.html">Explore the F curve</a></p>
+        <details class="family-details">
+          <summary>See the full distribution family</summary>
+          <figure class="family-map" id="map-title">
+            <svg
+              viewBox="0 0 420 192"
+              role="img"
+              aria-label="Standard normal builds χ² by squaring and adding. Normal with independent χ² builds t. Two independent scaled χ² variables build F. Squared t gives F with numerator df 1."
+            >
+              <defs>
+                <marker
+                  id="family-arrow"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10z" fill="currentColor" />
+                </marker>
+              </defs>
+              <g
+                fill="none"
+                stroke="currentColor"
+                marker-end="url(#family-arrow)"
+              >
+                <path class="" d="M130 34 H280" />
+                <path class="" d="M70 57 V120" />
+                <path class="connection-active" d="M350 57 V120" />
+                <path class="" d="M130 152 H280" />
+              </g>
+              <g class="family-labels" text-anchor="middle">
+                <text x="210" y="23">square + add</text>
+                <text x="70" y="83">+ independent χ²</text>
+                <text x="70" y="101">scale + divide</text>
+                <text x="350" y="83">+ independent χ²</text>
+                <text x="350" y="101">scale + divide</text>
+                <text x="210" y="141">square t</text>
+              </g>
+              <g class="">
+                <rect x="10" y="12" width="120" height="44" rx="5" />
+                <text class="family-node" x="70" y="41" text-anchor="middle">
+                  Normal
+                </text>
+              </g>
+              <g class="family-active">
+                <rect x="290" y="12" width="120" height="44" rx="5" />
+                <text class="family-node" x="350" y="41" text-anchor="middle">
+                  χ²
+                </text>
+              </g>
+              <g class="">
+                <rect x="10" y="130" width="120" height="44" rx="5" />
+                <text class="family-node" x="70" y="159" text-anchor="middle">
+                  t
+                </text>
+              </g>
+              <g class="family-active">
+                <rect x="290" y="130" width="120" height="44" rx="5" />
+                <text class="family-node" x="350" y="159" text-anchor="middle">
+                  F
+                </text>
+              </g>
+            </svg>
+            <figcaption>
+              Standard normal ingredients connect the family.
+            </figcaption>
+          </figure>
+        </details>
+        <p>
+          <a href="distribution-relationships.html"
+            >All distribution connections and derivations</a
+          >
+        </p>
+      </nav>
+    </main>
+    <footer>
+      <a href="https://github.com/claudebajada/StatsApplets"
+        >Source code and documentation</a
+      >
+    </footer>
+    <script src="../javascript/statistics.js"></script>
+    <script src="../javascript/teaching-statistics.js"></script>
+    <script src="../javascript/relationship-content.js"></script>
+    <script src="../javascript/catalogue.js"></script>
+    <script src="../javascript/state.js"></script>
+    <script src="../javascript/learning-math.js"></script>
+    <script src="../javascript/learning-content.js"></script>
+    <script src="../javascript/common.js"></script>
+    <script src="../javascript/shell.js"></script>
+    <script src="../javascript/relationship-math.js"></script>
+    <script src="../javascript/distribution-relationships.js"></script>
+  </body>
+</html>

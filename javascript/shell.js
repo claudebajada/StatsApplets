@@ -53,6 +53,7 @@
   )
     params.set("dataMode", "manual");
   const initial = AppletState.decode(params, schema);
+  if (meta.relationship) initial.relationship = meta.relationship;
   const read = () =>
     Object.fromEntries(
       settings.map((el) => [
@@ -72,7 +73,9 @@
     for (const el of settings)
       if (Object.hasOwn(state, el.id)) {
         const value = AppletState.validate(String(state[el.id]), schema[el.id]);
-        if (el.type === "checkbox") el.checked = value;
+        if (meta.relationship && el.id === "relationship")
+          el.value = meta.relationship;
+        else if (el.type === "checkbox") el.checked = value;
         else el.value = value;
       }
     if (notify)
@@ -96,6 +99,7 @@
     const target = new URL(location.pathname, location.href),
       query = AppletState.encode(read(), schema);
     target.search = query;
+    target.hash = location.hash;
     return target;
   }
   function sync() {
@@ -117,7 +121,8 @@
       correlation: "New pattern",
     };
     document.getElementById("resample").textContent =
-      names[meta.id] || "New sample";
+      (meta.relationship ? "New sampling sequence" : names[meta.id]) ||
+      "New sample";
     history.replaceState(null, "", url());
   }
   function explain() {

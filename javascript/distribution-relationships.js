@@ -1,4 +1,4 @@
-/* Map, inspectable arithmetic and prefix-stable repeated sampling. */
+/* Focused lessons, inspectable arithmetic and stable repeated sampling. */
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
   const M = RelationshipMath,
@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   let previousKey = null,
     records = [],
-    theoryKind = null,
     current,
     currentConfig;
   const read = () =>
@@ -97,62 +96,244 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
   }
-  function theory(kind) {
-    const mode = modes[kind];
-    get("guided-title").textContent = "Why this relationship works";
-    const referenceEquation = document.querySelector(".guided-lab .equation");
-    equation(
-      referenceEquation,
-      mode.steps[3].math,
-      "Reference distribution equation",
-    );
-    document.querySelector(".symbol-key").textContent = mode.symbols;
-    get("guided-content").replaceChildren();
-    for (const [i, step] of mode.steps.entries()) {
-      const section = node("section", null, get("guided-content"), {
-        class: "relationship-derivation",
-      });
-      node("h3", `${i + 1}. ${step.title}`, section);
-      node("p", step.text, section);
-      equation(
-        node("div", null, section, { class: "equation" }),
-        step.math,
-        `${step.title} equation`,
-      );
+  function workedExample(c, record, step) {
+    const r = record.trace,
+      kind = c.relationship;
+    const list = (values) =>
+      values.slice(0, 4).map(fmt).join(", ") + (values.length > 4 ? " …" : "");
+    let items;
+    if (kind === "squares") {
+      items =
+        step === 1
+          ? [
+              [
+                `${c.df1} standard normal draw${c.df1 === 1 ? "" : "s"}`,
+                list(r.sample),
+              ],
+            ]
+          : step === 2
+            ? [
+                ["Normal draws", list(r.sample)],
+                ["Square each", list(r.squares)],
+              ]
+            : step === 3
+              ? [
+                  ["Independent squares", list(r.squares)],
+                  ["Add them", fmt(r.u)],
+                ]
+              : [
+                  ["Sum of squares", fmt(r.u)],
+                  ["Reference distribution", `χ²(${c.df1})`],
+                ];
+    } else if (kind === "t") {
+      items =
+        step === 1
+          ? [
+              ["Standard normal Z", fmt(r.z)],
+              ["Independent χ² value U", fmt(r.u)],
+            ]
+          : step === 2
+            ? [
+                ["χ² value U", fmt(r.u)],
+                [`Divide by ν = ${c.df2}`, fmt(r.scaled)],
+              ]
+            : step === 3
+              ? [
+                  ["Normal Z", fmt(r.z)],
+                  ["SD scale √(U/ν)", fmt(Math.sqrt(r.scaled))],
+                  ["Z ÷ scale", fmt(r.t)],
+                ]
+              : [
+                  ["Constructed t score", fmt(r.t)],
+                  ["Reference distribution", `t(${c.df2})`],
+                ];
+    } else if (kind === "f") {
+      items =
+        step === 1
+          ? [
+              ["First χ² value U", fmt(r.u)],
+              ["Independent χ² value V", fmt(r.v)],
+            ]
+          : step === 2
+            ? [
+                [`U ÷ ${c.df1}`, fmt(r.scaledU)],
+                [`V ÷ ${c.df2}`, fmt(r.scaledV)],
+              ]
+            : step === 3
+              ? [
+                  ["Scaled numerator", fmt(r.scaledU)],
+                  ["Scaled denominator", fmt(r.scaledV)],
+                  ["Divide", fmt(record.value)],
+                ]
+              : [
+                  ["Constructed F ratio", fmt(record.value)],
+                  ["Reference distribution", `F(${c.df1}, ${c.df2})`],
+                ];
+    } else if (kind === "tSquared") {
+      items =
+        step === 1
+          ? [
+              ["Start with a t score", fmt(r.t)],
+              ["Degrees of freedom", c.df2],
+            ]
+          : step === 2
+            ? [
+                ["t score", fmt(r.t)],
+                ["Square it", fmt(record.value)],
+              ]
+            : step === 3
+              ? [
+                  ["Squared t", fmt(record.value)],
+                  ["F from the same ingredients", fmt(r.f)],
+                ]
+              : [
+                  ["Squared result", fmt(record.value)],
+                  ["Reference distribution", `F(1, ${c.df2})`],
+                ];
+    } else if (kind === "normalLimit") {
+      items =
+        step === 1
+          ? [
+              ["Normal numerator", fmt(r.z)],
+              ["Random SD scale", fmt(Math.sqrt(r.scaled))],
+              ["t score", fmt(r.t)],
+            ]
+          : step === 2
+            ? [
+                ["Degrees of freedom ν", c.df2],
+                ["Variance of U/ν = 2/ν", fmt(2 / c.df2)],
+              ]
+            : [
+                ["Actual SD scale", fmt(Math.sqrt(r.scaled))],
+                ["Normal numerator", fmt(r.z)],
+                ["t score", fmt(r.t)],
+              ];
+    } else if (kind === "sampleVariance" || kind === "oneSampleT") {
+      items =
+        step === 1
+          ? [
+              [`${r.n} normal observations`, list(r.sample)],
+              ["Sample mean", fmt(r.mean)],
+            ]
+          : step === 2
+            ? [
+                ["Residual sum of squares", fmt(r.ss)],
+                ["Free directions n − 1", r.df],
+                ["Scaled sum U", fmt(r.u)],
+              ]
+            : step === 3
+              ? kind === "oneSampleT"
+                ? [
+                    ["Sample mean", fmt(r.mean)],
+                    ["Estimated SE", fmt(r.sd / Math.sqrt(r.n))],
+                    ["Divide to get t", fmt(r.t)],
+                  ]
+                : [
+                    ["Sample variance S²", fmt(r.sd ** 2)],
+                    ["Scaled sum U", fmt(r.u)],
+                  ]
+              : [
+                  [
+                    kind === "oneSampleT" ? "t statistic" : "χ² statistic",
+                    fmt(record.value),
+                  ],
+                  [
+                    "Reference distribution",
+                    `${kind === "oneSampleT" ? "t" : "χ²"}(${r.df})`,
+                  ],
+                ];
+    } else if (kind === "pooledT") {
+      items =
+        step === 1
+          ? [
+              ["Group means", list(r.parts.map((p) => p.mean))],
+              ["Mean difference", fmt(r.difference)],
+            ]
+          : step === 2
+            ? [
+                ["Within-group sum of squares", fmt(r.within)],
+                ["Combined degrees of freedom", r.df],
+              ]
+            : step === 3
+              ? [
+                  ["Mean difference", fmt(r.difference)],
+                  ["Estimated SE", fmt(r.se)],
+                  ["Divide to get t", fmt(r.t)],
+                ]
+              : [
+                  ["Pooled t statistic", fmt(r.t)],
+                  ["Reference distribution", `t(${r.df})`],
+                ];
+    } else if (kind === "anova") {
+      items =
+        step === 1
+          ? [
+              [
+                "Normal group means",
+                list(r.groups.map((g) => TeachingMath.mean(g))),
+              ],
+              ["Total sum of squares", fmt(r.total)],
+            ]
+          : step === 2
+            ? [
+                ["Between-group SS", fmt(r.between)],
+                ["Within-group SS", fmt(r.within)],
+              ]
+            : step === 3
+              ? [
+                  ["Between mean square", fmt(r.between / r.dfBetween)],
+                  ["Within mean square", fmt(r.within / r.dfWithin)],
+                  ["Divide to get F", fmt(record.value)],
+                ]
+              : [
+                  ["ANOVA F statistic", fmt(record.value)],
+                  [
+                    "Reference distribution",
+                    `F(${r.dfBetween}, ${r.dfWithin})`,
+                  ],
+                ];
+    } else {
+      items =
+        step === 1
+          ? [
+              ["Observed category counts", list(r.counts)],
+              ["Expected per category", fmt(r.expected)],
+            ]
+          : step === 2
+            ? [
+                ["Squared discrepancies", list(r.contributions)],
+                ["Add them", fmt(record.value)],
+              ]
+            : [
+                ["Sum Q", fmt(record.value)],
+                ["Free directions c − 1", r.df],
+                ["Approximate reference", `χ²(${r.df})`],
+              ];
     }
-    const follow = node("nav", null, get("guided-content"), {
-      class: "derivation-links",
-      "aria-label": "Continue this derivation",
-    });
-    for (const [target, label] of mode.links) {
-      const b = node("button", label, follow, { type: "button" });
-      b.addEventListener("click", () => select(target));
+    const root = get("worked-example");
+    root.replaceChildren();
+    for (const [label, value] of items) {
+      const item = node("div", null, root, { class: "worked-item" });
+      node("span", label, item);
+      node("strong", String(value), item);
     }
-    const existing = {
-      squares: ["chi-squared-explorer", "Explore χ² goodness of fit"],
-      t: ["t-distribution-explorer", "Explore the t curve"],
-      f: ["f-distribution-explorer", "Explore the F curve"],
-      tSquared: ["f-distribution-explorer", "Explore the F curve"],
-      normalLimit: ["t-distribution-explorer", "Compare t and normal"],
-      sampleVariance: [
-        "confidence-interval-explorer",
-        "Explore uncertainty in normal samples",
-      ],
-      oneSampleT: ["one-sample-t-test", "Use the one-sample t test"],
-      pooledT: ["independent-samples-t-test", "Use the pooled t test"],
-      anova: ["anova-explorer", "Use the ANOVA explorer"],
-      gof: ["chi-squared-explorer", "Use the goodness-of-fit explorer"],
-    }[kind];
-    node("a", existing[1], follow, { href: `${existing[0]}.html` });
-    get("calculation").textContent = mode.assumptions;
   }
-  function select(kind) {
-    set({ relationship: kind, shown: 1, inspected: 1, traceStep: 1 });
-    get("trace-title").focus({ preventScroll: true });
-    get("relationship-trace").scrollIntoView({
-      block: "start",
-      behavior: "instant",
-    });
+  function theory(kind, step) {
+    const mode = modes[kind];
+    const currentStep = mode.steps[step - 1];
+    get("trace-title").textContent = currentStep.title;
+    get("trace-instruction").textContent = currentStep.text;
+    const mainMath =
+      kind === "sampleVariance" && step === 2
+        ? mode.steps[2].math
+        : kind === "gof" && step === 3
+          ? mode.steps[3].math
+          : currentStep.math;
+    equation(
+      document.querySelector(".guided-lab .equation"),
+      mainMath,
+      `${currentStep.title} equation`,
+    );
   }
   function diagram(kind, trace, step) {
     const ns = "http://www.w3.org/2000/svg",
@@ -169,39 +350,56 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     let sets, labels;
     if (kind === "gof") {
-      sets = [trace.residuals, trace.contrasts];
+      sets =
+        step === 1
+          ? [trace.counts]
+          : step === 2
+            ? [trace.residuals]
+            : [trace.contributions];
       labels = [
-        "Count residuals: sum = 0",
-        `${trace.df} free contrast directions`,
+        step === 1
+          ? "Observed category counts"
+          : step === 2
+            ? "Count residuals: sum = 0"
+            : "Squared category discrepancies",
       ];
     } else if (kind === "squares") {
-      sets = [trace.sample, trace.squares];
-      labels = [
-        "Independent normal draws",
-        step > 1 ? "Squared normal draws" : "Next: square each draw",
-      ];
+      sets = step === 1 ? [trace.sample] : [trace.sample, trace.squares];
+      labels =
+        step === 1
+          ? ["Independent standard normal draws"]
+          : ["Independent normal draws", "Squared normal draws"];
     } else if (kind === "sampleVariance" || kind === "oneSampleT") {
-      sets = [trace.residuals, trace.contrasts];
+      sets = step === 1 ? [trace.sample] : [trace.residuals];
       labels = [
-        "Centred residuals: sum = 0",
-        `${trace.df} independent residual directions`,
+        step === 1
+          ? "Normal observations in this sample"
+          : "Centred residuals: sum = 0",
       ];
     } else if (kind === "f") {
-      sets = [trace.numerator, trace.denominator];
-      labels = [
-        "Independent numerator normals",
-        "Independent denominator normals",
-      ];
+      sets =
+        step === 1
+          ? [[trace.u], [trace.v]]
+          : [[trace.scaledU], [trace.scaledV]];
+      labels =
+        step === 1
+          ? ["First χ² value", "Independent second χ² value"]
+          : ["Scaled numerator", "Scaled denominator"];
     } else if (trace.groups) {
       sets = trace.groups;
       labels = sets.map((_, i) => `Group ${i + 1}: normal observations`);
+    } else if (kind === "tSquared") {
+      sets =
+        step === 1
+          ? [[trace.t]]
+          : [[trace.t], [trace.t === null ? null : trace.t ** 2]];
+      labels =
+        step === 1 ? ["Signed t score"] : ["Signed t score", "Squared t score"];
     } else {
-      sets = [[trace.z], trace.denominator];
-      labels = [
-        "Standard normal numerator Z",
-        "Independent denominator normals",
-      ];
+      sets = [[trace.z], [trace.u]];
+      labels = ["Standard normal numerator Z", "Independent χ² denominator U"];
     }
+    sets = sets.map((values) => values.filter(Number.isFinite));
     const rowHeight = 62;
     svg.setAttribute("viewBox", `0 0 ${width} ${sets.length * rowHeight}`);
     const bound = Math.max(1, ...sets.flat().map(Math.abs)) * 1.08;
@@ -271,7 +469,55 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
         working = `${r.squares.map(fmt).join(" + ")} = ${fmt(r.u)}. Each independent normal square contributes one degree of freedom.`;
       }
-    } else if (["t", "tSquared", "normalLimit"].includes(kind)) {
+    } else if (kind === "tSquared") {
+      rows =
+        step === 1
+          ? [
+              ["Signed t score", r.t],
+              ["Normal numerator Z", r.z],
+              ["SD scale √(U/ν)", Math.sqrt(r.scaled)],
+            ]
+          : step === 2
+            ? [
+                ["t score", r.t],
+                ["t²", record.value],
+              ]
+            : step === 3
+              ? [
+                  ["t²", record.value],
+                  ["F from the same ingredients", r.f],
+                ]
+              : [
+                  ["Squared t statistic", record.value],
+                  ["F numerator df", 1],
+                  ["F denominator df", c.df2],
+                ];
+      working =
+        step === 2
+          ? `${fmt(r.t)} × ${fmt(r.t)} = ${fmt(record.value)}. Squaring removes the sign.`
+          : "The squared t score equals the F ratio from the same independent ingredients. Its numerator has one degree of freedom.";
+    } else if (kind === "normalLimit") {
+      rows =
+        step === 2
+          ? [
+              ["Degrees of freedom ν", c.df2],
+              ["Var(U/ν) = 2/ν", 2 / c.df2],
+              ["Realised U/ν", r.scaled],
+            ]
+          : step === 3
+            ? [
+                ["Realised U/ν", r.scaled],
+                ["Realised SD scale", Math.sqrt(r.scaled)],
+                ["Limiting scale", 1],
+              ]
+            : [
+                ["t score", r.t],
+                ["Normal numerator Z", r.z],
+                ["Actual scale √(U/ν)", Math.sqrt(r.scaled)],
+              ];
+      working =
+        "The histogram and solid line describe finite-df t; the dashed curve is the standard normal limit. Increasing degrees of freedom stabilises the scale. More repetitions alone do not change the law.";
+    } else if (kind === "t") {
       if (step === 1) {
         headings = ["Source", "Draw", "Value"];
         rows = [
@@ -299,27 +545,14 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
         working = `${fmt(r.z)} / ${fmt(Math.sqrt(r.scaled))} = ${fmt(r.t)}.`;
       } else {
-        rows =
-          kind === "tSquared"
-            ? [
-                ["T", r.t],
-                ["T²", record.value],
-                ["F = (Z²/1)/(U/ν), same ingredients", r.f],
-                ["F numerator df", 1],
-                ["F denominator df", c.df2],
-              ]
-            : [
-                ["T with random denominator", r.t],
-                ["Z if denominator were exactly 1", r.z],
-                ["Actual scale √(U/ν)", Math.sqrt(r.scaled)],
-                ["t degrees of freedom", c.df2],
-              ];
+        rows = [
+          ["t score", r.t],
+          ["Degrees of freedom ν", c.df2],
+          ["Normal numerator Z", r.z],
+          ["Independent variance scale U/ν", r.scaled],
+        ];
         working =
-          kind === "tSquared"
-            ? "The two computed squared ratios agree within floating-point precision. Squaring loses the t score's sign."
-            : kind === "normalLimit"
-              ? "The histogram and solid line describe finite-df t; the dashed curve is the standard normal limit. A single repetition can still differ from its Z numerator."
-              : "The exact law is t. Its degrees of freedom come from the independently estimated denominator.";
+          "The exact law is t. Its degrees of freedom come from the independently estimated denominator.";
       }
     } else if (kind === "f") {
       if (step === 1) {
@@ -352,17 +585,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else if (kind === "sampleVariance" || kind === "oneSampleT") {
       if (step === 1) {
-        headings = ["Observation", "Xᵢ", "Sample mean", "Centred residual"];
-        rows = r.sample.map((x, i) => [i + 1, x, r.mean, r.residuals[i]]);
-        working = `n = ${r.n}, mean = ${fmt(r.mean)}, known-SD Z = √n × mean = ${fmt(r.z)}. The centred residuals sum to ${fmt(r.residuals.reduce((a, b) => a + b, 0))}.`;
+        headings = ["Observation", "Xᵢ"];
+        rows = r.sample.map((x, i) => [i + 1, x]);
+        working = `n = ${r.n}, sample mean = ${fmt(r.mean)}, known-SD SE = ${fmt(1 / Math.sqrt(r.n))}, so Z = ${fmt(r.z)}. The observations come from N(0,1).`;
       } else if (step === 2) {
-        headings = [
-          "Independent residual direction",
-          "Helmert coordinate Aᵢ",
-          "Aᵢ²",
+        rows = [
+          ["Residual sum of squares", r.ss],
+          ["Degrees of freedom n − 1", r.df],
+          ["Sample variance S²", r.sd ** 2],
+          ["Scaled sum U = (n − 1)S²/σ²", r.u],
         ];
-        rows = r.contrasts.map((a, i) => [i + 1, a, a * a]);
-        working = `Sum Aᵢ² = ${fmt(M.sumSquares(r.contrasts))} = SS/σ² = ${fmt(r.u)}. The ${r.df} residual directions are independent of the normal mean direction. Each Aᵢ = √(i/(i+1)) × (mean of first i observations − observation i+1)/σ.`;
+        working = `With σ = 1, (${r.n} − 1) × ${fmt(r.sd ** 2)} = ${fmt(r.u)}. Under normal sampling U follows χ²(${r.df}) and is independent of the sample mean. Open the proof below to inspect the independent directions.`;
       } else if (step === 3) {
         rows = [
           ["Residual SS", r.ss],
@@ -497,8 +730,13 @@ document.addEventListener("DOMContentLoaded", () => {
         working = `Total count = ${r.n}. Expected per category = ${fmt(r.expected)}. Residuals sum to zero and are dependent; more repetitions do not change this constraint.`;
       } else if (step === 3) {
         headings = ["Free contrast direction", "Coordinate A", "A²"];
-        rows = r.contrasts.map((a, i) => [i + 1, a, a * a]);
-        working = `The ${r.df} coordinates preserve the squared length: ${fmt(M.sumSquares(r.contrasts))} = ${fmt(r.value)}. Their normality and independence are approximate, improving as expected counts grow. They are not independent normal draws at finite N.`;
+        headings = ["Quantity", "Value"];
+        rows = [
+          ["Sum of squared discrepancies Q", r.value],
+          ["Free directions c − 1", r.df],
+          ["Expected count per category", r.expected],
+        ];
+        working = `There are ${r.df} free directions because the counts must add to ${r.n}. With large expected counts, their squared length is approximately χ²(${r.df}). Open the proof to inspect the rotated coordinates; they are not independent normal draws at finite N.`;
       } else {
         rows = [
           ["Sum of category contributions Q", r.value],
@@ -514,6 +752,39 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
         working = `This histogram is the actual finite-count null experiment; χ²(${r.df}) is a continuous approximation. ${r.expected < 5 ? "Expected counts are below 5. The approximation can be unreliable." : "Expected counts are at least 5; this heuristic does not guarantee an exact approximation."}`;
       }
+    }
+    const proof = get("trace-proof");
+    proof.hidden =
+      !(["sampleVariance", "oneSampleT"].includes(kind) && step === 2) &&
+      !(kind === "gof" && step === 3);
+    if (!proof.hidden) {
+      const isCounts = kind === "gof";
+      proof.querySelector("summary").textContent = isCounts
+        ? "Why is χ² an approximation here?"
+        : "Why are these squared directions χ²?";
+      get("proof-explanation").textContent = isCounts
+        ? "The count residuals sum to zero. Rotating their sum-zero subspace preserves squared length and leaves c − 1 coordinates. Their joint distribution approaches independent standard normals as the expected counts grow. At finite counts this is an approximation."
+        : "The centred residuals sum to zero and are dependent. An orthonormal rotation preserves squared length and gives n − 1 independent normal coordinates after standardisation. Under the normal model, those directions are independent of the sample mean. These are Helmert coordinates.";
+      table(
+        ["Free direction", "Coordinate Aᵢ", "Aᵢ²"],
+        r.contrasts.map((value, i) => [i + 1, value, value * value]),
+        "Independent coordinate calculation",
+        get("proof-calculation"),
+      );
+      get("proof-working").textContent = isCounts
+        ? `Sum Aᵢ² = ${fmt(M.sumSquares(r.contrasts))} = Q. The normality and independence are approximate.`
+        : `Aᵢ = √(i/(i+1)) × (mean of the first i observations − observation i+1)/σ. Sum Aᵢ² = ${fmt(M.sumSquares(r.contrasts))} = SS/σ².`;
+      let formula = proof.querySelector(".proof-equation");
+      if (!formula)
+        formula = node("div", null, proof, {
+          class: "equation proof-equation",
+        });
+      const proofMode = modes[isCounts ? "gof" : "sampleVariance"];
+      equation(
+        formula,
+        proofMode.steps[isCounts ? 2 : 1].math,
+        "Independent directions proof equation",
+      );
     }
     table(
       headings,
@@ -563,30 +834,23 @@ document.addEventListener("DOMContentLoaded", () => {
         "aria-pressed",
         String(b.dataset.relationship === c.relationship),
       );
-    const dfLabel = document.querySelector('label[for="df1"]');
-    dfLabel.firstChild.textContent =
-      c.relationship === "squares"
-        ? "Independent normal squares k: "
-        : "Numerator degrees of freedom d₁: ";
     get("relationship-classification").textContent = mode.type;
-    get("trace-title").textContent = mode.title;
     get("trace-title").tabIndex = -1;
-    get("trace-instruction").textContent =
-      mode.recipe +
-      ". Follow the arithmetic for one repetition; the full derivation is below the plot.";
     get("trace-position").textContent =
-      `Repetition ${state.inspected} of ${state.shown} displayed · Step ${state.traceStep} of 4: ${mode.steps[state.traceStep - 1].title}`;
+      `Step ${state.traceStep} of 4 · Repetition ${state.inspected}`;
     get("inspect-repetition").max = state.shown;
     get("inspect-repetition").value = state.inspected;
+    get("previous-step").disabled = state.traceStep === 1;
     get("next-step").disabled = state.traceStep === 4;
     get("next-draw").disabled = state.inspected === state.repetitions;
     get("all-repetitions").disabled = get("add-repetitions").disabled =
       state.shown === state.repetitions;
+    get("all-repetitions").textContent =
+      `Simulate ${state.repetitions.toLocaleString("en")} repetitions`;
+    get("repeated-sampling").hidden = state.traceStep < 4 && state.shown === 1;
+    workedExample(c, record, state.traceStep);
     arithmetic(c, record, state.traceStep);
-    if (theoryKind !== c.relationship) {
-      theory(c.relationship);
-      theoryKind = c.relationship;
-    }
+    theory(c.relationship, state.traceStep);
     const plot = M.plot(c, displayed),
       ref = M.reference(c);
     chart.data.datasets = [
@@ -670,13 +934,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     AppletPage.sync();
   }
-  document
-    .querySelectorAll("[data-relationship]")
-    .forEach((button) =>
-      button.addEventListener("click", () =>
-        select(button.dataset.relationship),
-      ),
-    );
   for (const control of document.querySelectorAll(
     "#controls input, #controls select",
   )) {
@@ -691,9 +948,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("applet:state", (event) =>
     render(!Object.hasOwn(event.detail?.state || {}, "shown")),
   );
-  get("next-step").addEventListener("click", () =>
-    set({ traceStep: Math.min(4, read().traceStep + 1) }),
-  );
+  function navigateStep(delta) {
+    set({ traceStep: Math.max(1, Math.min(4, read().traceStep + delta)) });
+    get("trace-title").focus({ preventScroll: true });
+    get("relationship-trace").scrollIntoView({
+      block: "start",
+      behavior: "instant",
+    });
+  }
+  get("previous-step").addEventListener("click", () => navigateStep(-1));
+  get("next-step").addEventListener("click", () => navigateStep(1));
   get("next-draw").addEventListener("click", () => {
     const s = read(),
       next = Math.min(s.repetitions, s.inspected + 1);
@@ -724,4 +988,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
   render();
+  if (location.hash === "#map-title") {
+    document.querySelector(".family-details").open = true;
+    get("map-title").scrollIntoView({ block: "start" });
+  }
 });

@@ -1,7 +1,31 @@
 /* One worked comparison per concept, shared by all learners. */
 (function (root, factory) {
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.LearningContent = factory();
+  const content = factory();
+  const relationships =
+    typeof module === "object" && module.exports
+      ? require("./relationship-content.js")
+      : root.RelationshipContent;
+  for (const lesson of relationships.lessons) {
+    content[lesson.id] = {
+      role: relationships.modes[lesson.relationship].type,
+      question: lesson.question,
+      plain: lesson.introduction,
+      related: ["distribution-relationships"],
+      keywords: `${lesson.title} ${lesson.relationship} distribution derivation normal chi squared degrees freedom`,
+      experiment: {
+        heading: lesson.question,
+        story: lesson.introduction,
+        instruction:
+          "Follow one repetition, then repeat to reveal its distribution.",
+        action: lesson.presets[1][0],
+        baseline: lesson.baseline,
+        change: lesson.presets[1][1],
+        axes: {},
+      },
+    };
+  }
+  if (typeof module === "object" && module.exports) module.exports = content;
+  else root.LearningContent = content;
 })(typeof globalThis !== "undefined" ? globalThis : this, () => ({
   "distribution-relationships": {
     role: "Constructions from independent draws; test reference laws",

@@ -2,656 +2,228 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Build χ², t and F from normal draws, then follow their test statistics."
+      content="Explore five distribution connections and five test derivations, one lesson at a time."
     />
     <title>How distributions connect · StatsApplets</title>
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <script src="../lib/chart.min.js"></script>
-    <script src="../lib/jstat.min.js"></script>
   </head>
-  <body class="applet" data-applet="distribution-relationships">
-    <a class="skip-link" href="#main">Skip to applet</a>
+  <body class="applet connection-page">
+    <a class="skip-link" href="#main">Skip to lesson</a>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="../index.html" class="brand">StatsApplets</a>
-      <div class="nav-context">
-        <a href="../index.html">All applets</a><span>Distributions</span>
-      </div>
+      <a class="brand" href="../index.html">StatsApplets</a
+      ><a href="../index.html#distribution-connections">All applets</a>
     </nav>
     <main id="main">
-      <header class="page-header"><h1>How distributions connect</h1></header>
-      <section class="distribution-map" aria-labelledby="map-title">
-        <h2 id="map-title">One family, different operations</h2>
-        <p>
-          Choose a connector to follow its recipe. Each recipe names all its
-          inputs; separate random ingredients must be independent.
-        </p>
-        <div class="map-grid">
-          <nav class="distribution-nodes" aria-label="Distribution explorers">
-            <a
-              class="distribution-node node-normal"
-              href="clt-explorer.html?population=normal"
-              ><strong>Normal</strong
-              ><span>Standard normal: mean 0, SD 1</span></a
-            ><a
-              class="distribution-node node-chi"
-              href="chi-squared-explorer.html"
-              ><strong>χ²</strong
-              ><span>Explore its goodness-of-fit application</span></a
-            ><a
-              class="distribution-node node-t"
-              href="t-distribution-explorer.html"
-              ><strong>Student’s t</strong
-              ><span>A signed ratio with a random scale</span></a
-            ><a
-              class="distribution-node node-f"
-              href="f-distribution-explorer.html"
-              ><strong>F</strong
-              ><span>A ratio of scaled sums of squares</span></a
-            >
-          </nav>
-          <ol
-            class="relationship-connectors"
-            aria-label="Distribution relationships"
+      <header class="connection-intro">
+        <div>
+          <h1>How distributions connect</h1>
+          <p class="lede">
+            Start with normal random values. See how squaring, adding and
+            dividing produces other distributions.
+          </p>
+          <a
+            class="primary-action lesson-start"
+            href="normal-to-chi-squared.html"
+            >Start with Normal → χ²</a
           >
-            <li class="connector-squares">
-              <button
-                type="button"
-                data-relationship="squares"
-                aria-pressed="false"
-              >
-                <span class="relationship-kind">Exact</span
-                ><strong>Normal → χ²</strong
-                ><span>Square, then add independent draws</span>
-              </button>
-            </li>
-            <li class="connector-t">
-              <button type="button" data-relationship="t" aria-pressed="false">
-                <span class="relationship-kind">Exact</span
-                ><strong>Normal + independent χ² → t</strong
-                ><span>Divide by an independent estimated scale</span>
-              </button>
-            </li>
-            <li class="connector-f">
-              <button type="button" data-relationship="f" aria-pressed="false">
-                <span class="relationship-kind">Exact</span
-                ><strong>Two independent χ² → F</strong
-                ><span>Divide two independent scaled sums</span>
-              </button>
-            </li>
-            <li class="connector-square-t">
-              <button
-                type="button"
-                data-relationship="tSquared"
-                aria-pressed="false"
-              >
-                <span class="relationship-kind">Exact</span
-                ><strong>t² → F(1, ν)</strong><span>Square a t score</span>
-              </button>
-            </li>
-            <li class="connector-limit">
-              <button
-                type="button"
-                data-relationship="normalLimit"
-                aria-pressed="false"
-              >
-                <span class="relationship-kind">Limit</span
-                ><strong>t → normal as degrees of freedom grow</strong
-                ><span>Make the denominator more stable</span>
-              </button>
-            </li>
-          </ol>
+          <nav class="journey-links" aria-label="Choose a learning route">
+            <a href="#connections-heading">Build distributions</a
+            ><a href="#derivations-heading">From data to test statistics</a>
+          </nav>
         </div>
-        <h3>Follow the test derivations</h3>
-        <ul class="test-pathways">
-          <li>
-            <button
-              type="button"
-              data-relationship="sampleVariance"
-              aria-pressed="false"
+        <figure class="family-map" id="map-title">
+          <svg
+            viewBox="0 0 420 192"
+            role="img"
+            aria-label="Standard normal builds χ² by squaring and adding. Normal with independent χ² builds t. Two independent scaled χ² variables build F. Squared t gives F with numerator df 1."
+          >
+            <defs>
+              <marker
+                id="family-arrow"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M0 0 L10 5 L0 10z" fill="currentColor" />
+              </marker>
+            </defs>
+            <g
+              fill="none"
+              stroke="currentColor"
+              marker-end="url(#family-arrow)"
             >
-              <span class="relationship-kind">Exact</span
-              ><strong>Normal samples → sample variance → χ²</strong
-              ><span>Centre, square and account for the fitted mean</span>
-            </button>
+              <path class="" d="M130 34 H280" />
+              <path class="" d="M70 57 V120" />
+              <path class="" d="M350 57 V120" />
+              <path class="" d="M130 152 H280" />
+            </g>
+            <g class="family-labels" text-anchor="middle">
+              <text x="210" y="23">square + add</text>
+              <text x="70" y="83">+ independent χ²</text>
+              <text x="70" y="101">scale + divide</text>
+              <text x="350" y="83">+ independent χ²</text>
+              <text x="350" y="101">scale + divide</text>
+              <text x="210" y="141">square t</text>
+            </g>
+            <g class="">
+              <rect x="10" y="12" width="120" height="44" rx="5" />
+              <text class="family-node" x="70" y="41" text-anchor="middle">
+                Normal
+              </text>
+            </g>
+            <g class="">
+              <rect x="290" y="12" width="120" height="44" rx="5" />
+              <text class="family-node" x="350" y="41" text-anchor="middle">
+                χ²
+              </text>
+            </g>
+            <g class="">
+              <rect x="10" y="130" width="120" height="44" rx="5" />
+              <text class="family-node" x="70" y="159" text-anchor="middle">
+                t
+              </text>
+            </g>
+            <g class="">
+              <rect x="290" y="130" width="120" height="44" rx="5" />
+              <text class="family-node" x="350" y="159" text-anchor="middle">
+                F
+              </text>
+            </g>
+          </svg>
+          <figcaption>
+            Standard normal ingredients connect the family.
+          </figcaption>
+        </figure>
+      </header>
+      <section aria-labelledby="connections-heading">
+        <h2 id="connections-heading">Build distributions</h2>
+        <p>
+          Start with random ingredients, apply an operation, then repeat to see
+          the resulting distribution.
+        </p>
+        <ol class="lesson-list suggested-route">
+          <li>
+            <a href="normal-to-chi-squared.html"
+              ><span class="relationship-kind">Exact</span
+              ><strong>Normal → χ²</strong
+              ><span
+                >What happens when you square and add normal values?</span
+              ></a
+            >
           </li>
           <li>
-            <button
-              type="button"
-              data-relationship="oneSampleT"
-              aria-pressed="false"
+            <a href="normal-chi-squared-to-t.html"
+              ><span class="relationship-kind">Exact</span
+              ><strong>Normal + independent χ² → t</strong
+              ><span>Why does a random scale give heavier tails?</span></a
             >
-              <span class="relationship-kind">Exact under H₀</span
-              ><strong>Normal samples → one-sample t test</strong
-              ><span>Replace population SD with sample SD</span>
-            </button>
           </li>
           <li>
-            <button
-              type="button"
-              data-relationship="pooledT"
-              aria-pressed="false"
+            <a href="chi-squared-to-f.html"
+              ><span class="relationship-kind">Exact</span
+              ><strong>Two independent χ² → F</strong
+              ><span
+                >What happens when you compare two scaled sums of squares?</span
+              ></a
             >
-              <span class="relationship-kind">Exact under H₀</span
-              ><strong>Two normal groups → pooled t test</strong
-              ><span>Pool independent residual sums of squares</span>
-            </button>
+          </li>
+        </ol>
+        <h3>Further connections</h3>
+        <ul class="lesson-list">
+          <li>
+            <a href="t-squared-to-f.html"
+              ><span class="relationship-kind">Exact</span
+              ><strong>t² → F</strong
+              ><span>Where does a t score go when you remove its sign?</span></a
+            >
           </li>
           <li>
-            <button
-              type="button"
-              data-relationship="anova"
-              aria-pressed="false"
+            <a href="t-to-normal.html"
+              ><span class="relationship-kind">Limit</span
+              ><strong>t → Normal</strong
+              ><span
+                >Why does t approach normal as degrees of freedom
+                increase?</span
+              ></a
             >
-              <span class="relationship-kind">Exact under H₀</span
-              ><strong>Normal groups → ANOVA → F</strong
-              ><span>Partition variation, then compare mean squares</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" data-relationship="gof" aria-pressed="false">
-              <span class="relationship-kind">Asymptotic approximation</span
-              ><strong>Category counts → approximate χ²</strong
-              ><span>Square constrained count residuals</span>
-            </button>
           </li>
         </ul>
       </section>
-      <section class="worked-comparison" aria-labelledby="experiment-title">
-        <div>
-          <h2 id="experiment-title">
-            Square a normal draw, then add independent squares
-          </h2>
-          <p>
-            A standard normal draw can be positive or negative. Its square is
-            always non-negative and follows χ² with one degree of freedom.
-            Adding independent squares increases the degrees of freedom.
-          </p>
-          <p class="comparison-instruction">
-            Trace one draw, then compare one square with a sum of four. Use
-            repeated sampling to compare the histogram with its theoretical
-            curve.
-          </p>
-        </div>
-        <div class="comparison-action">
-          <button type="button" id="experiment-action" class="primary-action">
-            Load this comparison</button
-          ><a href="#guided-lab">Follow the maths</a>
-        </div>
+      <section
+        class="derivation-overview"
+        aria-labelledby="derivations-heading"
+      >
+        <h2 id="derivations-heading">From data to test statistics</h2>
+        <p>
+          Start with observations, calculate a statistic, then establish its
+          reference distribution. Sample variance supplies a building block for
+          the tests.
+        </p>
+        <ul class="lesson-list">
+          <li>
+            <a href="sample-variance-to-chi-squared.html"
+              ><span class="relationship-kind">Exact</span
+              ><strong>Sample variance → χ²</strong
+              ><span
+                >Why does estimating the mean cost one degree of freedom?</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="one-sample-t-derivation.html"
+              ><span class="relationship-kind">Exact under H₀</span
+              ><strong>Deriving the one-sample t test</strong
+              ><span
+                >How does estimating the population SD produce a t
+                statistic?</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="pooled-t-derivation.html"
+              ><span class="relationship-kind">Exact under H₀</span
+              ><strong>Deriving the pooled t test</strong
+              ><span
+                >How do two independent groups share a variance estimate?</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="anova-f-derivation.html"
+              ><span class="relationship-kind">Exact under H₀</span
+              ><strong>Deriving ANOVA’s F statistic</strong
+              ><span
+                >Why does comparing between-group and within-group variation
+                give F?</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="goodness-of-fit-derivation.html"
+              ><span class="relationship-kind">Asymptotic approximation</span
+              ><strong>Why goodness of fit uses χ²</strong
+              ><span
+                >When do category-count discrepancies behave like a sum of
+                normal squares?</span
+              ></a
+            >
+          </li>
+        </ul>
       </section>
-      <div class="applet-workspace">
-        <aside class="experiment" aria-labelledby="parameters-heading">
-          <h2 id="parameters-heading">Explore the values</h2>
-          <div id="scenario-toolbar"></div>
-          <section class="controls-panel" id="controls" aria-label="Parameters">
-            <div class="control-field">
-              <label for="relationship">Selected relationship</label
-              ><select id="relationship">
-                <option value="squares" selected>Normal → χ²</option>
-                <option value="t">Normal + χ² → t</option>
-                <option value="f">χ² + χ² → F</option>
-                <option value="tSquared">t → F</option>
-                <option value="normalLimit">t → normal as df increases</option>
-                <option value="sampleVariance">
-                  Normal samples → sample variance → χ²
-                </option>
-                <option value="oneSampleT">
-                  Normal samples → one-sample t test
-                </option>
-                <option value="pooledT">
-                  Two normal groups → pooled t test
-                </option>
-                <option value="anova">Normal groups → ANOVA → F</option>
-                <option value="gof">Category counts → approximate χ²</option>
-              </select>
-            </div>
-            <div class="relationship-parameter" data-parameter="df1">
-              <div class="control-field">
-                <label for="df1"
-                  >Normal squares / numerator df:
-                  <output id="df1-value" for="df1">1</output></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="df1"
-                    min="1"
-                    max="100"
-                    step="1"
-                    value="1"
-                  /><label class="visually-hidden" for="df1-number"
-                    >Exact value: Normal squares / numerator df</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="df1"
-                    id="df1-number"
-                    min="1"
-                    max="100"
-                    step="1"
-                    value="1"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">1 to 100</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="df2">
-              <div class="control-field">
-                <label for="df2"
-                  >Denominator degrees of freedom ν:
-                  <output id="df2-value" for="df2">4</output></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="df2"
-                    min="1"
-                    max="100"
-                    step="1"
-                    value="4"
-                  /><label class="visually-hidden" for="df2-number"
-                    >Exact value: Denominator degrees of freedom ν</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="df2"
-                    id="df2-number"
-                    min="1"
-                    max="100"
-                    step="1"
-                    value="4"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">1 to 100</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="sampleSize">
-              <div class="control-field">
-                <label for="sampleSize"
-                  >Observations per sample / group:
-                  <output id="sampleSize-value" for="sampleSize"
-                    >5</output
-                  ></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="sampleSize"
-                    min="2"
-                    max="100"
-                    step="1"
-                    value="5"
-                  /><label class="visually-hidden" for="sampleSize-number"
-                    >Exact value: Observations per sample / group</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="sampleSize"
-                    id="sampleSize-number"
-                    min="2"
-                    max="100"
-                    step="1"
-                    value="5"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">2 to 100</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="sampleSize2">
-              <div class="control-field">
-                <label for="sampleSize2"
-                  >Observations in group 2:
-                  <output id="sampleSize2-value" for="sampleSize2"
-                    >5</output
-                  ></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="sampleSize2"
-                    min="2"
-                    max="100"
-                    step="1"
-                    value="5"
-                  /><label class="visually-hidden" for="sampleSize2-number"
-                    >Exact value: Observations in group 2</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="sampleSize2"
-                    id="sampleSize2-number"
-                    min="2"
-                    max="100"
-                    step="1"
-                    value="5"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">2 to 100</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="groups">
-              <div class="control-field">
-                <label for="groups"
-                  >Number of groups g:
-                  <output id="groups-value" for="groups">3</output></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="groups"
-                    min="2"
-                    max="6"
-                    step="1"
-                    value="3"
-                  /><label class="visually-hidden" for="groups-number"
-                    >Exact value: Number of groups g</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="groups"
-                    id="groups-number"
-                    min="2"
-                    max="6"
-                    step="1"
-                    value="3"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">2 to 6</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="categories">
-              <div class="control-field">
-                <label for="categories"
-                  >Number of categories c:
-                  <output id="categories-value" for="categories"
-                    >5</output
-                  ></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="categories"
-                    min="2"
-                    max="10"
-                    step="1"
-                    value="5"
-                  /><label class="visually-hidden" for="categories-number"
-                    >Exact value: Number of categories c</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="categories"
-                    id="categories-number"
-                    min="2"
-                    max="10"
-                    step="1"
-                    value="5"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">2 to 10</span>
-              </div>
-            </div>
-            <div class="relationship-parameter" data-parameter="observations">
-              <div class="control-field">
-                <label for="observations"
-                  >Categorical observations N:
-                  <output id="observations-value" for="observations"
-                    >100</output
-                  ></label
-                >
-                <div class="range-pair">
-                  <input
-                    type="range"
-                    id="observations"
-                    min="10"
-                    max="1000"
-                    step="10"
-                    value="100"
-                  /><label class="visually-hidden" for="observations-number"
-                    >Exact value: Categorical observations N</label
-                  ><input
-                    type="number"
-                    class="range-number"
-                    data-range="observations"
-                    id="observations-number"
-                    min="10"
-                    max="1000"
-                    step="10"
-                    value="100"
-                  />
-                </div>
-                <span class="range-bounds" aria-hidden="true">10 to 1000</span>
-              </div>
-            </div>
-            <div class="control-field">
-              <label for="repetitions"
-                >Available repetitions:
-                <output id="repetitions-value" for="repetitions"
-                  >1000</output
-                ></label
-              >
-              <div class="range-pair">
-                <input
-                  type="range"
-                  id="repetitions"
-                  min="100"
-                  max="5000"
-                  step="100"
-                  value="1000"
-                /><label class="visually-hidden" for="repetitions-number"
-                  >Exact value: Available repetitions</label
-                ><input
-                  type="number"
-                  class="range-number"
-                  data-range="repetitions"
-                  id="repetitions-number"
-                  min="100"
-                  max="5000"
-                  step="100"
-                  value="1000"
-                />
-              </div>
-              <span class="range-bounds" aria-hidden="true">100 to 5000</span>
-            </div>
-            <details class="wide seed-details">
-              <summary>Reproduce this experiment</summary>
-              <div class="control-field">
-                <label for="seed">Random seed</label
-                ><input
-                  type="number"
-                  id="seed"
-                  min="0"
-                  max="2147483647"
-                  step="1"
-                  value="42"
-                />
-              </div>
-              <p class="small">
-                The same seed and settings reproduce the same simulated values.
-              </p>
-            </details>
-            <input
-              type="number"
-              id="shown"
-              min="1"
-              max="5000"
-              step="1"
-              value="1"
-              hidden
-            /><input
-              type="number"
-              id="inspected"
-              min="1"
-              max="5000"
-              step="1"
-              value="1"
-              hidden
-            /><input
-              type="number"
-              id="traceStep"
-              min="1"
-              max="4"
-              step="1"
-              value="1"
-              hidden
-            />
-          </section>
-          <p id="input-warning" class="notice" role="status" hidden></p>
-        </aside>
-        <div class="analysis">
-          <section class="result-card" aria-label="Current results">
-            <div class="metrics"></div>
-          </section>
-          <p id="scale-note" class="small" role="status"></p>
-          <section
-            class="relationship-trace"
-            id="relationship-trace"
-            aria-labelledby="trace-title"
-          >
-            <p id="relationship-classification" class="relationship-kind"></p>
-            <h2 id="trace-title">Follow one repetition</h2>
-            <p id="trace-instruction"></p>
-            <a href="#map-title">Back to the map</a>
-            <div class="trace-navigation">
-              <label for="inspect-repetition">Inspect repetition</label
-              ><input
-                type="number"
-                id="inspect-repetition"
-                min="1"
-                max="1"
-                value="1"
-              /><button type="button" id="next-draw">Next draw</button
-              ><button type="button" id="next-step">Next step</button>
-            </div>
-            <p id="trace-position" role="status"></p>
-            <div id="trace-diagram" class="learning-svg"></div>
-            <div id="trace-calculation"></div>
-            <p id="trace-working" role="status"></p>
-            <details id="trace-input-details" hidden>
-              <summary>Inspect all observations in this repetition</summary>
-              <div id="trace-inputs"></div>
-            </details>
-            <div class="lab-actions">
-              <button type="button" id="add-repetitions">
-                Add 100 repetitions</button
-              ><button type="button" id="all-repetitions">
-                Show all repetitions</button
-              ><button type="button" id="download-repetitions">
-                Download simulated results
-              </button>
-            </div>
-          </section>
-          <section class="container" aria-label="Interactive plots">
-            <figure class="chart-container">
-              <h2 class="chart-title">
-                Repeated results and their reference distribution
-              </h2>
-              <div class="plot-frame">
-                <canvas
-                  id="relationshipChart"
-                  class="chart-canvas"
-                  role="img"
-                  aria-label="Repeated results and their reference distribution"
-                ></canvas>
-              </div>
-              <p class="chart-explanation" id="relationshipChart-explanation">
-                Bars collect the final statistic from each displayed repetition.
-                Their height is density, not a count. The solid curve is the
-                exact reference for normal constructions, or the asymptotic χ²
-                reference for categorical goodness of fit. The inspected result
-                is marked when it lies within the plotted range.
-              </p>
-            </figure>
-          </section>
-          <div class="comparison-reading">
-            <h3 id="experiment-position">Worked comparison</h3>
-            <p id="experiment-reading" role="status"></p>
-          </div>
-          <section
-            class="guided-lab"
-            id="guided-lab"
-            aria-labelledby="guided-title"
-          >
-            <h2 id="guided-title">Follow the calculation</h2>
-            <div class="formula-block">
-              <div class="equation">
-                <math
-                  xmlns="http://www.w3.org/1998/Math/MathML"
-                  display="block"
-                  aria-label="Z ∼ N(0,1); Z² ∼ χ²(1)"
-                  ><mrow
-                    ><mi>Z</mi><mo>∼</mo><mi>N</mi
-                    ><mrow
-                      ><mo>(</mo><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow
-                      ><mo>)</mo></mrow
-                    ><mo>;</mo><msup><mi>Z</mi><mn>2</mn></msup
-                    ><mo>∼</mo><msup><mi>χ</mi><mn>2</mn></msup
-                    ><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow></mrow
-                  ></math
-                >
-              </div>
-              <details class="symbol-details">
-                <summary>What the symbols mean</summary>
-                <p class="symbol-key">
-                  Zᵢ are independent standard normal draws. U is their sum of
-                  squares. k is both the number of draws per repetition and the
-                  χ² degrees of freedom.
-                </p>
-              </details>
-            </div>
-            <div id="guided-content"></div>
-          </section>
-          <details class="calculation-details info">
-            <summary>Assumptions and full calculation</summary>
-            <p>
-              Each repetition uses a separate seeded random stream. Increasing
-              the displayed count preserves earlier values; inspecting a
-              repetition never changes them. All normal-model test simulations
-              use independent N(0,1) observations with their null hypotheses
-              true. Goodness of fit instead uses independent categorical
-              observations with fixed equal probabilities. Its χ² reference is
-              approximate. Results outside the plotted range remain in the
-              simulation and its results CSV. A zero denominator is reported as
-              undefined and is never redrawn.
-            </p>
-            <p id="calculation" aria-live="polite"></p>
-          </details>
-          <nav class="related-learning" aria-label="Related concepts">
-            <h2>Continue exploring</h2>
-            <p>
-              <a href="t-distribution-explorer.html">Student's t</a> ·
-              <a href="f-distribution-explorer.html">F distribution</a> ·
-              <a href="chi-squared-explorer.html"
-                >Chi-squared goodness of fit</a
-              >
-              · <a href="one-sample-t-test.html">One-sample t test</a> ·
-              <a href="independent-samples-t-test.html">Independent t test</a> ·
-              <a href="anova-explorer.html">One-way ANOVA</a>
-            </p>
-            <a href="../index.html#learning-route">Suggested starting route</a>
-          </nav>
-        </div>
-      </div>
     </main>
     <footer>
       <a href="https://github.com/claudebajada/StatsApplets"
         >Source code and documentation</a
       >
     </footer>
-    <script src="../javascript/statistics.js"></script>
-    <script src="../javascript/teaching-statistics.js"></script>
-    <script src="../javascript/catalogue.js"></script>
-    <script src="../javascript/state.js"></script>
-    <script src="../javascript/learning-math.js"></script>
-    <script src="../javascript/learning-content.js"></script>
-    <script src="../javascript/common.js"></script>
-    <script src="../javascript/shell.js"></script>
     <script src="../javascript/relationship-content.js"></script>
-    <script src="../javascript/relationship-math.js"></script>
-    <script src="../javascript/distribution-relationships.js"></script>
-    <script src="../javascript/learning.js"></script>
+    <script src="../javascript/relationship-redirect.js"></script>
   </body>
 </html>

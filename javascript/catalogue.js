@@ -1,8 +1,9 @@
 /* Teaching content, presets and direct routes; shared by the catalogue and page shell. */
 (function (root, factory) {
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.AppletCatalogue = factory();
-})(typeof globalThis !== "undefined" ? globalThis : this, () => {
+  if (typeof module === "object" && module.exports)
+    module.exports = factory(require("./relationship-content.js"));
+  else root.AppletCatalogue = factory(root.RelationshipContent);
+})(typeof globalThis !== "undefined" ? globalThis : this, (relationships) => {
   const item = (
     id,
     title,
@@ -28,9 +29,9 @@
     item(
       "distribution-relationships",
       "How distributions connect",
-      "Distributions",
+      "Distribution connections",
       "Build χ², t and F from normal draws, then follow their test statistics.",
-      "Select a recipe on the map. Follow one repetition through the arithmetic, then repeat to reveal its distribution. Exact constructions, limits and approximations have distinct labels.",
+      "Choose a focused lesson to follow one distribution connection or test derivation. Exact constructions, limits and approximations have distinct labels.",
       "Z ∼ N(0,1); Z² ∼ χ²(1)",
       "Does squaring any normal draw produce a central χ² variable?",
       "First standardise it using the population mean and SD. Independent squared standard normals add to χ²; estimating the mean from the same sample changes the degrees of freedom.",
@@ -416,5 +417,11 @@
         ],
       ],
     ),
-  ];
+  ]
+    .map((entry) =>
+      entry.id === "distribution-relationships"
+        ? { ...entry, overview: true }
+        : entry,
+    )
+    .concat(relationships.lessons);
 });

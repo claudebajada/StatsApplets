@@ -201,11 +201,11 @@ test("URL state accepts only valid controls, snaps steps and bounds text", () =>
   );
 });
 test("every applet has learning content, four usable presets and a direct page", () => {
-  assert.equal(catalogue.length, 16);
-  assert.equal(new Set(catalogue.map((x) => x.id)).size, 16);
+  assert.equal(catalogue.length, 26);
+  assert.equal(new Set(catalogue.map((x) => x.id)).size, 26);
   for (const item of catalogue) {
     assert.ok(item.objective && item.equation && item.question && item.answer);
-    assert.ok(item.presets.length >= 4);
+    if (!item.overview) assert.ok(item.presets.length >= 4);
     assert.ok(require("node:fs").existsSync("html/" + item.id + ".html"));
   }
 });

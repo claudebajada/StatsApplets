@@ -53,7 +53,10 @@
       left + ((x - min) / (max - min)) * (right - left);
     const scaleY = (y, max) => bottom - (y / max) * (bottom - top);
     line(left, bottom, right, bottom, "#cdd7e1");
-    if (id === "distribution-relationships") {
+    if (
+      id === "distribution-relationships" ||
+      AppletCatalogue.some((item) => item.id === id && item.relationship)
+    ) {
       const xs = [width * 0.18, width * 0.8],
         ys = [height * 0.22, height * 0.72];
       for (const y of ys) line(xs[0] + 10, y, xs[1] - 10, y, blue);

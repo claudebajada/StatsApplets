@@ -195,7 +195,11 @@ test("mixed truth exposes both correct discoveries and different error rates", a
     "FDR and FWER can differ",
   );
 });
-for (const [id, lesson] of Object.entries(C)) {
+const catalogue = require("../../javascript/catalogue.js");
+for (const { id } of catalogue.filter(
+  (item) => !item.overview && !item.relationship,
+)) {
+  const lesson = C[id];
   test(`${id}: one comparison connects question, controls, interpretation and maths`, async ({
     page,
   }) => {

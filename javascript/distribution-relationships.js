@@ -53,10 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     ),
   });
+  const tooltip = chart.options.plugins.tooltip.callbacks;
+  const densityLabel = tooltip.label;
+  tooltip.label = (context) =>
+    context.dataset.label === "Worked result"
+      ? `Worked result: ${fmt(context.parsed.x)}`
+      : densityLabel(context);
   let previousKey = null,
     records = [],
     current,
-    currentConfig;
+    currentConfig,
+    pendingRender;
   const read = () =>
     Object.fromEntries(
       Object.entries(AppletPage.read()).map(([key, value]) => [
@@ -96,232 +103,173 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
   }
-  function workedExample(c, record, step) {
-    const r = record.trace,
-      kind = c.relationship;
+  const short = (x) =>
+    x === null || !Number.isFinite(x)
+      ? "Undefined"
+      : Number(x.toPrecision(3)).toString().replace(/^-/, "−");
+  function workedExample(c, record) {
+    const r = record.trace;
     const list = (values) =>
-      values.slice(0, 4).map(fmt).join(", ") + (values.length > 4 ? " …" : "");
-    let items;
-    if (kind === "squares") {
-      items =
-        step === 1
-          ? [
-              [
-                `${c.df1} standard normal draw${c.df1 === 1 ? "" : "s"}`,
-                list(r.sample),
-              ],
-            ]
-          : step === 2
-            ? [
-                ["Normal draws", list(r.sample)],
-                ["Square each", list(r.squares)],
-              ]
-            : step === 3
-              ? [
-                  ["Independent squares", list(r.squares)],
-                  ["Add them", fmt(r.u)],
-                ]
-              : [
-                  ["Sum of squares", fmt(r.u)],
-                  ["Reference distribution", `χ²(${c.df1})`],
-                ];
-    } else if (kind === "t") {
-      items =
-        step === 1
-          ? [
-              ["Standard normal Z", fmt(r.z)],
-              ["Independent χ² value U", fmt(r.u)],
-            ]
-          : step === 2
-            ? [
-                ["χ² value U", fmt(r.u)],
-                [`Divide by ν = ${c.df2}`, fmt(r.scaled)],
-              ]
-            : step === 3
-              ? [
-                  ["Normal Z", fmt(r.z)],
-                  ["SD scale √(U/ν)", fmt(Math.sqrt(r.scaled))],
-                  ["Z ÷ scale", fmt(r.t)],
-                ]
-              : [
-                  ["Constructed t score", fmt(r.t)],
-                  ["Reference distribution", `t(${c.df2})`],
-                ];
-    } else if (kind === "f") {
-      items =
-        step === 1
-          ? [
-              ["First χ² value U", fmt(r.u)],
-              ["Independent χ² value V", fmt(r.v)],
-            ]
-          : step === 2
-            ? [
-                [`U ÷ ${c.df1}`, fmt(r.scaledU)],
-                [`V ÷ ${c.df2}`, fmt(r.scaledV)],
-              ]
-            : step === 3
-              ? [
-                  ["Scaled numerator", fmt(r.scaledU)],
-                  ["Scaled denominator", fmt(r.scaledV)],
-                  ["Divide", fmt(record.value)],
-                ]
-              : [
-                  ["Constructed F ratio", fmt(record.value)],
-                  ["Reference distribution", `F(${c.df1}, ${c.df2})`],
-                ];
-    } else if (kind === "tSquared") {
-      items =
-        step === 1
-          ? [
-              ["Start with a t score", fmt(r.t)],
-              ["Degrees of freedom", c.df2],
-            ]
-          : step === 2
-            ? [
-                ["t score", fmt(r.t)],
-                ["Square it", fmt(record.value)],
-              ]
-            : step === 3
-              ? [
-                  ["Squared t", fmt(record.value)],
-                  ["F from the same ingredients", fmt(r.f)],
-                ]
-              : [
-                  ["Squared result", fmt(record.value)],
-                  ["Reference distribution", `F(1, ${c.df2})`],
-                ];
-    } else if (kind === "normalLimit") {
-      items =
-        step === 1
-          ? [
-              ["Normal numerator", fmt(r.z)],
-              ["Random SD scale", fmt(Math.sqrt(r.scaled))],
-              ["t score", fmt(r.t)],
-            ]
-          : step === 2
-            ? [
-                ["Degrees of freedom ν", c.df2],
-                ["Variance of U/ν = 2/ν", fmt(2 / c.df2)],
-              ]
-            : [
-                ["Actual SD scale", fmt(Math.sqrt(r.scaled))],
-                ["Normal numerator", fmt(r.z)],
-                ["t score", fmt(r.t)],
-              ];
-    } else if (kind === "sampleVariance" || kind === "oneSampleT") {
-      items =
-        step === 1
-          ? [
-              [`${r.n} normal observations`, list(r.sample)],
-              ["Sample mean", fmt(r.mean)],
-            ]
-          : step === 2
-            ? [
-                ["Residual sum of squares", fmt(r.ss)],
-                ["Free directions n − 1", r.df],
-                ["Scaled sum U", fmt(r.u)],
-              ]
-            : step === 3
-              ? kind === "oneSampleT"
-                ? [
-                    ["Sample mean", fmt(r.mean)],
-                    ["Estimated SE", fmt(r.sd / Math.sqrt(r.n))],
-                    ["Divide to get t", fmt(r.t)],
-                  ]
-                : [
-                    ["Sample variance S²", fmt(r.sd ** 2)],
-                    ["Scaled sum U", fmt(r.u)],
-                  ]
-              : [
-                  [
-                    kind === "oneSampleT" ? "t statistic" : "χ² statistic",
-                    fmt(record.value),
-                  ],
-                  [
-                    "Reference distribution",
-                    `${kind === "oneSampleT" ? "t" : "χ²"}(${r.df})`,
-                  ],
-                ];
-    } else if (kind === "pooledT") {
-      items =
-        step === 1
-          ? [
-              ["Group means", list(r.parts.map((p) => p.mean))],
-              ["Mean difference", fmt(r.difference)],
-            ]
-          : step === 2
-            ? [
-                ["Within-group sum of squares", fmt(r.within)],
-                ["Combined degrees of freedom", r.df],
-              ]
-            : step === 3
-              ? [
-                  ["Mean difference", fmt(r.difference)],
-                  ["Estimated SE", fmt(r.se)],
-                  ["Divide to get t", fmt(r.t)],
-                ]
-              : [
-                  ["Pooled t statistic", fmt(r.t)],
-                  ["Reference distribution", `t(${r.df})`],
-                ];
-    } else if (kind === "anova") {
-      items =
-        step === 1
-          ? [
-              [
-                "Normal group means",
-                list(r.groups.map((g) => TeachingMath.mean(g))),
-              ],
-              ["Total sum of squares", fmt(r.total)],
-            ]
-          : step === 2
-            ? [
-                ["Between-group SS", fmt(r.between)],
-                ["Within-group SS", fmt(r.within)],
-              ]
-            : step === 3
-              ? [
-                  ["Between mean square", fmt(r.between / r.dfBetween)],
-                  ["Within mean square", fmt(r.within / r.dfWithin)],
-                  ["Divide to get F", fmt(record.value)],
-                ]
-              : [
-                  ["ANOVA F statistic", fmt(record.value)],
-                  [
-                    "Reference distribution",
-                    `F(${r.dfBetween}, ${r.dfWithin})`,
-                  ],
-                ];
-    } else {
-      items =
-        step === 1
-          ? [
-              ["Observed category counts", list(r.counts)],
-              ["Expected per category", fmt(r.expected)],
-            ]
-          : step === 2
-            ? [
-                ["Squared discrepancies", list(r.contributions)],
-                ["Add them", fmt(record.value)],
-              ]
-            : [
-                ["Sum Q", fmt(record.value)],
-                ["Free directions c − 1", r.df],
-                ["Approximate reference", `χ²(${r.df})`],
-              ];
+      values.slice(0, 5).map(short).join(", ") +
+      (values.length > 5 ? " …" : "");
+    const ratio = (a, b) => `${short(a)} ÷ ${short(b)}`;
+    let items, result;
+    switch (c.relationship) {
+      case "squares":
+        items = [
+          ["Independent standard normal draws", list(r.sample)],
+          ["Square each draw", list(r.squares)],
+        ];
+        result = ["Sum of squares", short(record.value)];
+        break;
+      case "t":
+        items = [
+          ["Standard normal numerator", short(r.z)],
+          ["Independent SD scale √(U/ν)", short(Math.sqrt(r.scaled))],
+          [
+            "Same numerator with a divisor of 0.5",
+            `${ratio(r.z, 0.5)} ≈ ${short(r.z / 0.5)}`,
+          ],
+        ];
+        result = [
+          "t from the drawn scale",
+          `${ratio(r.z, Math.sqrt(r.scaled))} ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "f":
+        items = [
+          ["First pool of standard normal draws", list(r.numerator)],
+          [
+            "Its sum of squares ÷ df",
+            `${ratio(r.u, c.df1)} ≈ ${short(r.scaledU)}`,
+          ],
+          ["Independent second pool", list(r.denominator)],
+          [
+            "Its sum of squares ÷ df",
+            `${ratio(r.v, c.df2)} ≈ ${short(r.scaledV)}`,
+          ],
+        ];
+        result = [
+          "F from the two scaled sums",
+          `${ratio(r.scaledU, r.scaledV)} ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "tSquared":
+        items = [
+          ["Signed t score", short(r.t)],
+          [
+            "F built from the same draws",
+            `${ratio(r.z ** 2, r.scaled)} ≈ ${short(r.f)}`,
+          ],
+        ];
+        result = [
+          "Squared t score",
+          r.t === null
+            ? "Undefined"
+            : `(${short(r.t)})² ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "normalLimit":
+        items = [
+          ["Normal score when the scale is 1", short(r.z)],
+          ["Drawn SD scale √(U/ν)", short(Math.sqrt(r.scaled))],
+        ];
+        result = [
+          "t from the drawn scale",
+          `${ratio(r.z, Math.sqrt(r.scaled))} ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "sampleVariance":
+        items = [
+          ["Normal observations", list(r.sample)],
+          ["Subtract the sample mean of " + short(r.mean), list(r.residuals)],
+          ["Square the deviations", list(r.residuals.map((x) => x * x))],
+        ];
+        result = [
+          "Sum of squares ÷ population variance (1 here)",
+          short(record.value),
+        ];
+        break;
+      case "oneSampleT":
+        items = [
+          ["Normal observations", list(r.sample)],
+          ["Sample mean minus the null mean of 0", short(r.mean)],
+          [
+            "Using population SD (known to the simulation)",
+            `z ≈ ${short(r.z)} · SE ≈ ${short(1 / Math.sqrt(r.n))}`,
+          ],
+        ];
+        result = [
+          "Using estimated SD (calculated from the sample)",
+          `t ≈ ${short(record.value)} · SE ≈ ${short(r.sd / Math.sqrt(r.n))}`,
+        ];
+        break;
+      case "pooledT":
+        items = [
+          [
+            "Group 1 − group 2 sample mean",
+            `${short(r.parts[0].mean)} − ${short(r.parts[1].mean)} ≈ ${short(r.difference)}`,
+          ],
+          [
+            "Pool the residual sums of squares",
+            `(${short(r.parts[0].ss)} + ${short(r.parts[1].ss)}) ÷ ${r.df} ≈ ${short(r.variance)}`,
+          ],
+          ["Estimated SE of the difference", short(r.se)],
+        ];
+        result = [
+          "Pooled t",
+          `${ratio(r.difference, r.se)} ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "anova":
+        items = [
+          ["Group means", list(r.means)],
+          [
+            "Between-group variation per degree of freedom",
+            `${ratio(r.between, r.dfBetween)} ≈ ${short(r.between / r.dfBetween)}`,
+          ],
+          [
+            "Within-group variation per degree of freedom",
+            `${ratio(r.within, r.dfWithin)} ≈ ${short(r.within / r.dfWithin)}`,
+          ],
+        ];
+        if (r.pooled?.t != null)
+          items.push([
+            "Pooled t squared for these two groups",
+            short(r.pooled.t ** 2),
+          ]);
+        result = [
+          "ANOVA F",
+          `${ratio(r.between / r.dfBetween, r.within / r.dfWithin)} ≈ ${short(record.value)}`,
+        ];
+        break;
+      case "gof":
+        items = [
+          ["Observed counts by category", list(r.counts)],
+          ["Expected count in each category", short(r.expected)],
+          [
+            "Squared discrepancies divided by expected counts",
+            list(r.contributions),
+          ],
+        ];
+        result = ["Pearson’s χ² statistic", short(record.value)];
+        break;
     }
     const root = get("worked-example");
     root.replaceChildren();
-    for (const [label, value] of items) {
-      const item = node("div", null, root, { class: "worked-item" });
-      node("span", label, item);
-      node("strong", String(value), item);
+    root.dataset.repetition = record.index + 1;
+    for (const [label, value] of [...items, result]) {
+      const item = node("div", null, root, {
+        class:
+          label === result[0] ? "worked-item worked-result" : "worked-item",
+      });
+      node("dt", label, item);
+      node("dd", value, item);
     }
   }
   function theory(kind, step) {
     const mode = modes[kind];
     const currentStep = mode.steps[step - 1];
-    get("trace-title").textContent = currentStep.title;
     get("trace-instruction").textContent = currentStep.text;
     const mainMath =
       kind === "sampleVariance" && step === 2
@@ -333,117 +281,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector(".guided-lab .equation"),
       mainMath,
       `${currentStep.title} equation`,
-    );
-  }
-  function diagram(kind, trace, step) {
-    const ns = "http://www.w3.org/2000/svg",
-      root = get("trace-diagram");
-    root.replaceChildren();
-    const svg = document.createElementNS(ns, "svg");
-    const width = Math.min(640, root.clientWidth || 640);
-    svg.setAttribute("role", "img");
-    const add = (tag, attrs, text) => {
-      const el = document.createElementNS(ns, tag);
-      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-      if (text) el.textContent = text;
-      svg.append(el);
-    };
-    let sets, labels;
-    if (kind === "gof") {
-      sets =
-        step === 1
-          ? [trace.counts]
-          : step === 2
-            ? [trace.residuals]
-            : [trace.contributions];
-      labels = [
-        step === 1
-          ? "Observed category counts"
-          : step === 2
-            ? "Count residuals: sum = 0"
-            : "Squared category discrepancies",
-      ];
-    } else if (kind === "squares") {
-      sets = step === 1 ? [trace.sample] : [trace.sample, trace.squares];
-      labels =
-        step === 1
-          ? ["Independent standard normal draws"]
-          : ["Independent normal draws", "Squared normal draws"];
-    } else if (kind === "sampleVariance" || kind === "oneSampleT") {
-      sets = step === 1 ? [trace.sample] : [trace.residuals];
-      labels = [
-        step === 1
-          ? "Normal observations in this sample"
-          : "Centred residuals: sum = 0",
-      ];
-    } else if (kind === "f") {
-      sets =
-        step === 1
-          ? [[trace.u], [trace.v]]
-          : [[trace.scaledU], [trace.scaledV]];
-      labels =
-        step === 1
-          ? ["First χ² value", "Independent second χ² value"]
-          : ["Scaled numerator", "Scaled denominator"];
-    } else if (trace.groups) {
-      sets = trace.groups;
-      labels = sets.map((_, i) => `Group ${i + 1}: normal observations`);
-    } else if (kind === "tSquared") {
-      sets =
-        step === 1
-          ? [[trace.t]]
-          : [[trace.t], [trace.t === null ? null : trace.t ** 2]];
-      labels =
-        step === 1 ? ["Signed t score"] : ["Signed t score", "Squared t score"];
-    } else {
-      sets = [[trace.z], [trace.u]];
-      labels = ["Standard normal numerator Z", "Independent χ² denominator U"];
-    }
-    sets = sets.map((values) => values.filter(Number.isFinite));
-    const rowHeight = 62;
-    svg.setAttribute("viewBox", `0 0 ${width} ${sets.length * rowHeight}`);
-    const bound = Math.max(1, ...sets.flat().map(Math.abs)) * 1.08;
-    const x = (v) => width / 2 + (v / bound) * (width / 2 - 20);
-    svg.setAttribute(
-      "aria-label",
-      labels.join(". ") +
-        ". All values appear in the calculation tables as you advance the steps.",
-    );
-    for (const [i, values] of sets.entries()) {
-      const y = 16 + i * rowHeight;
-      add("text", { x: 12, y, fill: "#172e47", "font-size": 12 }, labels[i]);
-      add("line", {
-        x1: 25,
-        x2: width - 20,
-        y1: y + 21,
-        y2: y + 21,
-        stroke: "#a8b8c8",
-      });
-      add("line", {
-        x1: width / 2,
-        x2: width / 2,
-        y1: y + 12,
-        y2: y + 30,
-        stroke: "#485c70",
-      });
-      values.forEach((value, j) =>
-        add("circle", {
-          cx: x(value),
-          cy: y + 17 - (j % 3) * 4,
-          r: 3,
-          fill: i % 2 ? "#a64922" : "#2456a6",
-        }),
-      );
-    }
-    root.append(svg);
-    node(
-      "p",
-      "Tick marks indicate zero; each row uses the same numeric scale." +
-        (kind === "gof"
-          ? " The contrast directions become normal only in the large-count limit."
-          : ""),
-      root,
-      { class: "small" },
     );
   }
   function arithmetic(c, record, step) {
@@ -729,7 +566,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         working = `Total count = ${r.n}. Expected per category = ${fmt(r.expected)}. Residuals sum to zero and are dependent; more repetitions do not change this constraint.`;
       } else if (step === 3) {
-        headings = ["Free contrast direction", "Coordinate A", "A²"];
         headings = ["Quantity", "Value"];
         rows = [
           ["Sum of squared discrepancies Q", r.value],
@@ -792,7 +628,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `${modes[kind].steps[step - 1].title}: repetition ${record.index + 1}`,
     );
     get("trace-working").textContent = record.reason || working;
-    diagram(kind, r, step);
     get("trace-input-details").hidden = !r.groups;
     if (r.groups)
       table(
@@ -804,18 +639,16 @@ document.addEventListener("DOMContentLoaded", () => {
         get("trace-inputs"),
       );
   }
-  function render(restart = false) {
+  function render() {
+    clearTimeout(pendingRender);
     const state = read();
-    const c = M.config(state),
-      key = JSON.stringify(Object.keys(M.defaults).map((k) => c[k]));
-    const changed = previousKey !== null && previousKey !== key;
-    if (changed && restart) {
-      state.shown = state.inspected = state.traceStep = 1;
-    }
+    const c = M.config(state);
+    const key = JSON.stringify(c);
     state.shown = Math.min(state.repetitions, Math.max(1, state.shown));
     state.inspected = Math.min(state.shown, Math.max(1, state.inspected));
-    for (const name of ["shown", "inspected", "traceStep"])
-      get(name).value = state[name];
+    get("shown").value = state.shown;
+    get("inspected").max = state.shown;
+    get("inspected").value = state.inspected;
     if (key !== previousKey) records = [];
     previousKey = key;
     while (records.length < state.shown) {
@@ -823,91 +656,120 @@ document.addEventListener("DOMContentLoaded", () => {
       records.push({ index, value, companion });
     }
     const displayed = records.slice(0, state.shown);
-    const record = M.draw(c, state.inspected - 1),
-      mode = modes[c.relationship];
+    const record = M.draw(c, state.inspected - 1);
+    const mode = modes[c.relationship];
     current = displayed;
     currentConfig = c;
-    for (const el of document.querySelectorAll("[data-parameter]"))
-      el.hidden = !mode.params.includes(el.dataset.parameter);
-    for (const b of document.querySelectorAll("[data-relationship]"))
-      b.setAttribute(
-        "aria-pressed",
-        String(b.dataset.relationship === c.relationship),
-      );
-    get("relationship-classification").textContent = mode.type;
-    get("trace-title").tabIndex = -1;
-    get("trace-position").textContent =
-      `Step ${state.traceStep} of 4 · Repetition ${state.inspected}`;
-    get("inspect-repetition").max = state.shown;
-    get("inspect-repetition").value = state.inspected;
-    get("previous-step").disabled = state.traceStep === 1;
-    get("next-step").disabled = state.traceStep === 4;
     get("next-draw").disabled = state.inspected === state.repetitions;
-    get("all-repetitions").disabled = get("add-repetitions").disabled =
-      state.shown === state.repetitions;
-    get("all-repetitions").textContent =
-      `Simulate ${state.repetitions.toLocaleString("en")} repetitions`;
-    get("repeated-sampling").hidden = state.traceStep < 4 && state.shown === 1;
-    workedExample(c, record, state.traceStep);
-    arithmetic(c, record, state.traceStep);
-    theory(c.relationship, state.traceStep);
-    const plot = M.plot(c, displayed),
-      ref = M.reference(c);
+    const allShown = state.shown === state.repetitions;
+    const count = state.shown.toLocaleString("en");
+    const target = state.repetitions.toLocaleString("en");
+    const repeat = get("all-repetitions");
+    repeat.disabled = get("add-repetitions").disabled = allShown;
+    repeat.textContent = allShown
+      ? "All results shown"
+      : state.shown === 1
+        ? "Repeat the calculation"
+        : `Show all ${target} results`;
+    get("sampling-status").textContent =
+      state.shown === 1 ? "1 result" : `${count} results`;
+    workedExample(c, record);
+    if (get("relationship-trace").open) {
+      arithmetic(c, record, state.traceStep);
+      theory(c.relationship, state.traceStep);
+    }
+
+    const compareNormal = ["t", "normalLimit"].includes(c.relationship);
+    const ref = M.reference(c);
+    const plot = M.plot(c, displayed, 40, compareNormal ? [-6, 6] : undefined);
+    const approximate = c.relationship === "gof";
+    const singular = ref.family !== "t" && ref.df1 === 1;
+    const highestBar =
+      state.shown > 1 ? Math.max(...plot.bars.map(({ y }) => y)) : 0;
+    const yMax = compareNormal
+      ? Math.max(0.46, 1.08 * highestBar)
+      : singular
+        ? 1.2 *
+          Math.max(ref.cdf(plot.bars[0].xMax) / plot.bars[0].xMax, highestBar)
+        : undefined;
+
+    const referenceLabel = approximate ? `${ref.label} approx.` : ref.label;
     chart.data.datasets = [
-      histogramDataset(`${state.shown} simulated results`, plot.bars),
       {
-        ...lineDataset(
-          `${c.relationship === "gof" ? "Approximate" : "Exact"} ${ref.label} reference`,
-          plot.points,
-          chartPalette[2],
-        ),
+        ...lineDataset(referenceLabel, plot.points, chartPalette[2]),
         borderDash: [],
+        order: 1,
       },
     ];
-    if (c.relationship === "normalLimit")
+    if (state.shown > 1)
+      chart.data.datasets.push({
+        ...histogramDataset("Simulated", plot.bars),
+        order: 2,
+      });
+    if (compareNormal)
       chart.data.datasets.push({
         ...lineDataset(
-          "Standard normal limit",
+          "Normal",
           plot.points.map(({ x }) => ({ x, y: normalDensity(x, 0, 1) })),
           chartPalette[1],
         ),
-        borderDash: [6, 4],
+        order: 1,
       });
-    if (
+    const inRange =
       record.value !== null &&
       record.value >= plot.min &&
-      record.value <= plot.max
-    ) {
-      const peak = Math.max(...plot.points.map((p) => p.y));
+      record.value <= plot.max;
+    if (inRange)
       chart.data.datasets.push({
         ...lineDataset(
-          "Inspected result",
-          [
-            { x: record.value, y: 0 },
-            { x: record.value, y: peak },
-          ],
+          "Worked result",
+          [{ x: record.value, y: 0 }],
           chartPalette[3],
         ),
-        borderDash: [3, 3],
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: chartPalette[3],
+        order: 0,
+        clip: 8,
       });
-    }
     chart.options.scales.x.min = plot.min;
     chart.options.scales.x.max = plot.max;
-    chart.options.scales.x.title.text =
-      c.relationship === "gof"
-        ? "Goodness-of-fit Q statistic"
-        : `${ref.family === "chi" ? "Sum of standardised squares" : ref.family === "t" ? "Signed t score" : "F ratio"}`;
+    chart.options.scales.x.title.text = approximate
+      ? "Goodness-of-fit statistic Q"
+      : c.relationship === "sampleVariance"
+        ? "Standardised residual sum of squares"
+        : ref.family === "chi"
+          ? "Sum of squares"
+          : ref.family === "t"
+            ? "t score"
+            : "F ratio";
+    chart.options.scales.y.max = yMax;
     chart.update("none");
-    const note = `Displaying ${state.shown} of ${state.repetitions} available repetitions. ${plot.outside} result${plot.outside === 1 ? " lies" : "s lie"} outside the plotted range; ${plot.undefinedCount} undefined. The axis covers ${ref.family === "t" ? "the central 99%" : "0 to the 99th percentile"} of the reference law. All simulated results remain in the results CSV. Histogram density uses the full displayed count, without renormalising the visible bars. Singular density endpoints at zero are omitted.`;
-    get("scale-note").textContent = note;
-    resultMetrics([
-      ["Displayed repetitions", state.shown],
-      ["Inspected result", fmt(record.value)],
-      [
-        c.relationship === "gof" ? "Approximate reference" : "Exact reference",
-        ref.label,
-      ],
-    ]);
+
+    const explanation = [
+      inRange
+        ? `The purple point marks worked result ${short(record.value)}.`
+        : record.value === null
+          ? "This repetition has an undefined result."
+          : `Worked result ${short(record.value)} lies ${record.value < plot.min ? "to the left" : "to the right"} of the plotted range.`,
+      state.shown > 1 ? "Bars show the density of simulated results." : "",
+      approximate
+        ? `The curve is the approximate ${ref.label} reference.`
+        : `The solid curve is the ${ref.label} reference.`,
+      singular ? "The curve rises off scale near zero." : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    get("relationshipChart-explanation").textContent = explanation;
+    const comparison = get("comparison-note");
+    comparison.hidden = !compareNormal;
+    if (compareNormal) {
+      const tTail = 100 * 2 * ref.cdf(-2);
+      const normalTail = 100 * 2 * jStat.normal.cdf(-2, 0, 1);
+      comparison.textContent = `Beyond ±2: ${tTail.toFixed(1)}% for ${ref.label}, ${normalTail.toFixed(1)}% for standard normal.`;
+    }
+    get("scale-note").textContent =
+      `${plot.outside} of ${state.shown} results outside the plot and ${plot.undefinedCount} undefined. The export includes every repetition. Histogram density uses the full displayed count, without renormalising the visible bars.`;
     const warning =
       c.relationship === "gof" && c.observations / c.categories < 5
         ? "Expected counts are below 5. The χ² approximation may be unreliable. Increasing repetitions does not fix sparse expected counts."
@@ -937,42 +799,48 @@ document.addEventListener("DOMContentLoaded", () => {
   for (const control of document.querySelectorAll(
     "#controls input, #controls select",
   )) {
-    if (control.dataset.range) continue;
-    const change = () => {
+    if (control.hidden || control.dataset.range || control.id === "inspected")
+      continue;
+    const change = (event) => {
       if (control.id !== "seed" && !control.checkValidity()) return;
-      render(true);
+      if (
+        event.type === "input" &&
+        control.type === "range" &&
+        Number(get("shown").value) >= 1000
+      ) {
+        clearTimeout(pendingRender);
+        pendingRender = setTimeout(render, 100);
+        return;
+      }
+      render();
     };
     control.addEventListener("input", change);
     control.addEventListener("change", change);
   }
-  document.addEventListener("applet:state", (event) =>
-    render(!Object.hasOwn(event.detail?.state || {}, "shown")),
-  );
-  function navigateStep(delta) {
-    set({ traceStep: Math.max(1, Math.min(4, read().traceStep + delta)) });
-    get("trace-title").focus({ preventScroll: true });
-    get("relationship-trace").scrollIntoView({
-      block: "start",
-      behavior: "instant",
-    });
-  }
-  get("previous-step").addEventListener("click", () => navigateStep(-1));
-  get("next-step").addEventListener("click", () => navigateStep(1));
-  get("next-draw").addEventListener("click", () => {
-    const s = read(),
-      next = Math.min(s.repetitions, s.inspected + 1);
-    set({ inspected: next, shown: Math.max(s.shown, next), traceStep: 1 });
+  document.addEventListener("applet:state", render);
+  get("relationship-trace").addEventListener("toggle", () => {
+    if (get("relationship-trace").open) render();
   });
-  get("inspect-repetition").addEventListener("change", () => {
-    if (!get("inspect-repetition").checkValidity()) return;
-    set({ inspected: Number(get("inspect-repetition").value), traceStep: 1 });
+  get("next-draw").addEventListener("click", () => {
+    const s = read();
+    const next = Math.min(s.repetitions, s.inspected + 1);
+    set({ inspected: next, shown: Math.max(s.shown, next) });
+  });
+  get("inspected").addEventListener("change", () => {
+    const input = get("inspected");
+    if (input.value === "" || !input.checkValidity()) {
+      input.value = get("worked-example").dataset.repetition;
+      return;
+    }
+    set({ inspected: Number(input.value) });
   });
   get("add-repetitions").addEventListener("click", () =>
     set({ shown: Math.min(read().repetitions, read().shown + 100) }),
   );
-  get("all-repetitions").addEventListener("click", () =>
-    set({ shown: read().repetitions }),
-  );
+  get("all-repetitions").addEventListener("click", () => {
+    const { shown, repetitions } = read();
+    set({ shown: shown === 1 ? Math.min(25, repetitions) : repetitions });
+  });
   get("download-repetitions").addEventListener("click", () => {
     const ref = M.reference(currentConfig);
     exportText(
@@ -987,7 +855,16 @@ document.addEventListener("DOMContentLoaded", () => {
       "text/csv",
     );
   });
+  const mode = modes[read().relationship];
+  equation(
+    document.querySelector(".relationship-formula"),
+    mode.steps[mode.formula - 1].math,
+    "Relationship equation",
+  );
+  if (["#relationship-trace", "#guided-lab"].includes(location.hash))
+    get("relationship-trace").open = true;
   render();
+  if (location.hash === "#guided-lab") get("guided-lab").scrollIntoView();
   if (location.hash === "#map-title") {
     document.querySelector(".family-details").open = true;
     get("map-title").scrollIntoView({ block: "start" });

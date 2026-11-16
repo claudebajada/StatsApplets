@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Explore five distribution connections and five test derivations, one lesson at a time."
+      content="Start with normal draws and build chi-squared, t and F. See where the same calculations appear in statistical tests."
     />
     <title>How distributions connect · StatsApplets</title>
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
@@ -15,146 +15,57 @@
     <a class="skip-link" href="#main">Skip to lesson</a>
     <nav class="site-nav" aria-label="Main navigation">
       <a class="brand" href="../index.html">StatsApplets</a
-      ><a href="../index.html#distribution-connections">All applets</a>
+      ><a href="../index.html#explorers">All applets</a>
     </nav>
     <main id="main">
-      <header class="connection-intro">
-        <div>
-          <h1>How distributions connect</h1>
-          <p class="lede">
-            Start with normal random values. See how squaring, adding and
-            dividing produces other distributions.
-          </p>
-          <a
-            class="primary-action lesson-start"
-            href="normal-to-chi-squared.html"
-            >Start with Normal → χ²</a
-          >
-          <nav class="journey-links" aria-label="Choose a learning route">
-            <a href="#connections-heading">Build distributions</a
-            ><a href="#derivations-heading">From data to test statistics</a>
-          </nav>
-        </div>
-        <figure class="family-map" id="map-title">
-          <svg
-            viewBox="0 0 420 192"
-            role="img"
-            aria-label="Standard normal builds χ² by squaring and adding. Normal with independent χ² builds t. Two independent scaled χ² variables build F. Squared t gives F with numerator df 1."
-          >
-            <defs>
-              <marker
-                id="family-arrow"
-                viewBox="0 0 10 10"
-                refX="9"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto-start-reverse"
-              >
-                <path d="M0 0 L10 5 L0 10z" fill="currentColor" />
-              </marker>
-            </defs>
-            <g
-              fill="none"
-              stroke="currentColor"
-              marker-end="url(#family-arrow)"
-            >
-              <path class="" d="M130 34 H280" />
-              <path class="" d="M70 57 V120" />
-              <path class="" d="M350 57 V120" />
-              <path class="" d="M130 152 H280" />
-            </g>
-            <g class="family-labels" text-anchor="middle">
-              <text x="210" y="23">square + add</text>
-              <text x="70" y="83">+ independent χ²</text>
-              <text x="70" y="101">scale + divide</text>
-              <text x="350" y="83">+ independent χ²</text>
-              <text x="350" y="101">scale + divide</text>
-              <text x="210" y="141">square t</text>
-            </g>
-            <g class="">
-              <rect x="10" y="12" width="120" height="44" rx="5" />
-              <text class="family-node" x="70" y="41" text-anchor="middle">
-                Normal
-              </text>
-            </g>
-            <g class="">
-              <rect x="290" y="12" width="120" height="44" rx="5" />
-              <text class="family-node" x="350" y="41" text-anchor="middle">
-                χ²
-              </text>
-            </g>
-            <g class="">
-              <rect x="10" y="130" width="120" height="44" rx="5" />
-              <text class="family-node" x="70" y="159" text-anchor="middle">
-                t
-              </text>
-            </g>
-            <g class="">
-              <rect x="290" y="130" width="120" height="44" rx="5" />
-              <text class="family-node" x="350" y="159" text-anchor="middle">
-                F
-              </text>
-            </g>
-          </svg>
-          <figcaption>
-            Standard normal ingredients connect the family.
-          </figcaption>
-        </figure>
+      <header class="lesson-intro overview-intro">
+        <h1>How distributions connect</h1>
+        <p class="lede">
+          Start by squaring and adding a few normal draws. Repeat the
+          calculation to see a distribution take shape, then follow the same
+          ingredients into t and F.
+        </p>
       </header>
       <section aria-labelledby="connections-heading">
-        <h2 id="connections-heading">Build distributions</h2>
-        <p>
-          Start with random ingredients, apply an operation, then repeat to see
-          the resulting distribution.
-        </p>
-        <ol class="lesson-list suggested-route">
-          <li>
-            <a href="normal-to-chi-squared.html"
-              ><span class="relationship-kind">Exact</span
-              ><strong>Normal → χ²</strong
-              ><span
-                >What happens when you square and add normal values?</span
-              ></a
-            >
-          </li>
-          <li>
-            <a href="normal-chi-squared-to-t.html"
-              ><span class="relationship-kind">Exact</span
-              ><strong>Normal + independent χ² → t</strong
-              ><span>Why does a random scale give heavier tails?</span></a
-            >
-          </li>
-          <li>
-            <a href="chi-squared-to-f.html"
-              ><span class="relationship-kind">Exact</span
-              ><strong>Two independent χ² → F</strong
-              ><span
-                >What happens when you compare two scaled sums of squares?</span
-              ></a
-            >
-          </li>
-        </ol>
-        <h3>Further connections</h3>
-        <ul class="lesson-list">
-          <li>
-            <a href="t-squared-to-f.html"
-              ><span class="relationship-kind">Exact</span
-              ><strong>t² → F</strong
-              ><span>Where does a t score go when you remove its sign?</span></a
-            >
-          </li>
-          <li>
-            <a href="t-to-normal.html"
-              ><span class="relationship-kind">Limit</span
-              ><strong>t → Normal</strong
-              ><span
-                >Why does t approach normal as degrees of freedom
-                increase?</span
-              ></a
-            >
-          </li>
-        </ul>
+        <h2 id="connections-heading" class="visually-hidden">
+          Build distributions
+        </h2>
+        <nav
+          class="family-map"
+          id="map-title"
+          aria-label="Distribution family map"
+        >
+          <div class="family-node node-normal">Standard normal</div>
+          <a
+            class="family-edge edge-squares primary-action"
+            href="normal-to-chi-squared.html"
+            ><span class="visually-hidden">Normal → χ². </span
+            ><span>Square and add</span
+            ><span class="edge-arrow" aria-hidden="true">→</span></a
+          >
+          <div class="family-node node-chi">χ²</div>
+          <a class="family-edge edge-t" href="normal-chi-squared-to-t.html"
+            ><span class="visually-hidden">Normal + independent χ² → t. </span
+            ><span>Divide by a scale built from independent χ²</span
+            ><span class="edge-arrow" aria-hidden="true">↓</span></a
+          >
+          <a class="family-edge edge-normalLimit" href="t-to-normal.html"
+            ><span class="visually-hidden">t → Normal. </span
+            ><span>Increase t’s degrees of freedom</span
+            ><span class="edge-arrow" aria-hidden="true">↑</span></a
+          >
+          <a class="family-edge edge-f" href="chi-squared-to-f.html"
+            ><span class="visually-hidden">Two independent χ² → F. </span
+            ><span>Divide two independent scaled χ² values</span
+            ><span class="edge-arrow" aria-hidden="true">↓</span></a
+          >
+          <div class="family-node node-t">t</div>
+          <a class="family-edge edge-tSquared" href="t-squared-to-f.html"
+            ><span class="visually-hidden">t² → F. </span><span>Square t</span
+            ><span class="edge-arrow" aria-hidden="true">→</span></a
+          >
+          <div class="family-node node-f">F</div>
+        </nav>
       </section>
       <section
         class="derivation-overview"
@@ -162,57 +73,29 @@
       >
         <h2 id="derivations-heading">From data to test statistics</h2>
         <p>
-          Start with observations, calculate a statistic, then establish its
-          reference distribution. Sample variance supplies a building block for
-          the tests.
+          Start with observations and see where the reference distribution comes
+          from.
         </p>
         <ul class="lesson-list">
           <li>
             <a href="sample-variance-to-chi-squared.html"
-              ><span class="relationship-kind">Exact</span
-              ><strong>Sample variance → χ²</strong
-              ><span
-                >Why does estimating the mean cost one degree of freedom?</span
-              ></a
+              >Sample variance → χ²</a
             >
           </li>
           <li>
             <a href="one-sample-t-derivation.html"
-              ><span class="relationship-kind">Exact under H₀</span
-              ><strong>Deriving the one-sample t test</strong
-              ><span
-                >How does estimating the population SD produce a t
-                statistic?</span
-              ></a
+              >Deriving the one-sample t test</a
             >
           </li>
           <li>
-            <a href="pooled-t-derivation.html"
-              ><span class="relationship-kind">Exact under H₀</span
-              ><strong>Deriving the pooled t test</strong
-              ><span
-                >How do two independent groups share a variance estimate?</span
-              ></a
-            >
+            <a href="pooled-t-derivation.html">Deriving the pooled t test</a>
           </li>
           <li>
-            <a href="anova-f-derivation.html"
-              ><span class="relationship-kind">Exact under H₀</span
-              ><strong>Deriving ANOVA’s F statistic</strong
-              ><span
-                >Why does comparing between-group and within-group variation
-                give F?</span
-              ></a
-            >
+            <a href="anova-f-derivation.html">Deriving ANOVA’s F statistic</a>
           </li>
           <li>
             <a href="goodness-of-fit-derivation.html"
-              ><span class="relationship-kind">Asymptotic approximation</span
-              ><strong>Why goodness of fit uses χ²</strong
-              ><span
-                >When do category-count discrepancies behave like a sum of
-                normal squares?</span
-              ></a
+              >Why goodness of fit uses χ²</a
             >
           </li>
         </ul>

@@ -160,6 +160,8 @@ const accessibleCharts = {
   afterUpdate(chart) {
     const figure = chart.canvas.closest("figure");
     if (!figure) return;
+    const dataContainer =
+      document.getElementById(chart.canvas.dataset.chartDataTarget) || figure;
     chart.canvas.setAttribute("tabindex", "0");
     let caption = figure.querySelector(".chart-summary");
     if (!caption) {
@@ -183,7 +185,7 @@ const accessibleCharts = {
       download.type = "button";
       download.textContent = "Download all plotted values";
       details.append(download);
-      figure.append(details);
+      dataContainer.append(details);
       download.addEventListener("click", () => {
         const rows = chartRows(chart),
           quote = (v) => '"' + String(v).replaceAll('"', '""') + '"';
@@ -237,7 +239,7 @@ const accessibleCharts = {
       return `${ds.label}: ${values.length} values, y from ${Number(Math.min(...values).toPrecision(3))} to ${Number(Math.max(...values).toPrecision(3))}.`;
     });
     caption.textContent = summaries.join(" ");
-    const details = figure.querySelector(".chart-data");
+    const details = dataContainer.querySelector(".chart-data");
     if (details?.open) {
       details.open = false;
     }

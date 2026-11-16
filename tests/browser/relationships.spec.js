@@ -18,13 +18,12 @@ const plotted = (page) =>
   );
 const options = async (page) =>
   page.locator(".lesson-options > summary").click();
-const finalStep = async (page) => {
-  for (let i = 0; i < 3; i++) await page.locator("#next-step").click();
-};
+const openDetails = (page) =>
+  page.locator("#relationship-trace > summary").click();
 for (const lesson of lessons) {
   const kind = lesson.relationship,
     mode = modes[kind];
-  test(`${kind}: focused steps, parameters, presets, sampling, sharing, CSV and accessibility`, async ({
+  test(`${kind}: initial result, live plot, parameters, sharing, CSV and accessibility`, async ({
     page,
   }) => {
     const errors = [];
@@ -35,53 +34,55 @@ for (const lesson of lessons) {
     expect(example.y).toBeLessThan(
       await page.evaluate(() => innerHeight - 100),
     );
-    await expect(
-      page.locator("#worked-example strong").first(),
-    ).not.toBeEmpty();
-    if (lesson.section === "Connections")
-      await page.locator("#trace-numbers > summary").click();
+    await expect(page.locator("#worked-example dd").first()).not.toBeEmpty();
     await expect(page.locator("h1")).toHaveText(lesson.title);
     await expect(page.locator("#relationship")).toBeHidden();
-    await expect(page.locator("#relationship-classification")).toHaveText(
-      mode.type,
+    await expect(page.locator("#relationship-trace")).not.toHaveAttribute(
+      "open",
+      "",
     );
-    await expect(page.locator("#repeated-sampling")).toBeHidden();
-    await expect(page.locator("#previous-step")).toBeDisabled();
+    await expect(page.locator("#repeated-sampling canvas")).toBeVisible();
+    await expect(page.locator(".relationship-formula math")).toBeVisible();
+    await expect(page.locator("#sampling-status")).toHaveText("1 result");
+
+    const originalChart = await plotted(page);
+    const expectedValue = M.draw(
+      Object.fromEntries(
+        Object.entries(initial).map(([k, v]) => [
+          k,
+          k === "relationship" ? v : Number(v),
+        ]),
+      ),
+    ).value;
+    expect(
+      originalChart.find((d) => d.label === "Worked result").data[0].x,
+    ).toBe(expectedValue);
+    expect(originalChart.some((d) => d.label === "Simulated")).toBe(false);
+    await page.getByRole("button", { name: "Repeat the calculation" }).click();
+    await expect(page.locator("#sampling-status")).toHaveText("25 results");
+    await expect(
+      page.getByRole("button", { name: "Show all 1,000 results" }),
+    ).toBeFocused();
+    await page.getByRole("button", { name: "Show all 1,000 results" }).click();
+    await expect(page.locator("#sampling-status")).toHaveText("1,000 results");
+    expect(
+      (await plotted(page)).find((d) => d.label === "Worked result"),
+    ).toEqual(originalChart.find((d) => d.label === "Worked result"));
+    await openDetails(page);
+    await expect(page.locator("#scale-note")).toContainText(
+      "without renormalising",
+    );
     for (let i = 1; i <= 4; i++) {
-      await expect(page.locator("#trace-position")).toContainText(
-        `Step ${i} of 4`,
-      );
-      await expect(page.locator("#trace-title")).toHaveText(
-        mode.steps[i - 1].title,
-      );
+      await page.locator("#traceStep").selectOption(String(i));
       await expect(page.locator("#trace-instruction")).toHaveText(
         mode.steps[i - 1].text,
       );
       await expect(page.locator("#trace-calculation table")).toBeVisible();
-      await expect(page.locator(".guided-lab math")).toHaveCount(1);
-      if (i < 4) {
-        await page.locator("#next-step").click();
-        await expect(page.locator("#trace-title")).toBeFocused();
-        expect(
-          (await page.locator("#trace-title").boundingBox()).y,
-        ).toBeLessThan(120);
-      }
     }
-    await expect(page.locator("#next-step")).toBeDisabled();
-    await expect(page.locator("#repeated-sampling")).toBeVisible();
-    await page.locator("#previous-step").click();
-    await expect(page.locator("#trace-position")).toContainText("Step 3 of 4");
-    await page.locator("#next-step").click();
-    await page.locator("#all-repetitions").click();
-    await expect(page.locator("#shown")).toHaveValue("1000");
-    await page.locator(".plot-details > summary").click();
-    await expect(page.locator("#scale-note")).toContainText(
-      "without renormalising",
-    );
     const result = await plotted(page),
       settings = await state(page),
       link = page.url();
-    expect(result[0].data).toHaveLength(40);
+    expect(result.find((d) => d.label === "Simulated").data).toHaveLength(40);
     expect(
       result
         .flatMap((d) => d.data)
@@ -100,7 +101,8 @@ for (const lesson of lessons) {
     await page.goto(link);
     expect(await state(page)).toEqual(settings);
     expect(await plotted(page)).toEqual(result);
-    const firstAlternative = page.locator(".chart-data").first();
+    await openDetails(page);
+    const firstAlternative = page.locator(".chart-data");
     await firstAlternative.locator("summary").click();
     await expect(firstAlternative.locator("table")).toBeVisible();
     await expect(page.locator("canvas")).toHaveAttribute(
@@ -143,7 +145,6 @@ for (const lesson of lessons) {
       }
     }
     await page.locator("#reset").click();
-    await finalStep(page);
     const violations = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
@@ -166,16 +167,18 @@ test("homepage links only the overview, which offers all ten lessons in two grou
 }) => {
   await page.goto(overview);
   await expect(page.locator("canvas, #controls, #relationship")).toHaveCount(0);
-  await expect(page.locator(".lesson-list a")).toHaveCount(10);
-  await expect(page.locator(".suggested-route a")).toHaveCount(3);
-  await expect(
-    page.getByRole("heading", { name: "Further connections" }),
-  ).toBeVisible();
+  await expect(page.locator(".lesson-list a")).toHaveCount(5);
+  await expect(page.locator(".family-map a")).toHaveCount(5);
+  await expect(page.locator(".family-map .primary-action")).toHaveCount(1);
+  for (const lesson of lessons)
+    await expect(page.locator(`main a[href="${lesson.id}.html"]`)).toHaveCount(
+      1,
+    );
   const violations = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
   expect(violations.violations.map((v) => v.id)).toEqual([]);
-  await page.getByRole("link", { name: "Start with Normal → χ²" }).click();
+  await page.getByRole("link", { name: "Normal → χ². Square and add" }).click();
   await expect(page.locator("h1")).toHaveText(byMode.squares.title);
   await page.goto("/");
   const headings = await page
@@ -200,7 +203,7 @@ test("homepage links only the overview, which offers all ten lessons in two grou
   await expect(page.locator(".applet-entry")).toHaveCount(1);
   await page.locator(".applet-entry").click();
   await expect(page.locator("h1")).toHaveText("How distributions connect");
-  await expect(page.locator(".lesson-list a")).toHaveCount(10);
+  await expect(page.locator(".lesson-list a")).toHaveCount(5);
   await page
     .locator(`.lesson-list a[href="${byMode.pooledT.id}.html"]`)
     .click();
@@ -227,6 +230,8 @@ test("legacy links preserve every mode and recognised state; invalid relationshi
   await page.goto(`${overview}?df1=4&seed=8`);
   await expect(page.locator("#relationship")).toHaveValue("squares");
   await expect(page.locator("#df1")).toHaveValue("4");
+  await page.goto(`${overview}?relationship=squares&seed=8`);
+  await expect(page.locator("#df1")).toHaveValue("1");
   for (const invalid of ["unknown", "", "__proto__", "constructor"]) {
     await page.goto(`${overview}?relationship=${invalid}&seed=8`);
     await expect(page.locator("h1")).toHaveText("How distributions connect");
@@ -236,60 +241,82 @@ test("legacy links preserve every mode and recognised state; invalid relationshi
   await expect(page.locator("#relationship")).toHaveValue("t");
   await expect(page.locator("#df2")).toHaveValue("20");
 });
-test("draws stay stable when repetitions grow; model changes restart the trace", async ({
+test("one sum becomes a histogram and changing the number of draws keeps the simulation in view", async ({
   page,
 }) => {
   await page.goto(route("squares"));
-  await page.locator("#trace-numbers > summary").click();
-  const first = await page.locator("#trace-calculation").innerText();
-  await finalStep(page);
+  await expect(page.locator("#df1")).toHaveValue("3");
+  const first = await page.locator("#worked-example").innerText();
+  await page.locator("#all-repetitions").click();
+  await openDetails(page);
   await page.locator("#next-draw").click();
-  await expect(page.locator("#shown")).toHaveValue("2");
-  await expect(page.locator("#traceStep")).toHaveValue("1");
+  await expect(page.locator("#shown")).toHaveValue("25");
+  await expect(page.locator("#worked-example")).toHaveAttribute(
+    "data-repetition",
+    "2",
+  );
   await page.locator("#add-repetitions").click();
-  await expect(page.locator("#shown")).toHaveValue("102");
-  await page.locator("#inspect-repetition").fill("1");
-  await page.locator("#inspect-repetition").press("Tab");
-  await expect(page.locator("#trace-calculation")).toHaveText(first, {
+  await expect(page.locator("#shown")).toHaveValue("125");
+  await page.locator("#inspected").fill("1");
+  await page.locator("#inspected").press("Tab");
+  await expect(page.locator("#worked-example")).toHaveText(first, {
     useInnerText: true,
   });
   await page.locator("#df1-number").fill("4");
-  await expect(page.locator("#shown")).toHaveValue("1");
+  await expect(page.locator("#shown")).toHaveValue("125");
   await expect(page.locator("#inspected")).toHaveValue("1");
   await expect(page.locator("#trace-calculation tbody tr")).toHaveCount(4);
+  expect(
+    (await plotted(page)).some((dataset) => dataset.label === "χ²(4)"),
+  ).toBe(true);
 });
-test("GOF remains approximate and finite-df t remains distinct from its limit", async ({
+test("GOF remains approximate and the tail comparison keeps its horizontal range", async ({
   page,
 }) => {
   await page.goto(route("gof") + "?observations=10&categories=10");
   await expect(page.locator("#input-warning")).toContainText(
     "Increasing repetitions does not fix",
   );
-  await page.locator("#next-step").click();
-  await page.locator("#next-step").click();
+  await expect(page.locator("#relationshipChart-explanation")).toContainText(
+    "approximate",
+  );
+  await openDetails(page);
+  await page.locator("#traceStep").selectOption("3");
   await expect(page.locator("#trace-instruction")).toContainText(
     "c − 1 free directions",
   );
   await page.locator("#observations-number").fill("1000");
   await expect(page.locator("#input-warning")).toBeHidden();
-  await page.goto(route("normalLimit"));
-  await expect(page.locator("#relationship-classification")).toHaveText(
-    "Limit",
-  );
-  await expect(page.locator(".family-map")).toContainText("df increases");
-  await expect(page.locator(".family-map .connection-active")).toHaveAttribute(
-    "d",
-    "M70 120 V65",
-  );
-  expect((await plotted(page)).map((d) => d.label)).toContain(
-    "Standard normal limit",
-  );
-  await finalStep(page);
-  await expect(page.locator("#trace-working")).toContainText("finite-df t");
+  for (const kind of ["t", "normalLimit"]) {
+    await page.goto(route(kind));
+    if (kind === "t") {
+      await expect(page.locator("#worked-example")).toContainText(
+        "Same numerator",
+      );
+      await expect(
+        page.locator(".related-links a[href='t-squared-to-f.html']"),
+      ).toBeVisible();
+    }
+    expect((await plotted(page)).map((d) => d.label)).toContain("Normal");
+    const bounds = () =>
+      page.evaluate(() => {
+        const { min, max } = Chart.getChart("relationshipChart").scales.x;
+        return [min, max];
+      });
+    expect(await bounds()).toEqual([-6, 6]);
+    await expect(page.locator("#comparison-note")).toContainText(
+      "11.6% for t(4)",
+    );
+    await page.locator("#df2-number").fill("30");
+    await expect(page.locator("#comparison-note")).toContainText(
+      "5.5% for t(30)",
+    );
+    expect(await bounds()).toEqual([-6, 6]);
+  }
 });
 test("CSV retains extreme values outside the axes", async ({ page }) => {
   await page.goto(route("f") + "?df1=1&df2=1&shown=5000&repetitions=5000");
-  await page.locator(".plot-details > summary").click();
+  await openDetails(page);
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.locator("#download-repetitions").click(),
@@ -323,11 +350,12 @@ test("invalid state falls back, dependent bounds clamp and invalid seeds retain 
   );
   const s = await state(page);
   expect(s.relationship).toBe("squares");
-  expect(s.df1).toBe("1");
+  expect(s.df1).toBe("3");
   expect(s.seed).toBe("42");
   expect(s.shown).toBe("100");
   expect(s.inspected).toBe("100");
   expect(s.traceStep).toBe("1");
+  await openDetails(page);
   await options(page);
   await page.locator(".seed-details > summary").click();
   await page.locator("#seed").fill("43");
@@ -360,23 +388,22 @@ test("existing explorers link directly into their relevant lesson", async ({
     await expect(page.locator("#relationship")).toHaveValue(kind);
   }
 });
-test("320px lessons support keyboard steps, long formulas and tables without page overflow", async ({
+test("320px lessons support keyboard sampling, long formulas and tables without page overflow", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 320, height: 780 });
   for (const lesson of lessons) {
     await page.goto(route(lesson.relationship));
-    for (let i = 0; i < 4; i++) {
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth + 2,
-        ),
-      ).toBe(true);
-      if (i < 3) {
-        await page.locator("#next-step").focus();
-        await page.locator("#next-step").press("Enter");
-      }
-    }
+    await page.locator("#all-repetitions").focus();
+    await page.locator("#all-repetitions").press("Enter");
+    await expect(page.locator("#sampling-status")).toHaveText("25 results");
+    await openDetails(page);
+    await page.locator("#traceStep").selectOption("3");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth + 2,
+      ),
+    ).toBe(true);
     const equation = page.locator(".guided-lab .equation");
     await equation.focus();
     await expect(equation).toBeFocused();
@@ -389,46 +416,24 @@ test("320px lessons support keyboard steps, long formulas and tables without pag
   }
 });
 
-test("connections and derivations have distinct openings and the coordinate proof is optional", async ({
+test("derivations show the two relevant calculations and retain the coordinate proof", async ({
   page,
 }) => {
-  await page.goto(route("squares"));
-  await expect(page.locator("#worked-example")).toContainText(
-    "standard normal draw",
-  );
-  await expect(page.locator("#trace-numbers")).not.toHaveAttribute("open", "");
-  await expect(page.locator(".family-details")).not.toHaveAttribute("open", "");
-  await expect(page.locator(".next-lesson a")).toHaveAttribute(
-    "href",
-    byMode.t.id + ".html",
-  );
-  await expect(page.locator(".related-derivations")).not.toHaveAttribute(
-    "open",
-    "",
-  );
-  for (const link of await page
-    .getByRole("link", { name: "Distribution connections", exact: true })
-    .all()) {
-    await expect(link).toHaveAttribute(
-      "href",
-      "distribution-relationships.html",
-    );
-  }
   await page.goto(route("oneSampleT"));
   await expect(page.locator("#worked-example")).toContainText(
-    "normal observations",
+    "Normal observations",
   );
-  await expect(page.locator("#trace-diagram")).not.toContainText(
-    "residual directions",
-  );
-  await expect(page.locator("#trace-calculation")).not.toContainText(
-    "Centred residual",
-  );
-  await page.locator("#next-step").click();
   await expect(page.locator("#worked-example")).toContainText(
-    "Free directions n − 1",
+    "Using population SD",
   );
-  await expect(page.locator("#trace-calculation")).not.toContainText("Helmert");
+  await expect(page.locator("#worked-example")).toContainText(
+    "Using estimated SD",
+  );
+  await expect(page.locator(".relationship-insight")).toContainText(
+    "when the null mean is true",
+  );
+  await openDetails(page);
+  await page.locator("#traceStep").selectOption("2");
   await expect(page.locator("#trace-proof")).not.toHaveAttribute("open", "");
   await page.locator("#trace-proof > summary").click();
   await expect(page.locator("#proof-calculation table")).toBeVisible();
@@ -436,4 +441,14 @@ test("connections and derivations have distinct openings and the coordinate proo
     "Helmert coordinates",
   );
   await expect(page.locator("#proof-working")).toContainText("SS/σ²");
+
+  await page.goto(route("anova"));
+  await page.locator("#groups-number").fill("2");
+  await expect(page.locator("#worked-example")).toContainText(
+    "Pooled t squared for these two groups",
+  );
+  const result = M.draw({ relationship: "anova", groups: 2 });
+  expect(
+    (await plotted(page)).find((d) => d.label === "Worked result").data[0].x,
+  ).toBeCloseTo(result.trace.pooled.t ** 2, 12);
 });

@@ -54,11 +54,17 @@
       title: "Normal → χ²",
       recipe: "Square, then add independent draws",
       type: "Exact",
+      formula: 3,
+      insight:
+        "Squaring folds the negative side of the normal distribution onto the positive side. Each independent square adds one degree of freedom.",
+      try: "Try 1 and then 10 draws per sum. The shape changes because each sum contains a different number of terms.",
       params: ["df1"],
       symbols:
         "Zᵢ are independent standard normal draws. U is their sum of squares. k is both the number of draws per repetition and the χ² degrees of freedom.",
       assumptions: standard,
       links: [
+        ["t", "Use χ² to build t"],
+        ["f", "Use two χ² draws to build F"],
         ["sampleVariance", "Why sample variance has n − 1 degrees of freedom"],
       ],
       steps: [
@@ -97,12 +103,20 @@
       title: "Normal + χ² → t",
       recipe: "Divide by an independent estimated scale",
       type: "Exact",
+      formula: 3,
+      insight:
+        "A divisor below 1 stretches a normal draw farther from zero. A divisor above 1 shrinks it. Small divisors account for the heavier t tails.",
+      try: "Increase the degrees of freedom to make the random scale steadier. Compare the two curves on the same axes.",
       params: ["df2"],
       symbols:
         "Z is a standard normal draw, U is an independent χ² draw and ν is U's degrees of freedom. T is the resulting signed ratio.",
       assumptions:
         "The standard normal numerator and χ² denominator must be independent. The denominator is built from a separate set of ν independent standard normal draws.",
-      links: [["oneSampleT", "Derive the one-sample t test"]],
+      links: [
+        ["oneSampleT", "Derive the one-sample t test"],
+        ["tSquared", "Square t to get F"],
+        ["normalLimit", "See why t approaches normal"],
+      ],
       steps: [
         step(
           "Draw the numerator and denominator independently",
@@ -134,12 +148,19 @@
       title: "χ² + χ² → F",
       recipe: "Divide two independent scaled sums",
       type: "Exact",
+      formula: 3,
+      insight:
+        "Each pool estimates a variance scale. The ratio is large when the first scale is large compared with the second.",
+      try: "Hold the numerator degrees of freedom fixed and increase the denominator degrees of freedom to steady the divisor.",
       params: ["df1", "df2"],
       symbols:
         "U and V are independent χ² variables. d₁ and d₂ are their respective degrees of freedom. F divides U/d₁ by V/d₂.",
       assumptions:
         "Both χ² variables are central and independent. Their underlying normal draws are separate. A bare ratio U/V has an extra scale factor unless d₁ = d₂.",
-      links: [["anova", "Derive the ANOVA variance ratio"]],
+      links: [
+        ["anova", "Derive the ANOVA variance ratio"],
+        ["tSquared", "See how squared t gives F"],
+      ],
       steps: [
         step(
           "Build two independent sums of squares",
@@ -179,12 +200,20 @@
       title: "t → F",
       recipe: "Square a t score",
       type: "Exact",
+      formula: 2,
+      insight:
+        "Squaring removes the sign. Both tails of t become the upper tail of F. The normal numerator contributes one degree of freedom when squared.",
+      try: "Change the t degrees of freedom. The F denominator follows that setting, and the numerator stays at 1.",
       params: ["df2"],
       symbols:
         "T has ν degrees of freedom. Squaring it gives F with numerator df 1 and denominator df ν. Z² is χ² with one degree of freedom.",
       assumptions:
         "Build T from independent Z and U. Squaring removes its sign. A two-sided t tail corresponds to an upper F tail at the squared score.",
-      links: [["pooledT", "See the same identity for two-group tests"]],
+      links: [
+        ["t", "Build t from normal and χ²"],
+        ["f", "Build F from two χ² draws"],
+        ["pooledT", "See the same identity for two-group tests"],
+      ],
       steps: [
         step(
           "Construct a t score",
@@ -216,6 +245,10 @@
       title: "t → normal as df increases",
       recipe: "Make the denominator more stable",
       type: "Limit",
+      formula: 1,
+      insight:
+        "The squared scale U/ν varies less as ν grows. Its square root approaches 1, so dividing by it leaves the normal draw almost unchanged.",
+      try: "Compare 4 and 30 degrees of freedom. Watch the tail probability and the gap between the two curves.",
       params: ["df2"],
       symbols:
         "ν controls the χ² denominator. U/ν concentrates near 1 as ν grows. The dashed normal curve is the limiting reference, not the exact finite-ν law.",
@@ -253,6 +286,10 @@
       title: "Normal samples → sample variance → χ²",
       recipe: "Centre, square and account for the fitted mean",
       type: "Exact",
+      formula: 3,
+      insight:
+        "All deviations from the fitted mean add to zero. If you know all but one, you can recover the last. This leaves n − 1 degrees of freedom.",
+      try: "Try samples of 2 and 10. The χ² degrees of freedom are one fewer than the number of observations.",
       params: ["sampleSize"],
       symbols:
         "S² is sample variance, σ² is population variance, n is sample size and X̄ is sample mean. Aᵢ are coordinates in independent residual directions.",
@@ -298,13 +335,20 @@
       title: "Normal samples → one-sample t test",
       recipe: "Replace population SD with sample SD",
       type: "Exact under H₀",
+      formula: 3,
+      insight:
+        "The simulation knows the population SD. The t test uses the sample SD instead, so its standard error varies across samples. The curve shows the resulting t scores when the null mean is true.",
+      try: "Increase the sample size. The estimated standard error becomes more stable relative to the known-SD standard error.",
       params: ["sampleSize"],
       symbols:
         "μ₀ is the null mean, σ is the fixed population SD, S is sample SD, and n is sample size. Z and U are independent under normal sampling.",
       assumptions:
         normalAssumption +
         " The reference law shown assumes the null mean is true.",
-      links: [["sampleVariance", "Explain the independent χ² denominator"]],
+      links: [
+        ["sampleVariance", "Explain the independent χ² denominator"],
+        ["t", "Build t from normal and χ²"],
+      ],
       steps: [
         step(
           "Standardise the sample mean using population SD",
@@ -354,6 +398,10 @@
       title: "Two normal groups → pooled t test",
       recipe: "Pool independent residual sums of squares",
       type: "Exact under H₀",
+      formula: 3,
+      insight:
+        "Each group contributes its own residual sum of squares and loses one degree of freedom to its fitted mean. Pooling estimates the common population variance.",
+      try: "Make one group larger. It contributes more residual degrees of freedom to the pooled variance.",
       params: ["sampleSize", "sampleSize2"],
       symbols:
         "Sₚ² is pooled variance. n₁ and n₂ are group sizes. ν = n₁ + n₂ − 2. The experiment allows different observed sample SDs while assuming equal population variances.",
@@ -435,12 +483,19 @@
       title: "Normal groups → ANOVA → F",
       recipe: "Partition variation, then compare mean squares",
       type: "Exact under H₀",
+      formula: 3,
+      insight:
+        "The numerator measures how far group means are from the grand mean. The denominator measures how spread out observations are within groups.",
+      try: "Set the number of groups to 2. Check that F equals the pooled t score squared for the same data.",
       params: ["sampleSize", "groups"],
       symbols:
         "g is the group count, nⱼ is group j's size, N is the total size and X̄ⱼ is a group mean. SSbetween and SSwithin are sums of squares; mean squares divide them by their degrees of freedom.",
       assumptions:
         "Independent normal observations, equal population variances and equal population means under H₀. Groups here all have mean 0 and SD 1. Between-group sums are central χ² only under the equal-means null. Orthogonality gives independence here because the underlying noise is Gaussian.",
-      links: [["pooledT", "Derive the equivalent two-group pooled t test"]],
+      links: [
+        ["pooledT", "Derive the equivalent two-group pooled t test"],
+        ["f", "Build F from two χ² draws"],
+      ],
       steps: [
         step(
           "Split each deviation into between and within parts",
@@ -497,6 +552,10 @@
       title: "Category counts → approximate χ²",
       recipe: "Square constrained count residuals",
       type: "Asymptotic approximation",
+      formula: 4,
+      insight:
+        "Counts share a fixed total, so one category is determined by the others. With large expected counts, the sum of squared discrepancies has an approximately χ² distribution.",
+      try: "Try 10 observations in 10 categories, then increase observations per sample. More simulated samples alone leave the expected counts unchanged.",
       params: ["categories", "observations"],
       symbols:
         "Oᵢ and Eᵢ are observed and expected counts in c categories. Rᵢ are standardised count residuals. The fixed total N leaves c − 1 free directions. Category probabilities are specified, not fitted.",
@@ -745,7 +804,7 @@
       answer: mode.steps[3].text,
       baseline: {
         relationship,
-        df1: 1,
+        df1: relationship === "squares" ? 3 : 4,
         df2: 4,
         sampleSize: 5,
         sampleSize2: 5,

@@ -1493,387 +1493,353 @@ body:is(
   }
 }
 
-/* Shared relationship trace controls. */
-.relationship-parameter {
-  min-width: 0;
-}
-.relationship-trace {
-  scroll-margin-top: 24px;
-}
-.relationship-trace .table-scroll {
-  max-height: 300px;
-}
-.trace-navigation,
-.derivation-links {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  margin-block: 16px;
-}
-.trace-navigation input {
-  width: 90px;
-  min-height: 44px;
-}
-.relationship-trace button,
-.derivation-links button {
-  min-height: 44px;
-}
-/* Focused distribution lessons share one compact map and one worked step. */
+/* Distribution map and experiments */
 .connection-page main {
   max-width: 1160px;
-}
-.connection-intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
-  gap: 24px;
-  align-items: center;
-  padding-block: 20px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 28px;
-}
-.connection-intro h1 {
-  margin-block: 8px 16px;
-}
-.connection-intro .lede {
-  max-width: 48ch;
-}
-.eyebrow {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 0;
-}
-.family-map {
-  margin: 0;
-  color: var(--muted);
-  max-width: 420px;
-}
-.family-map svg {
-  width: 100%;
-  display: block;
-}
-.family-map rect {
-  fill: var(--paper);
-  stroke: var(--line);
-}
-.family-map .family-active rect {
-  fill: var(--panel);
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-.family-map text {
-  fill: var(--ink);
-}
-.family-map .family-labels {
-  font-size: 14px;
-}
-.family-map .family-node {
-  font: 600 23px var(--serif);
-}
-.family-map figcaption {
-  font-size: 13px;
-  text-align: center;
-  margin-top: 4px;
-}
-.lesson-start {
-  display: inline-block;
-  text-decoration: none;
-  margin-top: 8px;
-}
-.lesson-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-  margin-block: 20px 32px;
-}
-.lesson-list a {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  height: 100%;
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--accent);
-  padding: 18px;
-  text-decoration: none;
-  color: var(--ink);
-}
-.lesson-list a:hover {
-  background: var(--panel);
-}
-.lesson-list a > span:last-child {
-  color: var(--muted);
-  font-size: 15px;
-}
-.suggested-route {
-  counter-reset: lesson;
-}
-.suggested-route li {
-  counter-increment: lesson;
-}
-.suggested-route strong::before {
-  content: counter(lesson) ". ";
-  color: var(--accent);
-}
-.derivation-overview {
-  border-top: 1px solid var(--line);
   padding-top: 24px;
 }
-.connection-workspace {
+.lesson-breadcrumbs {
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+}
+.lesson-intro {
+  max-width: 67ch;
+  margin-bottom: 24px;
+}
+.lesson-intro .lede {
+  font-size: 1.0625rem;
+  margin-top: 4px;
+}
+.overview-intro .lede {
+  max-width: 58ch;
+}
+.family-map {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    "normal squares chi"
+    "build-t . build-f"
+    "limit . build-f"
+    "student square-t fisher";
+  align-items: stretch;
+  gap: 8px 16px;
+  max-width: 760px;
+  padding: 20px;
+  border: 1px solid var(--line);
+}
+.family-node,
+.family-edge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 7px 10px;
+  text-align: center;
+  line-height: 1.2;
+}
+.family-node {
+  background: var(--panel);
+  font: 600 1.25rem / 1.2 var(--serif);
+}
+.family-edge {
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.family-edge:not(.primary-action):is(:hover, [aria-current="page"]) {
+  border-color: var(--line);
+  background: var(--panel);
+}
+.family-edge:not(.primary-action) > span:nth-child(2) {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.edge-arrow {
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.node-normal {
+  grid-area: normal;
+}
+.node-chi {
+  grid-area: chi;
+}
+.node-t {
+  grid-area: student;
+}
+.node-f {
+  grid-area: fisher;
+}
+.edge-squares {
+  grid-area: squares;
+}
+.edge-t {
+  grid-area: build-t;
+}
+.edge-normalLimit {
+  grid-area: limit;
+}
+.edge-f {
+  grid-area: build-f;
+}
+.edge-tSquared {
+  grid-area: square-t;
+}
+.derivation-overview {
+  margin-top: 32px;
+}
+.derivation-overview h2 {
+  font-size: 1.25rem;
+}
+.derivation-overview p {
+  color: var(--muted);
+}
+.lesson-list,
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  list-style: none;
+  padding: 0;
+}
+.lesson-list a,
+.related-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.relationship-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "example plot"
+    "explanation plot";
+  column-gap: 28px;
   align-items: start;
-  gap: 32px;
 }
-.connection-workspace > .experiment {
-  position: static;
+.relationship-example,
+.relationship-explanation {
+  min-width: 0;
+  background: var(--panel);
 }
-.connection-workspace .controls-panel {
-  display: block;
+.relationship-example {
+  grid-area: example;
+  padding: 18px 20px 0;
 }
-.connection-workspace .control-field {
-  margin-bottom: 20px;
+.relationship-explanation {
+  grid-area: explanation;
+  padding: 0 20px 18px;
 }
-.connection-workspace .relationship-trace {
+.repeated-sampling {
+  grid-area: plot;
   min-width: 0;
 }
-.connection-page .guided-lab {
-  margin: 16px 0;
-  padding: 0;
-  border: 0;
+.relationship-example h2,
+.connection-page .chart-title {
+  font-family: var(--sans);
+  font-size: 1.125rem;
+  font-weight: 650;
+  margin-bottom: 10px;
+}
+.worked-example {
+  margin: 0;
+}
+.worked-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 5px 10px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+.worked-item dt {
+  color: var(--muted);
+  line-height: 1.25;
+}
+.worked-item dd {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.worked-result {
+  color: var(--focus);
+  border-bottom: 0;
+  border-left: 3px solid currentColor;
+  background: var(--paper);
+  padding: 8px 10px;
+  margin-top: 8px;
+}
+.worked-result dt {
+  color: inherit;
+  font-weight: 650;
+}
+.relationship-insight {
+  margin-block: 12px;
 }
 .connection-page .equation {
   overflow-x: auto;
   max-width: 100%;
-  padding: 12px;
+  padding: 8px 4px;
 }
 .connection-page .equation math {
   min-width: max-content;
 }
-.connection-page .assumption-details {
-  border-left: 3px solid var(--accent);
-  padding-left: 14px;
-  margin-block: 20px;
-  font-size: 14px;
+.relationship-formula {
+  font-size: 1.125rem;
 }
-.connection-page .learning-svg {
-  margin-block: 24px;
-}
-.connection-page .step-progress {
-  color: var(--accent);
-  font-weight: 600;
-  margin-top: 0;
-}
-.connection-page .lesson-options {
-  border-top: 1px solid var(--line);
-  padding-top: 16px;
-}
-.lesson-options .toolbar {
-  margin-top: 16px;
-}
-.lesson-options .experiment-actions {
-  grid-template-columns: 1fr;
-}
-.ingredient-note {
+.essential-condition {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 0.875rem;
+  margin: 8px 0 0;
 }
-.repeated-sampling {
-  margin-top: 32px;
-  border-top: 1px solid var(--line);
-  padding-top: 24px;
+.sample-bridge {
+  margin: 0 0 10px;
 }
-.connection-page .related-learning {
-  margin-top: 32px;
-}
-.connection-page .nav-context {
+.sampling-action {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-bottom: 16px;
 }
-@media (max-width: 700px) {
-  .connection-intro,
-  .connection-workspace {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-  }
-  .lesson-list {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .connection-workspace .experiment {
-    padding: 16px;
-  }
-  .connection-page .trace-navigation input {
-    max-width: 90px;
-  }
+#sampling-status,
+.relationship-prompt {
+  color: var(--muted);
+  font-size: 0.9375rem;
 }
-.connection-intro .family-map {
-  max-width: 380px;
-  justify-self: end;
+.connection-page .chart-container {
+  padding: 0;
 }
-@media (max-width: 700px) {
-  .connection-intro .family-map {
-    justify-self: start;
-    max-width: 300px;
-  }
+.connection-page .plot-frame {
+  height: 260px;
 }
-
-.lesson-breadcrumbs {
+.connection-page .chart-explanation {
+  font-size: 0.875rem;
+  margin: 8px 0;
+}
+.relationship-comparison {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 8px 0;
+}
+.relationship-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr));
+  gap: 0 16px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.relationship-controls :is(.relationship-prompt, .notice) {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+}
+.relationship-controls .notice {
+  margin-top: 8px;
+}
+.relationship-controls :is(.range-bounds, output) {
+  display: none;
+}
+.relationship-controls .control-field label:has(output) {
+  display: block;
+}
+.relationship-details {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 10px;
+  scroll-margin-top: 16px;
+}
+.relationship-details > summary {
+  font-weight: 650;
+}
+.relationship-details .table-scroll {
+  max-height: 300px;
+}
+.relationship-details details {
+  margin-block: 8px;
+}
+.relationship-details .chart-data {
+  font-size: inherit;
+}
+.relationship-details .guided-lab {
+  margin: 12px 0;
+  padding: 0;
+  border: 0;
+}
+.trace-navigation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.family-map .connection-active {
-  color: var(--accent);
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-
-.relationship-kind {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Start each lesson with its example; formal details follow the result. */
-.lesson-intro {
-  padding-block: 16px 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--line);
-}
-.lesson-intro h1 {
-  margin-block: 8px;
-}
-.lesson-intro .lede {
-  margin-block: 8px;
-}
-.active-recipe {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-.journey-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  margin-top: 20px;
-}
-.example-workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  gap: 24px;
-  align-items: start;
-  margin-block: 16px 24px;
-}
-.example-main {
-  min-width: 0;
-}
-.worked-example {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 18px;
-  background: var(--panel);
-  border-left: 3px solid var(--accent);
-}
-.worked-item {
-  flex: 1 1 140px;
-  min-width: 0;
-}
-.worked-item span {
-  display: block;
-  font-size: 14px;
-  color: var(--muted);
-}
-.worked-item strong {
-  display: block;
-  font-size: 22px;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  margin-top: 4px;
-  font-variant-numeric: tabular-nums;
-}
-.example-workspace > .experiment {
-  position: static;
-  padding: 16px;
-}
-.example-workspace .experiment h3 {
-  font-size: 17px;
-  margin-top: 0;
-}
-.example-workspace .controls-panel {
-  display: block;
-}
-.example-workspace .control-field {
-  margin-bottom: 16px;
-}
-.essential-condition {
-  font-size: 14px;
-  color: var(--muted);
-  margin: 8px 0;
-}
-.connection-page .learning-svg {
+  gap: 8px 12px;
   margin-block: 12px;
 }
-.connection-page #trace-title {
-  scroll-margin-top: 20px;
+.trace-navigation input {
+  width: 85px;
 }
-.connection-page .trace-numbers {
-  margin-block: 16px;
+.trace-navigation select {
+  min-width: 0;
 }
-.connection-page .trace-numbers[open] > summary {
-  margin-bottom: 12px;
-}
-.family-details {
-  margin-block: 20px;
+.lesson-options .control-field {
+  max-width: 300px;
 }
 .family-details .family-map {
-  margin-top: 16px;
+  margin-top: 12px;
 }
-.next-lesson .primary-action {
-  display: inline-block;
-  text-decoration: none;
-}
-.related-derivations .derivation-links {
-  flex-direction: column;
-  align-items: start;
-}
-@media (max-width: 700px) {
+@media (max-width: 760px) {
+  .connection-page main {
+    padding-top: 16px;
+  }
   .lesson-intro {
-    padding-top: 12px;
     margin-bottom: 16px;
   }
   .lesson-intro h1 {
-    font-size: 28px;
+    font-size: 1.875rem;
   }
-  .lesson-breadcrumbs {
-    margin-top: 12px;
-  }
-  .example-workspace {
+  .relationship-workspace {
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    margin-block: 12px 20px;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "example"
+      "plot"
+      "explanation";
+    gap: 18px;
   }
-  .worked-example {
-    padding: 12px;
-    gap: 12px;
+  .relationship-example,
+  .relationship-explanation {
+    padding: 12px 14px;
   }
   .worked-item {
-    flex-basis: 110px;
+    padding-block: 5px;
   }
-  .worked-item strong {
-    font-size: 20px;
+  .relationship-insight {
+    margin-block: 8px;
   }
-  .example-workspace .experiment {
-    padding: 12px;
+  .connection-page .plot-frame {
+    height: 220px;
   }
-  .example-workspace .lesson-options {
-    padding-top: 10px;
+  .family-map {
+    gap: 4px 6px;
+    padding: 8px;
+  }
+  .family-edge,
+  .family-node {
+    flex-wrap: wrap;
+    padding-inline: 4px;
+  }
+  .family-edge {
+    font-size: 0.875rem;
+  }
+  .family-node {
+    font-size: 1.0625rem;
+  }
+  .lesson-list,
+  .related-links {
+    gap: 0 12px;
   }
 }

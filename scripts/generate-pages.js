@@ -102,9 +102,9 @@ const symbolKeys = {
   "multiple-comparisons-explorer":
     "For m independent tests of true null hypotheses, each at significance level α, FWER is the chance of at least one false rejection without adjustment.",
 };
-const chart = (id, title, caption = captions[id]) => {
+const chart = (id, title, caption = captions[id], dataTarget) => {
   if (!caption) throw Error("Missing chart explanation: " + id);
-  return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><div class="plot-frame"><canvas id="${id}" class="chart-canvas" role="img" aria-label="${title}"></canvas></div><p class="chart-explanation" id="${id}-explanation">${caption}</p></figure>`;
+  return `<figure class="chart-container"><h2 class="chart-title">${title}</h2><div class="plot-frame"><canvas id="${id}"${dataTarget ? ` data-chart-data-target="${dataTarget}"` : ""} class="chart-canvas" role="img" aria-label="${title}"></canvas></div><p class="chart-explanation" id="${id}-explanation">${caption}</p></figure>`;
 };
 const metric = (label, id) =>
   `<div class="metric"><span>${label}</span><strong id="${id}">...</strong></div>`;

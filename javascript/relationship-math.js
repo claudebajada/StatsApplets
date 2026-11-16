@@ -296,15 +296,17 @@
       quantile: (p) => law.inv(p, ...args),
     };
   }
-  function plot(options, records, bins = 40) {
+  function plot(options, records, bins = 40, bounds) {
     integer(bins, 5, 100);
     const ref = reference(options),
       isT = ref.family === "t";
     // Central 99% for heavy signed tails, lower 99% for nonnegative laws.
     // No sample is clamped or discarded from the exported records.
-    const min = isT ? ref.quantile(0.005) : 0;
-    const max = ref.quantile(isT ? 0.995 : 0.99),
-      width = (max - min) / bins;
+    const [min, max] = bounds ?? [
+      isT ? ref.quantile(0.005) : 0,
+      ref.quantile(isT ? 0.995 : 0.99),
+    ];
+    const width = (max - min) / bins;
     const counts = Array(bins).fill(0);
     let outside = 0,
       undefinedCount = 0;

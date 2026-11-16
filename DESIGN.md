@@ -61,10 +61,8 @@ Keep the main mathematical explanation visible. Use disclosure for assumptions, 
 
 ## Distribution connections and derivations
 
-A short overview offers two routes: **Build distributions** and **From data to test statistics**. Five connection lessons begin with random ingredients and an operation; five derivation lessons begin with observations and the calculated statistic. The homepage uses compact text links for these lessons instead of repeating the same miniature map.
+The overview's family map links each operation to its construction. Square and add is the starting action. The derivations are also reachable from the constructions they use.
 
-Each lesson leads with its question, a one-line recipe and a numerical example from the actual seeded simulation. Relevant controls sit beside the example on desktop and follow it on mobile. A short condition remains visible. The explanation and MathML follow the example; full assumptions, detailed numbers, proof coordinates and the family map use disclosures. Independent residual directions remain available as an optional proof rather than interrupting the one-sample t calculation.
+Each lesson starts with one seeded calculation and marks its result on the plot against the reference curve. Repeating the calculation adds a small batch of results, then the full set. Changing ingredients updates the worked example, histogram and curve together. The t and normal comparisons use the same horizontal range at each setting.
 
-The four steps preserve the current values. Back and Next move focus and the viewport to the new heading. Repeated sampling appears at the last step, or immediately when restoring a multi-repetition link. One primary onward action continues the connection route or opens the corresponding test explorer. Links into test derivations are secondary to the connection route.
-
-All multi-input recipes state the ingredients and their independence. Exact constructions, exact null-model laws, limits and approximations retain visible labels. The mathematical engine, deterministic sequences, plotted-data alternatives and complete simulation CSV are shared across lessons. Legacy all-in-one links redirect to the relevant page with their settings.
+The worked example shows the numbers, the main equation and the condition behind the reference curve. One disclosure holds the detailed calculation, assumptions, optional coordinate proofs, presets and exports. Existing shared URLs restore the selected draw, settings and calculation detail.

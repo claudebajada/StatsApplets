@@ -153,7 +153,9 @@ test("all ten distribution relationships retain their full MathML derivations", 
     expectedRelationshipEquations,
   )) {
     await page.goto(`/html/${byMode[relationship].id}.html`);
+    await page.locator("#relationship-trace > summary").click();
     for (const [index, label] of stepLabels.entries()) {
+      await page.locator("#traceStep").selectOption(String(index + 1));
       const proofStep =
         (relationship === "sampleVariance" && index === 1) ||
         (relationship === "gof" && index === 2);
@@ -172,7 +174,6 @@ test("all ten distribution relationships retain their full MathML derivations", 
       expect(content.text).not.toBe("");
       expect(content.children).toBeGreaterThan(0);
       await expect(equation).toBeVisible();
-      if (index < 3) await page.locator("#next-step").click();
     }
   }
 });

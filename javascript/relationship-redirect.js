@@ -37,6 +37,8 @@
   ];
   for (const key of allowed)
     if (query.has(key)) target.searchParams.set(key, query.get(key));
+  if (mode.params.includes("df1") && !query.has("df1"))
+    target.searchParams.set("df1", "1");
   if (
     ["#relationship-trace", "#guided-lab", "#map-title", "#main"].includes(
       location.hash,

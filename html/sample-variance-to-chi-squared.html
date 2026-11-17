@@ -295,36 +295,54 @@
             id="map-title"
             aria-label="Distribution family map"
           >
-            <div class="family-node node-normal">Standard normal</div>
             <a
               class="family-edge edge-squares"
               href="normal-to-chi-squared.html"
-              ><span class="visually-hidden">Normal → χ². </span
-              ><span>Square and add</span
-              ><span class="edge-arrow" aria-hidden="true">→</span></a
+              aria-label="Normal → χ². Square and add"
+              ><span class="family-source" aria-hidden="true">Normal</span
+              ><span class="family-operation">Square and add</span
+              ><span class="edge-arrow" aria-hidden="true">→</span
+              ><span class="family-result" aria-hidden="true">χ²</span></a
             >
-            <div class="family-node node-chi">χ²</div>
-            <a class="family-edge edge-t" href="normal-chi-squared-to-t.html"
-              ><span class="visually-hidden">Normal + independent χ² → t. </span
-              ><span>Divide by a scale built from independent χ²</span
-              ><span class="edge-arrow" aria-hidden="true">↓</span></a
+            <a
+              class="family-edge edge-t"
+              href="normal-chi-squared-to-t.html"
+              aria-label="Normal + independent χ² → t. Divide by an independent scale"
+              ><span class="family-source" aria-hidden="true">Normal + χ²</span
+              ><span class="family-operation"
+                >Divide by an independent scale</span
+              ><span class="edge-arrow" aria-hidden="true">→</span
+              ><span class="family-result" aria-hidden="true">t</span></a
             >
-            <a class="family-edge edge-normalLimit" href="t-to-normal.html"
-              ><span class="visually-hidden">t → Normal. </span
-              ><span>Increase t’s degrees of freedom</span
-              ><span class="edge-arrow" aria-hidden="true">↑</span></a
+            <a
+              class="family-edge edge-f"
+              href="chi-squared-to-f.html"
+              aria-label="Two independent χ² → F. Divide two independent scaled χ² values"
+              ><span class="family-source" aria-hidden="true">χ² + χ²</span
+              ><span class="family-operation"
+                >Divide two independent scaled χ² values</span
+              ><span class="edge-arrow" aria-hidden="true">→</span
+              ><span class="family-result" aria-hidden="true">F</span></a
             >
-            <a class="family-edge edge-f" href="chi-squared-to-f.html"
-              ><span class="visually-hidden">Two independent χ² → F. </span
-              ><span>Divide two independent scaled χ² values</span
-              ><span class="edge-arrow" aria-hidden="true">↓</span></a
+            <a
+              class="family-edge edge-tSquared"
+              href="t-squared-to-f.html"
+              aria-label="t² → F. Square t"
+              ><span class="family-source" aria-hidden="true">t</span
+              ><span class="family-operation">Square t</span
+              ><span class="edge-arrow" aria-hidden="true">→</span
+              ><span class="family-result" aria-hidden="true">F</span></a
             >
-            <div class="family-node node-t">t</div>
-            <a class="family-edge edge-tSquared" href="t-squared-to-f.html"
-              ><span class="visually-hidden">t² → F. </span><span>Square t</span
-              ><span class="edge-arrow" aria-hidden="true">→</span></a
+            <a
+              class="family-edge edge-normalLimit"
+              href="t-to-normal.html"
+              aria-label="t → Normal. Increase t’s degrees of freedom"
+              ><span class="family-source" aria-hidden="true">t</span
+              ><span class="family-operation"
+                >Increase t’s degrees of freedom</span
+              ><span class="edge-arrow" aria-hidden="true">→</span
+              ><span class="family-result" aria-hidden="true">Normal</span></a
             >
-            <div class="family-node node-f">F</div>
           </nav>
         </details>
       </nav>

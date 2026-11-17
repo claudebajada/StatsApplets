@@ -68,6 +68,15 @@ for (const lesson of lessons) {
     expect(
       (await plotted(page)).find((d) => d.label === "Worked result"),
     ).toEqual(originalChart.find((d) => d.label === "Worked result"));
+    await page
+      .getByRole("button", { name: "Reset graph", exact: true })
+      .click();
+    await expect(page.locator("#sampling-status")).toHaveText("1 result");
+    expect(await state(page)).toEqual(initial);
+    expect(await plotted(page)).toEqual(originalChart);
+    await expect(page.locator("#reset-graph")).toBeFocused();
+    await page.getByRole("button", { name: "Repeat the calculation" }).click();
+    await page.getByRole("button", { name: "Show all 1,000 results" }).click();
     await openDetails(page);
     await expect(page.locator("#scale-note")).toContainText(
       "without renormalising",
@@ -124,6 +133,22 @@ for (const lesson of lessons) {
       await expect(page.locator("#traceStep")).toHaveValue("1");
       await expect(page.locator("#shown")).toHaveValue("1");
     }
+    const configured = await state(page);
+    const configuredChart = await plotted(page);
+    await page.getByRole("button", { name: "Repeat the calculation" }).click();
+    await page.locator("#next-draw").click();
+    await expect(page.locator("#inspected")).toHaveValue("2");
+    await page
+      .getByRole("button", { name: "Reset graph", exact: true })
+      .click();
+    await expect(page.locator("#sampling-status")).toHaveText("1 result");
+    expect(await state(page)).toEqual(configured);
+    expect(await plotted(page)).toEqual(configuredChart);
+    await page.reload();
+    expect(await state(page)).toEqual(configured);
+    expect(await plotted(page)).toEqual(configuredChart);
+    await openDetails(page);
+    await options(page);
     await page.locator("#reset").click();
     expect(await state(page)).toEqual(initial);
     await page.locator("#resample").click();

@@ -127,7 +127,7 @@ module.exports = function ({ range, seed, chart }) {
             </section>
             <section id="repeated-sampling" class="repeated-sampling" aria-label="Repeated sampling">
               <p class="sample-bridge">Each ${derivation ? "sample" : "calculation"} gives one result. Repeat to see how the results are distributed.</p>
-              <div class="sampling-action"><button type="button" id="all-repetitions" class="primary-action">Repeat the calculation</button><span id="sampling-status" role="status"></span></div>
+              <div class="sampling-action"><button type="button" id="all-repetitions" class="primary-action">Repeat the calculation</button><button type="button" id="reset-graph">Reset graph</button><span id="sampling-status" role="status"></span></div>
               ${chart("relationshipChart", plotTitle, "The purple point marks the result from the worked example. The bars show simulated results. The curve shows the reference distribution.", "plot-data")}
               <p id="comparison-note" class="relationship-comparison" hidden></p>
               <div class="relationship-controls">

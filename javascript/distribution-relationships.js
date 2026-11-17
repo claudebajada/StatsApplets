@@ -841,6 +841,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const { shown, repetitions } = read();
     set({ shown: shown === 1 ? Math.min(25, repetitions) : repetitions });
   });
+  get("reset-graph").addEventListener("click", () => {
+    set({ shown: 1, inspected: 1 });
+  });
   get("download-repetitions").addEventListener("click", () => {
     const ref = M.reference(currentConfig);
     exportText(

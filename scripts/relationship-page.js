@@ -28,20 +28,16 @@ const lessonLink = (key, label) =>
   `<a href="${byMode[key].id}.html">${label}</a>`;
 
 function family(active = "") {
-  const edge = (key, label, arrow, extra = "") => {
+  const edge = (key, source, label, result, extra = "") => {
     const className = `family-edge edge-${key} ${extra}`.trim();
-    return `<a class="${className}" href="${byMode[key].id}.html" ${key === active ? 'aria-current="page"' : ""}><span class="visually-hidden">${byMode[key].title}. </span><span>${label}</span><span class="edge-arrow" aria-hidden="true">${arrow}</span></a>`;
+    return `<a class="${className}" href="${byMode[key].id}.html" aria-label="${byMode[key].title}. ${label}" ${key === active ? 'aria-current="page"' : ""}><span class="family-source" aria-hidden="true">${source}</span><span class="family-operation">${label}</span><span class="edge-arrow" aria-hidden="true">→</span><span class="family-result" aria-hidden="true">${result}</span></a>`;
   };
   return `<nav class="family-map" id="map-title" aria-label="Distribution family map">
-    <div class="family-node node-normal">Standard normal</div>
-    ${edge("squares", "Square and add", "→", active ? "" : "primary-action")}
-    <div class="family-node node-chi">χ²</div>
-    ${edge("t", "Divide by a scale built from independent χ²", "↓")}
-    ${edge("normalLimit", "Increase t’s degrees of freedom", "↑")}
-    ${edge("f", "Divide two independent scaled χ² values", "↓")}
-    <div class="family-node node-t">t</div>
-    ${edge("tSquared", "Square t", "→")}
-    <div class="family-node node-f">F</div>
+    ${edge("squares", "Normal", "Square and add", "χ²", active ? "" : "primary-action")}
+    ${edge("t", "Normal + χ²", "Divide by an independent scale", "t")}
+    ${edge("f", "χ² + χ²", "Divide two independent scaled χ² values", "F")}
+    ${edge("tSquared", "t", "Square t", "F")}
+    ${edge("normalLimit", "t", "Increase t’s degrees of freedom", "Normal")}
   </nav>`;
 }
 
@@ -55,12 +51,15 @@ module.exports = function ({ range, seed, chart }) {
         "How distributions connect",
         "Start with normal draws and build chi-squared, t and F. See where the same calculations appear in statistical tests.",
         `<header class="lesson-intro overview-intro"><h1>How distributions connect</h1><p class="lede">Start by squaring and adding a few normal draws. Repeat the calculation to see a distribution take shape, then follow the same ingredients into t and F.</p></header>
-          <section aria-labelledby="connections-heading"><h2 id="connections-heading" class="visually-hidden">Build distributions</h2>${family()}</section>
+          <div class="connection-overview"><section aria-labelledby="connections-heading"><h2 id="connections-heading">Build distributions</h2><p class="connection-section-intro">Choose an operation to see it take shape.</p>${family()}</section>
           <section class="derivation-overview" aria-labelledby="derivations-heading"><h2 id="derivations-heading">From data to test statistics</h2><p>Start with observations and see where the reference distribution comes from.</p>
           <ul class="lesson-list">${lessons
             .slice(5)
-            .map((l) => `<li>${lessonLink(l.relationship, l.title)}</li>`)
-            .join("")}</ul></section>`,
+            .map(
+              (l) =>
+                `<li>${lessonLink(l.relationship, `<span>${l.title}</span>`)}</li>`,
+            )
+            .join("")}</ul></section></div>`,
         ["relationship-content", "relationship-redirect"],
       );
     },
@@ -128,7 +127,7 @@ module.exports = function ({ range, seed, chart }) {
             </section>
             <section id="repeated-sampling" class="repeated-sampling" aria-label="Repeated sampling">
               <p class="sample-bridge">Each ${derivation ? "sample" : "calculation"} gives one result. Repeat to see how the results are distributed.</p>
-              <div class="sampling-action"><button type="button" id="all-repetitions" class="primary-action">Repeat the calculation</button><span id="sampling-status" role="status"></span></div>
+              <div class="sampling-action"><button type="button" id="all-repetitions" class="primary-action">Repeat the calculation</button><button type="button" id="reset-graph">Reset graph</button><span id="sampling-status" role="status"></span></div>
               ${chart("relationshipChart", plotTitle, "The purple point marks the result from the worked example. The bars show simulated results. The curve shows the reference distribution.", "plot-data")}
               <p id="comparison-note" class="relationship-comparison" hidden></p>
               <div class="relationship-controls">

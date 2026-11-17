@@ -1510,92 +1510,81 @@ body:is(
   font-size: 1.0625rem;
   margin-top: 4px;
 }
+.overview-intro {
+  max-width: 74ch;
+  margin-bottom: 36px;
+}
 .overview-intro .lede {
-  max-width: 58ch;
+  max-width: 68ch;
+  margin-top: 12px;
+}
+.connection-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+.connection-section-intro,
+.derivation-overview > p {
+  margin-top: 8px;
+  color: var(--muted);
+}
+.connection-overview :is(.connection-section-intro, .derivation-overview > p) {
+  min-height: 48px;
 }
 .family-map {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-areas:
-    "normal squares chi"
-    "build-t . build-f"
-    "limit . build-f"
-    "student square-t fisher";
-  align-items: stretch;
-  gap: 8px 16px;
-  max-width: 760px;
-  padding: 20px;
-  border: 1px solid var(--line);
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
 }
-.family-node,
 .family-edge {
-  display: flex;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 20px 64px;
+  gap: 16px;
   align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 7px 10px;
-  text-align: center;
-  line-height: 1.2;
-}
-.family-node {
-  background: var(--panel);
-  font: 600 1.25rem / 1.2 var(--serif);
-}
-.family-edge {
-  gap: 6px;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  font-weight: 600;
+  min-height: 80px;
+  padding: 16px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--accent);
+  background: transparent;
+  text-align: left;
   text-decoration: none;
+  line-height: 1.35;
 }
-.family-edge:not(.primary-action):is(:hover, [aria-current="page"]) {
-  border-color: var(--line);
-  background: var(--panel);
+.family-source,
+.family-result {
+  color: var(--ink);
+  font: 500 1.25rem / 1.2 var(--serif);
 }
-.family-edge:not(.primary-action) > span:nth-child(2) {
+.family-result {
+  text-align: center;
+}
+.family-operation {
+  font-weight: 600;
   text-decoration: underline;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.2em;
+}
+.family-map .primary-action {
+  color: var(--accent);
+  background: var(--panel);
+  border-left: 3px solid var(--accent);
+  padding-left: 9px;
+}
+.family-map .family-edge:is(:hover, [aria-current="page"]) {
+  color: var(--accent);
+  background: #e1eaf6;
 }
 .edge-arrow {
-  flex: 0 0 auto;
   font-size: 1.25rem;
-  line-height: 1;
+  text-align: center;
 }
-.node-normal {
-  grid-area: normal;
-}
-.node-chi {
-  grid-area: chi;
-}
-.node-t {
-  grid-area: student;
-}
-.node-f {
-  grid-area: fisher;
-}
-.edge-squares {
-  grid-area: squares;
-}
-.edge-t {
-  grid-area: build-t;
-}
-.edge-normalLimit {
-  grid-area: limit;
-}
-.edge-f {
-  grid-area: build-f;
-}
-.edge-tSquared {
-  grid-area: square-t;
-}
-.derivation-overview {
-  margin-top: 32px;
-}
-.derivation-overview h2 {
-  font-size: 1.25rem;
-}
-.derivation-overview p {
-  color: var(--muted);
+.derivation-overview .lesson-list {
+  display: grid;
+  gap: 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
 }
 .lesson-list,
 .related-links {
@@ -1610,6 +1599,25 @@ body:is(
   display: inline-flex;
   align-items: center;
   min-height: 44px;
+}
+.derivation-overview .lesson-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 80px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.4;
+  text-decoration: none;
+}
+.derivation-overview .lesson-list a > span {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.derivation-overview .lesson-list a::after {
+  content: "→";
+  flex-shrink: 0;
+  text-decoration: none;
 }
 .relationship-workspace {
   display: grid;
@@ -1823,23 +1831,56 @@ body:is(
   .connection-page .plot-frame {
     height: 220px;
   }
-  .family-map {
-    gap: 4px 6px;
-    padding: 8px;
+  .overview-intro {
+    margin-bottom: 28px;
   }
-  .family-edge,
-  .family-node {
-    flex-wrap: wrap;
-    padding-inline: 4px;
+  .connection-overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .connection-overview
+    :is(.connection-section-intro, .derivation-overview > p) {
+    min-height: 0;
+  }
+  .derivation-overview .lesson-list a {
+    min-height: 64px;
   }
   .family-edge {
-    font-size: 0.875rem;
+    grid-template-columns: 76px minmax(0, 1fr) 16px 56px;
+    gap: 10px;
+    padding-inline: 8px;
   }
-  .family-node {
-    font-size: 1.0625rem;
+  .family-map .primary-action {
+    padding-left: 5px;
+  }
+  .family-source,
+  .family-result {
+    font-size: 1.125rem;
   }
   .lesson-list,
   .related-links {
     gap: 0 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .family-edge {
+    grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr);
+    grid-template-areas: "source arrow result" "operation operation operation";
+    gap: 8px 12px;
+    padding-block: 14px;
+  }
+  .family-source {
+    grid-area: source;
+  }
+  .family-operation {
+    grid-area: operation;
+  }
+  .edge-arrow {
+    grid-area: arrow;
+  }
+  .family-result {
+    grid-area: result;
+    text-align: right;
   }
 }
